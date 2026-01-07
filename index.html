@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='icon' type='image/png' href='assets/favicon.png'>
+    <title>Elumina IA | Automação e Inteligência Artificial B2B</title>
+    <meta name="description"
+        content="Automatize o atendimento e os processos da sua empresa com Inteligência Artificial. Soluções personalizadas para escalar seu negócio.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tailwind-config.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            background-color: #000000;
+            color: #f3f4f6;
+        }
+
+        .glass-nav {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #0052FF 0%, #00A3FF 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #0052FF 0%, #00A3FF 100%);
+        }
+
+        /* Neon Glow Effect */
+        .neon-glow {
+            box-shadow: 0 0 10px rgba(0, 82, 255, 0.3), 0 0 20px rgba(0, 163, 255, 0.1);
+        }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-primary selection:text-white">
+
+    <!-- Header -->
+    <header class="fixed w-full top-0 z-50 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-2 cursor-pointer group">
+                    <img src="assets/logo.png" alt="Elumina IA Logo" class="h-12 w-auto object-contain">
+                </a>
+
+                <!-- Desktop Menu -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#solucoes"
+                        class="text-sm font-medium text-gray-300 hover:text-white transition-colors relative group">
+                        Soluções
+                        <span
+                            class="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="#verticais"
+                        class="text-sm font-medium text-gray-300 hover:text-white transition-colors relative group">
+                        Verticais
+                        <span
+                            class="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="blog.html"
+                        class="text-sm font-medium text-gray-300 hover:text-white transition-colors relative group">
+                        Blog
+                        <span
+                            class="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span>
+                    </a>
+                </nav>
+
+                <!-- CTA -->
+                <div class="flex items-center gap-4">
+                    <a href="https://wa.me/555391597287" target="_blank"
+                        class="hidden md:inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white text-black font-semibold text-sm hover:bg-gray-200 transition-all neon-glow">
+                        <span>Falar com Especialista</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                    <!-- Mobile Toggle -->
+                    <button id="mobile-menu-btn" class="md:hidden text-gray-300 hover:text-white focus:outline-none">
+                        <i data-lucide="menu" class="w-7 h-7"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-[#000000] border-b border-white/5 absolute w-full">
+            <div class="px-4 pt-4 pb-6 space-y-2">
+                <a href="#solucoes"
+                    class="block px-3 py-3 rounded-lg text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Soluções</a>
+                <a href="#verticais"
+                    class="block px-3 py-3 rounded-lg text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Verticais</a>
+                <a href="blog.html"
+                    class="block px-3 py-3 rounded-lg text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Blog</a>
+                <div class="pt-4 mt-4 border-t border-white/5">
+                    <a href="https://wa.me/555391597287"
+                        class="block w-full text-center px-6 py-3 rounded-lg gradient-bg text-white font-bold hover:brightness-110 transition-all">
+                        Falar com Especialista
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden flex items-center min-h-[90vh]">
+            <!-- Background Elements -->
+            <div class="absolute inset-0 z-0 pointer-events-none">
+                <div
+                    class="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-primary/20 rounded-full blur-[120px] mix-blend-screen opacity-40 animate-pulse-slow">
+                </div>
+                <div
+                    class="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-accent/10 rounded-full blur-[100px] mix-blend-screen opacity-30">
+                </div>
+            </div>
+
+            <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-accent text-xs font-semibold tracking-wider uppercase mb-8 animate-slide-up opacity-0"
+                    style="animation-delay: 0.1s;">
+                    <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+                    Tecnologia de Ponta
+                </div>
+
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold font-heading text-white tracking-tight mb-6 leading-[1.1] animate-slide-up opacity-0"
+                    style="animation-delay: 0.2s;">
+                    Automatize o atendimento<br>
+                    <span class="gradient-text">e os processos da sua empresa com IA</span>
+                </h1>
+
+                <p class="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto mb-10 animate-slide-up opacity-0"
+                    style="animation-delay: 0.3s;">
+                    2026 é o ano em que a IA deixa de ser vantagem e vira requisito. A Elumina IA prepara sua empresa
+                    agora para não ficar para trás.
+                </p>
+
+                <!-- Updated Hero CTA -->
+                <div class="flex flex-col sm:flex-row justify-center gap-5 animate-slide-up opacity-0 mt-12"
+                    style="animation-delay: 0.4s;">
+                    <a href="https://wa.me/555391597287"
+                        class="inline-flex items-center justify-center gap-3 px-8 py-4 border border-transparent text-lg font-bold rounded-full text-white gradient-bg hover:brightness-110 transition-all shadow-lg shadow-primary/30 transform hover:-translate-y-1">
+                        <i data-lucide="rocket" class="w-5 h-5"></i>
+                        Agendar Diagnóstico de IA
+                    </a>
+                </div>
+                <!-- Trust Text -->
+                <p class="text-xs md:text-sm text-gray-500 mt-4 animate-slide-up opacity-0"
+                    style="animation-delay: 0.5s;">
+                    Atendimento para empresas de todos os portes em todo o Brasil.
+                </p>
+            </div>
+        </section>
+
+        <!-- Verticals Section (Formerly Industry Tiles) -->
+        <section id="verticais" class="py-32 relative bg-surface">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-20">
+                    <h2 class="text-3xl md:text-5xl font-bold font-heading text-white mb-6">Nossas Verticais</h2>
+                    <p class="text-xl text-gray-400 max-w-2xl mx-auto">Soluções especializadas para diferentes
+                        segmentos.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                    <!-- Elumina Clínicas -->
+                    <div
+                        class="group glass-card p-8 rounded-2xl hover:bg-white/5 transition-all duration-300 hover:-translate-y-2 border-t-2 border-transparent hover:border-primary">
+                        <div
+                            class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                            <i data-lucide="heart-pulse" class="text-primary w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">
+                            <span class="text-gray-400 font-medium text-lg">Elumina</span> <span
+                                class="text-primary">Clínicas</span>
+                        </h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">Gestão inteligente de consultas,
+                            confirmações automáticas e prontuário integrado para o setor da saúde.</p>
+                    </div>
+
+                    <!-- Elumina Imob -->
+                    <div
+                        class="group glass-card p-8 rounded-2xl hover:bg-white/5 transition-all duration-300 hover:-translate-y-2 border-t-2 border-transparent hover:border-accent">
+                        <div
+                            class="w-14 h-14 rounded-xl bg-accent/10 flex items-center justify-center mb-6 group-hover:bg-accent/20 transition-colors">
+                            <i data-lucide="building-2" class="text-accent w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">
+                            <span class="text-gray-400 font-medium text-lg">Elumina</span> <span
+                                class="text-accent">Imob</span>
+                        </h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">Qualificação instantânea de leads e
+                            agendamento automático de visitas para imobiliárias e corretores.</p>
+                    </div>
+
+                    <!-- Elumina Petshops -->
+                    <div
+                        class="group glass-card p-8 rounded-2xl hover:bg-white/5 transition-all duration-300 hover:-translate-y-2 border-t-2 border-transparent hover:border-primary">
+                        <div
+                            class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                            <i data-lucide="paw-print" class="text-primary w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">
+                            <span class="text-gray-400 font-medium text-lg">Elumina</span> <span
+                                class="text-primary">Petshops</span>
+                        </h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">Fidelização de clientes, lembretes de
+                            vacinas e banho/tosa via automação personalizada.</p>
+                    </div>
+
+                    <!-- Elumina Estética -->
+                    <div
+                        class="group glass-card p-8 rounded-2xl hover:bg-white/5 transition-all duration-300 hover:-translate-y-2 border-t-2 border-transparent hover:border-accent">
+                        <div
+                            class="w-14 h-14 rounded-xl bg-accent/10 flex items-center justify-center mb-6 group-hover:bg-accent/20 transition-colors">
+                            <i data-lucide="sparkles" class="text-accent w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">
+                            <span class="text-gray-400 font-medium text-lg">Elumina</span> <span
+                                class="text-accent">Estética</span>
+                        </h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">Gestão de agenda em tempo real, lembretes
+                            de retorno para procedimentos e fidelização automática de clientes para salões e clínicas de
+                            estética.</p>
+                    </div>
+                </div>
+
+                <!-- CTA Section -->
+                <div class="text-center pt-8 border-t border-white/5">
+                    <p class="text-white text-lg mb-6 font-medium">Interessado em escalar sua operação? Vamos conversar.
+                    </p>
+                    <a href="https://wa.me/555391597287?text=Olá,%20gostaria%20de%20conhecer%20mais%20detalhes%20sobre%20os%20produtos%20da%20Elumina%20IA."
+                        target="_blank"
+                        class="inline-flex items-center gap-2 px-10 py-5 rounded-full bg-primary text-white font-bold text-lg hover:brightness-110 transition-all shadow-[0_0_20px_rgba(0,82,255,0.4)] animate-pulse-interval transform">
+                        Conheça todas as nossas soluções de IA
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Solutions Section -->
+        <section id="solucoes" class="py-32 relative overflow-hidden">
+            <!-- Decorator -->
+            <div class="absolute left-0 top-1/4 w-1/3 h-1/2 bg-primary/5 blur-[100px] pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-bold font-heading text-white mb-6">Nossas Soluções</h2>
+                    <p class="text-lg text-gray-400 max-w-2xl mx-auto">Tecnologias avançadas para impulsionar sua
+                        operação.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Solution 1 -->
+                    <div class="glass-card p-8 rounded-2xl text-center">
+                        <div
+                            class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-6">
+                            <i data-lucide="message-circle" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4">Assistentes 24h</h3>
+                        <p class="text-gray-400">Atendimento ininterrupto em todos os canais digitais, garantindo que
+                            nenhum cliente fique sem resposta.</p>
+                    </div>
+
+                    <!-- Solution 2 -->
+                    <div class="glass-card p-8 rounded-2xl text-center border-primary/30 border">
+                        <div
+                            class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/10 text-accent mb-6">
+                            <i data-lucide="cpu" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4">Copilotos Internos</h3>
+                        <p class="text-gray-400">Suporte inteligente para sua equipe, agilizando a tomada de decisão e o
+                            acesso à informação.</p>
+                    </div>
+
+                    <!-- Solution 3 -->
+                    <div class="glass-card p-8 rounded-2xl text-center">
+                        <div
+                            class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-6">
+                            <i data-lucide="zap" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4">Automação</h3>
+                        <p class="text-gray-400">Integrações poderosas com n8n e Supabase para eliminar tarefas
+                            repetitivas e manuais.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Elumina IA Section (#sobre) -->
+        <section id="sobre" class="py-24 md:py-32 relative bg-surface border-t border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <h2 class="text-3xl md:text-5xl font-bold font-heading text-white mb-8">Sobre a Elumina IA</h2>
+                        <p class="text-xl text-gray-300 leading-relaxed mb-8">
+                            A Elumina IA é uma empresa especializada em aplicar inteligência artificial em atendimento e
+                            processos. Desenhamos, implementamos e mantemos soluções sob medida para empresas de todos
+                            os portes, com foco em resultado prático: mais velocidade, menos tarefas manuais e decisões
+                            mais inteligentes.
+                        </p>
+
+                        <div class="space-y-6">
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="mt-1 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary shrink-0">
+                                    <i data-lucide="check-circle" class="w-4 h-4"></i>
+                                </div>
+                                <p class="text-gray-400">Especialistas em automação com n8n, Supabase e integrações de
+                                    CRM.</p>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="mt-1 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary shrink-0">
+                                    <i data-lucide="users" class="w-4 h-4"></i>
+                                </div>
+                                <p class="text-gray-400">Expertise nos setores de Saúde, Imobiliário, Pet e Estética.
+                                </p>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="mt-1 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary shrink-0">
+                                    <i data-lucide="map-pin" class="w-4 h-4"></i>
+                                </div>
+                                <p class="text-gray-400">Atendimento especializado para empresas em todo o Brasil.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Decorative Element -->
+                    <div class="relative hidden lg:block">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-accent/20 rounded-2xl blur-[80px] opacity-40">
+                        </div>
+                        <img src="assets/sobrenos.png" alt="Sobre a Elumina IA"
+                            class="relative rounded-2xl border border-white/10 shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500 w-full object-cover">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-24 bg-[#050505] border-t border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-5xl font-bold font-heading text-white mb-6">Como funciona o seu
+                        Diagnóstico de IA</h2>
+                    <p class="text-lg text-gray-400 max-w-2xl mx-auto">Um processo simples e estruturado para levar sua
+                        empresa ao próximo nível.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+                    <!-- Step 1 -->
+                    <div class="flex flex-col items-center">
+                        <div
+                            class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6 text-primary">
+                            <i data-lucide="clipboard-list" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Mapeamento</h3>
+                        <p class="text-gray-400 leading-relaxed">Mapeamos rapidamente seus processos de atendimento e
+                            operação.</p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="flex flex-col items-center">
+                        <div
+                            class="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-6 text-accent">
+                            <i data-lucide="trending-up" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">ROI em 2026</h3>
+                        <p class="text-gray-400 leading-relaxed">Indicamos onde a IA traz resultados reais em 30–60
+                            dias.</p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="flex flex-col items-center">
+                        <div
+                            class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6 text-primary">
+                            <i data-lucide="file-check" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Plano de Ação</h3>
+                        <p class="text-gray-400 leading-relaxed">Apresentamos um plano de implementação personalizado e
+                            sem compromisso.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results & Stories Section (#resultados) -->
+        <section id="resultados" class="py-24 md:py-32 bg-[#050505] border-t border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-5xl font-bold font-heading text-white mb-6">Resultados em Construção
+                    </h2>
+                    <p class="text-lg text-gray-400 max-w-2xl mx-auto">Estamos implementando projetos de IA em
+                        diferentes segmentos e consolidando resultados em 2026. Em breve, você verá aqui cases
+                        detalhados.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Case 1 -->
+                    <div class="glass-card p-8 rounded-2xl border border-white/5 relative overflow-hidden group">
+                        <div
+                            class="absolute top-4 right-4 text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded">
+                            EM BREVE</div>
+                        <div
+                            class="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center mb-6 text-gray-400">
+                            <i data-lucide="heart-pulse" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Elumina Clínicas</h3>
+                        <p class="text-gray-400 text-sm">Redução de faltas com confirmação inteligente.</p>
+                        <div class="mt-6 h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-primary/50 w-3/4 animate-pulse"></div>
+                        </div>
+                    </div>
+
+                    <!-- Case 2 -->
+                    <div class="glass-card p-8 rounded-2xl border border-white/5 relative overflow-hidden group">
+                        <div
+                            class="absolute top-4 right-4 text-xs font-bold text-accent bg-accent/10 px-2 py-1 rounded">
+                            EM BREVE</div>
+                        <div
+                            class="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center mb-6 text-gray-400">
+                            <i data-lucide="building-2" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Elumina Imob</h3>
+                        <p class="text-gray-400 text-sm">Aumento de visitas com pré-qualificação automática.</p>
+                        <div class="mt-6 h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-accent/50 w-2/3 animate-pulse"></div>
+                        </div>
+                    </div>
+
+                    <!-- Case 3 -->
+                    <div class="glass-card p-8 rounded-2xl border border-white/5 relative overflow-hidden group">
+                        <div
+                            class="absolute top-4 right-4 text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded">
+                            EM BREVE</div>
+                        <div
+                            class="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center mb-6 text-gray-400">
+                            <i data-lucide="paw-print" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Elumina Petshops</h3>
+                        <p class="text-gray-400 text-sm">Fidelização automática de clientes.</p>
+                        <div class="mt-6 h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-primary/50 w-1/2 animate-pulse"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog Section -->
+        <section id="blog" class="py-24 border-t border-white/5 bg-surface">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold font-heading text-white mb-12 text-center">Blog & Insights</h2>
+
+                <div id="home-blog-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Posts will be loaded dynamically by script.js -->
+                </div>
+
+                <div class="mt-12 text-center">
+                    <a href="blog.html"
+                        class="inline-flex items-center gap-2 px-8 py-3 rounded-full border border-white/10 hover:bg-white/5 text-white font-semibold transition-all group">
+                        Ver todos os artigos
+                        <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Turning Point Section (New) -->
+        <section class="py-24 bg-[#050505] border-t border-white/5 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent to-primary/5 pointer-events-none"></div>
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+                <div
+                    class="inline-block px-4 py-2 bg-yellow-500/10 border border-yellow-500/20 rounded-full text-yellow-500 font-bold text-sm tracking-wider mb-6">
+                    ⚠️ POR QUE AGIR AGORA?
+                </div>
+                <h2 class="text-3xl md:text-5xl font-bold font-heading text-white mb-8">Por que ter IA na sua empresa em
+                    2026?</h2>
+                <p class="text-xl text-gray-300 leading-relaxed max-w-4xl mx-auto">
+                    Mais de <strong class="text-white">70% das empresas</strong> já usam IA em seus processos, e quem
+                    integra IA em áreas críticas ganha de <strong class="text-white">20% a 30% em
+                        produtividade</strong>. <br class="hidden md:block">
+                    2026 é o ponto de virada: empresas que adiam essa decisão perdem velocidade e margem de lucro.
+                </p>
+            </div>
+        </section>
+
+        <!-- CTA Footer -->
+        <section class="py-20 relative overflow-hidden bg-gradient-to-t from-[#001040] to-black">
+            <div class="absolute inset-0 bg-[url('assets/grid-pattern.svg')] opacity-10"></div>
+            <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+                <h2 class="text-4xl font-bold text-white mb-6">Pronto para escalar sua operação?</h2>
+                <p class="text-gray-400 text-lg mb-10">Agende agora um diagnóstico gratuito.</p>
+                <a href="https://wa.me/555391597287" target="_blank"
+                    class="inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-black text-lg font-bold rounded-full hover:scale-105 transition-transform shadow-[0_0_40px_rgba(255,255,255,0.3)]">
+                    <i data-lucide="message-circle" class="w-6 h-6"></i>
+                    Conversar no WhatsApp
+                </a>
+                <p class="mt-8 text-sm text-gray-400 italic font-medium max-w-2xl mx-auto">
+                    "Atendemos um número limitado de novos projetos por mês para garantir a excelência na entrega.
+                    Garanta sua vaga para implementação ainda neste trimestre de 2026."
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#000000] border-t border-white/5 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
+                <div class="flex items-center gap-2">
+                    <img src="assets/logo.png" alt="Elumina IA" class="h-12 w-auto object-contain">
+                </div>
+
+                <div class="flex gap-6 items-center">
+                    <a href="https://www.instagram.com/eluminaia/" target="_blank"
+                        class="text-gray-500 hover:text-white transition-colors" title="Instagram">
+                        <i data-lucide="instagram" class="w-6 h-6"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/company/elumina-ia/" target="_blank"
+                        class="text-gray-500 hover:text-white transition-colors" title="LinkedIn">
+                        <i data-lucide="linkedin" class="w-6 h-6"></i>
+                    </a>
+                    <a href="https://wa.me/555391597287" target="_blank"
+                        class="text-gray-500 hover:text-white transition-colors" title="WhatsApp">
+                        <i data-lucide="phone" class="w-6 h-6"></i>
+                    </a>
+                    <a href="mailto:contato@eluminaia.com"
+                        class="text-gray-500 hover:text-primary transition-colors flex items-center gap-2 group"
+                        title="E-mail">
+                        <i data-lucide="mail" class="w-6 h-6 group-hover:text-primary transition-colors"></i>
+                        <span class="hidden md:inline text-sm font-medium">contato@eluminaia.com</span>
+                    </a>
+                </div>
+            </div>
+
+            <div
+                class="border-t border-white/5 pt-8 text-center md:text-left flex flex-col md:flex-row justify-between text-sm text-gray-600">
+                <p>&copy; 2026 Elumina IA. Todos os direitos reservados.</p>
+                <div class="flex gap-6 mt-4 md:mt-0 justify-center">
+                    <button onclick="openModal('modal-privacy')"
+                        class="hover:text-gray-400 transition-colors">Privacidade</button>
+                    <button onclick="openModal('modal-terms')"
+                        class="hover:text-gray-400 transition-colors">Termos</button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Privacy Modal -->
+    <div id="modal-privacy"
+        class="fixed inset-0 z-[60] flex items-center justify-center bg-[#0a0a0a]/90 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300"
+        aria-hidden="true">
+        <div
+            class="bg-[#0a0a0a] border border-primary rounded-2xl w-full max-w-2xl max-h-[80vh] flex flex-col shadow-[0_0_30px_rgba(0,82,255,0.15)] transform scale-95 transition-transform duration-300 m-4">
+            <!-- Header -->
+            <div class="flex justify-between items-center p-6 border-b border-white/10">
+                <h3 class="text-xl font-bold text-white">Política de Privacidade</h3>
+                <button onclick="closeModal('modal-privacy')" class="text-gray-400 hover:text-white transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <!-- Content -->
+            <div class="overflow-y-auto p-6 text-gray-300 space-y-4 text-sm leading-relaxed custom-scrollbar">
+                <p class="text-xs text-gray-500">Última atualização: Novembro de 2025</p>
+
+                <h4 class="text-white font-semibold text-base mt-4">1. Visão Geral</h4>
+                <p>Esta Política de Privacidade descreve como a Elumina ("nós", "nosso") coleta, usa, armazena e protege
+                    as informações pessoais dos visitantes ("você") do nosso site eluminaia.com.</p>
+                <p>Ao acessar ou usar nosso site, você concorda com os termos desta Política de Privacidade.</p>
+
+                <h4 class="text-white font-semibold text-base mt-4">2. Informações que Coletamos</h4>
+                <p>Coletamos informações de duas formas:</p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>a) Informações Fornecidas Voluntariamente por Você:</strong>
+                        <br>Formulários de Contato: Quando você preenche nosso formulário de contato (na página "Sobre
+                        Nós" ou outras), coletamos seu nome, e-mail e a mensagem que você nos envia.
+                        <br>Agendamento de Diagnóstico: Quando você agenda um diagnóstico (através do nosso link de
+                        agendamento, como o Calendly), podemos coletar seu nome, e-mail e número de telefone para
+                        gerenciar a reunião.
+                    </li>
+                    <li><strong>b) Informações Coletadas Automaticamente:</strong>
+                        <br>Cookies e Analytics: Como a maioria dos sites, usamos cookies e serviços de análise (como o
+                        Google Analytics) para entender como os visitantes usam nosso site. Isso pode incluir seu
+                        endereço IP, tipo de navegador, páginas visitadas e o tempo gasto no site. Esses dados são
+                        usados de forma agregada para melhorar nossa performance.
+                    </li>
+                </ul>
+
+                <h4 class="text-white font-semibold text-base mt-4">3. Como Usamos Suas Informações</h4>
+                <p>Usamos suas informações pessoais para os seguintes propósitos:</p>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li>Responder às suas solicitações: Para retornar o contato feito através de nossos formulários.
+                    </li>
+                    <li>Gerenciar agendamentos: Para confirmar e realizar as reuniões de diagnóstico.</li>
+                    <li>Melhorar nosso site: Para analisar o tráfego e entender quais seções do nosso site são mais
+                        eficazes (Analytics).</li>
+                    <li>Marketing (com consentimento): Caso você se inscreva em nossa newsletter (no Blog), usaremos seu
+                        e-mail para enviar "Insights Elumina" e novidades.</li>
+                </ul>
+
+                <h4 class="text-white font-semibold text-base mt-4">4. Compartilhamento de Informações</h4>
+                <p>A Elumina não vende suas informações pessoais.</p>
+                <p>Podemos compartilhar suas informações apenas com provedores de serviços terceirizados que nos ajudam
+                    a operar o site, como:</p>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li>Plataformas de Agendamento (ex: Calendly): Para gerenciar os diagnósticos.</li>
+                    <li>Processadores de Formulários (ex: Formspree): Para nos entregar com segurança as mensagens dos
+                        formulários.</li>
+                    <li>Plataformas de Analytics (ex: Google Analytics): Para análise de tráfego.</li>
+                </ul>
+                <p>Exigimos que esses provedores protejam suas informações e as usem apenas para os fins contratados.
+                </p>
+
+                <h4 class="text-white font-semibold text-base mt-4">5. Seus Direitos (LGPD)</h4>
+                <p>Em conformidade com a Lei Geral de Proteção de Dados (LGPD), você tem o direito de:</p>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li>Acessar seus dados pessoais que possuímos.</li>
+                    <li>Corrigir dados incompletos, inexatos ou desatualizados.</li>
+                    <li>Solicitar a exclusão de seus dados.</li>
+                    <li>Opor-se ao processamento de seus dados.</li>
+                </ul>
+                <p>Para exercer seus direitos, entre em contato conosco pelo e-mail: contato@elumina.com.</p>
+
+                <h4 class="text-white font-semibold text-base mt-4">6. Segurança dos Dados</h4>
+                <p>Empregamos medidas de segurança técnicas e administrativas razoáveis para proteger suas informações.
+                    No entanto, nenhum sistema de transmissão pela internet é 100% seguro.</p>
+
+                <h4 class="text-white font-semibold text-base mt-4">7. Alterações nesta Política</h4>
+                <p>Podemos atualizar esta Política de Privacidade periodicamente. A data da última atualização será
+                    sempre indicada no topo desta página.</p>
+
+                <h4 class="text-white font-semibold text-base mt-4">8. Fale Conosco</h4>
+                <p>Se você tiver qualquer dúvida sobre esta Política de Privacidade, entre em contato conosco pelo
+                    e-mail: contato@elumina.com.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms Modal -->
+    <div id="modal-terms"
+        class="fixed inset-0 z-[60] flex items-center justify-center bg-[#0a0a0a]/90 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300"
+        aria-hidden="true">
+        <div
+            class="bg-[#0a0a0a] border border-primary rounded-2xl w-full max-w-2xl max-h-[80vh] flex flex-col shadow-[0_0_30px_rgba(0,82,255,0.15)] transform scale-95 transition-transform duration-300 m-4">
+            <!-- Header -->
+            <div class="flex justify-between items-center p-6 border-b border-white/10">
+                <h3 class="text-xl font-bold text-white">Termos de Uso</h3>
+                <button onclick="closeModal('modal-terms')" class="text-gray-400 hover:text-white transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <!-- Content -->
+            <div class="overflow-y-auto p-6 text-gray-300 space-y-4 text-sm leading-relaxed custom-scrollbar">
+                <p class="text-xs text-gray-500">Última atualização: Novembro de 2025</p>
+
+                <h4 class="text-white font-semibold text-base mt-4">1. Aceitação dos Termos</h4>
+                <p>Bem-vindo ao site da Elumina ("Elumina", "nós", "nosso"). Estes Termos de Uso regem seu acesso e uso
+                    do nosso site eluminaia.com e todos os seus subdomínios, incluindo nosso Blog ("Insights Elumina").
+                </p>
+                <p>Ao acessar ou usar nosso site, você concorda em cumprir e estar vinculado a estes Termos de Uso e à
+                    nossa Política de Privacidade. Se você não concordar com estes termos, não utilize nosso site.</p>
+
+                <h4 class="text-white font-semibold text-base mt-4">2. Propriedade Intelectual</h4>
+                <p>Todo o conteúdo presente neste site — incluindo, mas não se limitando a textos, gráficos, logotipos,
+                    ícones, imagens, artigos de blog e o nome "Elumina" — é propriedade exclusiva da Elumina e protegido
+                    pelas leis brasileiras de direitos autorais e propriedade intelectual.</p>
+                <p>Nenhuma parte do site pode ser copiada, reproduzida, republicada, distribuída ou transmitida de
+                    qualquer forma sem nossa autorização prévia por escrito.</p>
+
+                <h4 class="text-white font-semibold text-base mt-4">3. Uso Permitido e Restrições</h4>
+                <p>Você concorda em usar o site apenas para fins legais e de maneira que não infrinja os direitos de, ou
+                    restrinja o uso por, qualquer terceiro.</p>
+                <p>Você está proibido de:</p>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li>Usar o site para fins fraudulentos ou ilegais.</li>
+                    <li>Tentar obter acesso não autorizado aos nossos sistemas ou redes.</li>
+                    <li>Transmitir qualquer material que seja difamatório, ofensivo ou obsceno.</li>
+                    <li>Interferir no funcionamento adequado do site (ex: spam, vírus).</li>
+                </ul>
+
+                <h4 class="text-white font-semibold text-base mt-4">4. Isenção de Responsabilidade (Conteúdo do Blog)
+                </h4>
+                <p>O conteúdo fornecido em nosso site, especialmente em nosso Blog "Insights Elumina", é apenas para
+                    fins informativos e educacionais.</p>
+                <p>As informações não constituem conselho profissional, financeiro, jurídico ou médico. A Elumina não se
+                    responsabiliza por quaisquer decisões ou ações tomadas com base no conteúdo do nosso site. Sempre
+                    consulte um profissional qualificado para conselhos específicos sobre sua situação.</p>
+
+                <h4 class="text-white font-semibold text-base mt-4">5. Links de Terceiros</h4>
+                <p>Nosso site pode conter links para sites de terceiros que não são de nossa propriedade ou controle
+                    (por exemplo, links de agendamento como Calendly, redes sociais ou processadores de formulários como
+                    Formspree).</p>
+                <p>Não somos responsáveis pelo conteúdo ou pelas práticas de privacidade desses sites de terceiros.
+                    Recomendamos que você leia os termos e as políticas de privacidade de qualquer site de terceiro que
+                    visitar.</p>
+
+                <h4 class="text-white font-semibold text-base mt-4">6. Limitação de Responsabilidade</h4>
+                <p>Na extensão máxima permitida pela lei, a Elumina não será responsável por quaisquer danos diretos,
+                    indiretos, incidentais ou consequenciais resultantes do uso ou da incapacidade de usar nosso site ou
+                    seu conteúdo.</p>
+
+                <h4 class="text-white font-semibold text-base mt-4">7. Modificações dos Termos</h4>
+                <p>Reservamo-nos o direito de modificar estes Termos de Uso a qualquer momento. Quaisquer alterações
+                    entrarão em vigor imediatamente após a publicação no site. A data da "Última Atualização" no topo
+                    desta página será alterada.</p>
+
+                <h4 class="text-white font-semibold text-base mt-4">Dúvidas sobre os Termos?</h4>
+                <p>Se você tiver alguma dúvida sobre estes Termos de Uso, entre em contato conosco em:
+                    contato@elumina.com.br</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+
+</html>

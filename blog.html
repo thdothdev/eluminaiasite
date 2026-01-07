@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='icon' type='image/png' href='assets/favicon.png'>
+    <title>Blog | Elumina IA</title>
+    <meta name="description"
+        content="Artigos, insights e novidades sobre Inteligência Artificial, automação e tecnologia para negócios.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tailwind-config.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            background-color: #000000;
+            color: #f3f4f6;
+        }
+
+        .glass-nav {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #0052FF 0%, #00A3FF 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #0052FF 0%, #00A3FF 100%);
+        }
+
+        /* Neon Glow Effect */
+        .neon-glow {
+            box-shadow: 0 0 10px rgba(0, 82, 255, 0.3), 0 0 20px rgba(0, 163, 255, 0.1);
+        }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-primary selection:text-white">
+
+    <!-- Header -->
+    <header class="fixed w-full top-0 z-50 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-2 cursor-pointer group">
+                    <img src="assets/logo.png" alt="Elumina IA Logo" class="h-12 w-auto object-contain">
+                </a>
+
+                <!-- Desktop Menu -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="index.html#solucoes"
+                        class="text-sm font-medium text-gray-300 hover:text-white transition-colors relative group">
+                        Soluções
+                        <span
+                            class="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="index.html#verticais"
+                        class="text-sm font-medium text-gray-300 hover:text-white transition-colors relative group">
+                        Verticais
+                        <span
+                            class="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="blog.html" class="text-sm font-medium text-white transition-colors relative group">
+                        Blog
+                        <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-primary transition-all"></span>
+                    </a>
+                </nav>
+
+                <!-- CTA -->
+                <div class="flex items-center gap-4">
+                    <a href="https://wa.me/555391597287" target="_blank"
+                        class="hidden md:inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white text-black font-semibold text-sm hover:bg-gray-200 transition-all neon-glow">
+                        <span>Falar com Especialista</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                    <!-- Mobile Toggle -->
+                    <button id="mobile-menu-btn" class="md:hidden text-gray-300 hover:text-white focus:outline-none">
+                        <i data-lucide="menu" class="w-7 h-7"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-[#000000] border-b border-white/5 absolute w-full">
+            <div class="px-4 pt-4 pb-6 space-y-2">
+                <a href="index.html#solucoes"
+                    class="block px-3 py-3 rounded-lg text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Soluções</a>
+                <a href="index.html#verticais"
+                    class="block px-3 py-3 rounded-lg text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Verticais</a>
+                <a href="blog.html"
+                    class="block px-3 py-3 rounded-lg text-base font-medium text-white bg-white/5">Blog</a>
+                <div class="pt-4 mt-4 border-t border-white/5">
+                    <a href="https://wa.me/555391597287"
+                        class="block w-full text-center px-6 py-3 rounded-lg gradient-bg text-white font-bold hover:brightness-110 transition-all">
+                        Falar com Especialista
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-32 pb-20 lg:pt-40">
+        <!-- Hero Section for Blog -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center">
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-primary text-xs font-semibold tracking-wider uppercase mb-8">
+                <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                Conteúdo Exclusivo
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold font-heading text-white tracking-tight mb-6">
+                Blog & <span class="gradient-text">Insights</span>
+            </h1>
+            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto">
+                Explore artigos sobre o futuro da automação, tecnologia e inteligência artificial para negócios.
+            </p>
+        </section>
+
+        <!-- Blog Grid -->
+        <section id="all-blog-grid" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                <!-- Posts injected by script.js -->
+                <div class="col-span-full text-center py-20 text-gray-500">Carregando artigos...</div>
+            </div>
+        </section>
+
+        <!-- CTA Footer -->
+        <section
+            class="mt-20 py-20 relative overflow-hidden bg-gradient-to-t from-[#001040] to-black border-t border-white/5">
+            <div class="absolute inset-0 bg-[url('assets/grid-pattern.svg')] opacity-10"></div>
+            <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+                <h2 class="text-3xl font-bold text-white mb-6">Quer implementar essas soluções?</h2>
+                <a href="https://wa.me/555391597287" target="_blank"
+                    class="inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-black text-lg font-bold rounded-full hover:scale-105 transition-transform shadow-[0_0_40px_rgba(255,255,255,0.3)]">
+                    <i data-lucide="message-circle" class="w-6 h-6"></i>
+                    Agendar Diagnóstico Gratuito
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#000000] border-t border-white/5 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
+                <div class="flex items-center gap-2">
+                    <img src="assets/logo.png" alt="Elumina IA" class="h-12 w-auto object-contain">
+                </div>
+
+                <div class="flex gap-6 items-center">
+                    <a href="https://www.instagram.com/eluminaia/" target="_blank"
+                        class="text-gray-500 hover:text-white transition-colors" title="Instagram">
+                        <i data-lucide="instagram" class="w-6 h-6"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/company/elumina-ia/" target="_blank"
+                        class="text-gray-500 hover:text-white transition-colors" title="LinkedIn">
+                        <i data-lucide="linkedin" class="w-6 h-6"></i>
+                    </a>
+                    <a href="https://wa.me/555391597287" target="_blank"
+                        class="text-gray-500 hover:text-white transition-colors" title="WhatsApp">
+                        <i data-lucide="phone" class="w-6 h-6"></i>
+                    </a>
+                    <a href="mailto:contato@eluminaia.com"
+                        class="text-gray-500 hover:text-primary transition-colors flex items-center gap-2 group"
+                        title="E-mail">
+                        <i data-lucide="mail" class="w-6 h-6 group-hover:text-primary transition-colors"></i>
+                        <span class="hidden md:inline text-sm font-medium">contato@eluminaia.com</span>
+                    </a>
+                </div>
+            </div>
+
+            <div
+                class="border-t border-white/5 pt-8 text-center md:text-left flex flex-col md:flex-row justify-between text-sm text-gray-600">
+                <p>&copy; 2026 Elumina IA. Todos os direitos reservados.</p>
+                <div class="flex gap-6 mt-4 md:mt-0 justify-center">
+                    <a href="#" class="hover:text-gray-400">Privacidade</a>
+                    <a href="#" class="hover:text-gray-400">Termos</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
