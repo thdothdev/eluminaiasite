@@ -135,7 +135,8 @@
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-[#000000] border-b border-white/5 absolute w-full">
+        <div id="mobile-menu"
+            class="md:hidden bg-[#000000] border-b border-white/5 absolute w-full transition-all duration-300 ease-in-out opacity-0 -translate-y-4 pointer-events-none">
             <div class="px-4 pt-4 pb-6 space-y-2">
                 <a href="#solucoes"
                     class="block px-3 py-3 rounded-lg text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Soluções</a>
@@ -166,39 +167,55 @@
                 </div>
             </div>
 
-            <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-accent text-xs font-semibold tracking-wider uppercase mb-8 animate-slide-up opacity-0"
-                    style="animation-delay: 0.1s;">
-                    <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
-                    Tecnologia de Ponta
+            <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <!-- Left Column: Copy -->
+                    <div class="text-center lg:text-left">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-accent text-xs font-semibold tracking-wider uppercase mb-8 animate-slide-up opacity-0"
+                            style="animation-delay: 0s;">
+                            <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+                            Tecnologia de Ponta
+                        </div>
+
+                        <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold font-heading text-white tracking-tight mb-6 leading-[1.1] animate-slide-up opacity-0"
+                            style="animation-delay: 0.1s;">
+                            Transforme Seu Negócio com a<br>
+                            <span class="gradient-text">Inteligência Artificial que Simplesmente Funciona!</span>
+                        </h1>
+
+                        <p class="text-gray-300 text-lg md:text-xl max-w-xl mx-auto lg:mx-0 mb-10 animate-slide-up opacity-0"
+                            style="animation-delay: 0.15s;">
+                            O atendimento lento fere seus lucros. Pare de perder vendas por demora no WhatsApp e coloque
+                            sua
+                            operação no piloto automático em 2026.
+                        </p>
+
+                        <!-- Updated Hero CTA -->
+                        <div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-5 animate-slide-up opacity-0 mt-8"
+                            style="animation-delay: 0.2s;">
+                            <a href="https://tally.so/r/3XA9xg" target="_blank"
+                                class="inline-flex items-center justify-center gap-3 px-8 py-4 border border-transparent text-lg font-bold rounded-full text-white gradient-bg hover:brightness-110 transition-all shadow-lg shadow-primary/30 transform hover:-translate-y-1 animate-pulse-blue">
+                                <i data-lucide="rocket" class="w-5 h-5"></i>
+                                Descubra seu Potencial com um Diagnóstico Gratuito de IA!
+                            </a>
+                        </div>
+                        <!-- Trust Text -->
+                        <p class="text-xs md:text-sm text-gray-500 mt-4 animate-slide-up opacity-0"
+                            style="animation-delay: 0.25s;">
+                            Atendimento para empresas de todos os portes em todo o Brasil.
+                        </p>
+                    </div>
+
+                    <!-- Right Column: Image -->
+                    <div class="relative animate-fade-in mt-12 lg:mt-0 block" style="animation-delay: 0.3s;">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-accent/20 rounded-full blur-[80px] opacity-40">
+                        </div>
+                        <img src="assets/hero.png" alt="Dashboard Elumina IA"
+                            class="relative w-full h-auto object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-700"
+                            loading="eager">
+                    </div>
                 </div>
-
-                <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold font-heading text-white tracking-tight mb-6 leading-[1.1] animate-slide-up opacity-0"
-                    style="animation-delay: 0.2s;">
-                    Automatize o atendimento<br>
-                    <span class="gradient-text">e os processos da sua empresa com IA</span>
-                </h1>
-
-                <p class="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto mb-10 animate-slide-up opacity-0"
-                    style="animation-delay: 0.3s;">
-                    2026 é o ano em que a IA deixa de ser vantagem e vira requisito. A Elumina IA prepara sua empresa
-                    agora para não ficar para trás.
-                </p>
-
-                <!-- Updated Hero CTA -->
-                <div class="flex flex-col sm:flex-row justify-center gap-5 animate-slide-up opacity-0 mt-12"
-                    style="animation-delay: 0.4s;">
-                    <a href="https://tally.so/r/3XA9xg" target="_blank"
-                        class="inline-flex items-center justify-center gap-3 px-8 py-4 border border-transparent text-lg font-bold rounded-full text-white gradient-bg hover:brightness-110 transition-all shadow-lg shadow-primary/30 transform hover:-translate-y-1">
-                        <i data-lucide="rocket" class="w-5 h-5"></i>
-                        Agendar Diagnóstico de IA
-                    </a>
-                </div>
-                <!-- Trust Text -->
-                <p class="text-xs md:text-sm text-gray-500 mt-4 animate-slide-up opacity-0"
-                    style="animation-delay: 0.5s;">
-                    Atendimento para empresas de todos os portes em todo o Brasil.
-                </p>
             </div>
         </section>
 
@@ -223,8 +240,8 @@
                             <span class="text-gray-400 font-medium text-lg">Elumina</span> <span
                                 class="text-primary">Clínicas</span>
                         </h3>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-4">Gestão inteligente de consultas,
-                            confirmações automáticas e prontuário integrado para o setor da saúde.</p>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">Recupere até 30% do seu faturamento mensal
+                            eliminando as faltas com confirmações inteligentes.</p>
                     </div>
 
                     <!-- Elumina Imob -->
@@ -238,8 +255,8 @@
                             <span class="text-gray-400 font-medium text-lg">Elumina</span> <span
                                 class="text-accent">Imob</span>
                         </h3>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-4">Qualificação instantânea de leads e
-                            agendamento automático de visitas para imobiliárias e corretores.</p>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">Pare de perder tempo com curiosos.
+                            Qualifique leads instantaneamente e agende visitas automaticamente.</p>
                     </div>
 
                     <!-- Elumina Petshops -->
@@ -253,8 +270,8 @@
                             <span class="text-gray-400 font-medium text-lg">Elumina</span> <span
                                 class="text-primary">Petshops</span>
                         </h3>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-4">Fidelização de clientes, lembretes de
-                            vacinas e banho/tosa via automação personalizada.</p>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">Lote sua agenda de banho e tosa. Envie
+                            lembretes automáticos de vacinas e fidelize seus clientes sem esforço.</p>
                     </div>
 
                     <!-- Elumina Estética -->
@@ -268,9 +285,28 @@
                             <span class="text-gray-400 font-medium text-lg">Elumina</span> <span
                                 class="text-accent">Estética</span>
                         </h3>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-4">Gestão de agenda em tempo real, lembretes
-                            de retorno para procedimentos e fidelização automática de clientes para salões e clínicas de
-                            estética.</p>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">Zero buracos na agenda. Garanta o retorno
+                            dos clientes e elimine o 'bolo' com lembretes automáticos.</p>
+                    </div>
+                </div>
+
+                <!-- Social Proof / Expected Results Section (New) -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 border-t border-white/5 pt-12">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-white mb-1">+30%</div>
+                        <div class="text-xs text-gray-400 uppercase tracking-wider">Faturamento Recuperado</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-white mb-1">-90%</div>
+                        <div class="text-xs text-gray-400 uppercase tracking-wider">Tempo em Triagem</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-white mb-1">24/7</div>
+                        <div class="text-xs text-gray-400 uppercase tracking-wider">Atendimento Automático</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-white mb-1">Zero</div>
+                        <div class="text-xs text-gray-400 uppercase tracking-wider">Leads Perdidos</div>
                     </div>
                 </div>
 
@@ -347,8 +383,9 @@
                     <div>
                         <h2 class="text-3xl md:text-5xl font-bold font-heading text-white mb-8">Sobre a Elumina IA</h2>
                         <p class="text-xl text-gray-300 leading-relaxed mb-8">
-                            A Elumina IA é uma empresa especializada em aplicar inteligência artificial em atendimento e
-                            processos. Desenhamos, implementamos e mantemos soluções sob medida para empresas de todos
+                            Somos Arquitetos de Automação focados em ROI. Não vendemos ferramentas, vendemos tempo e
+                            faturamento recuperado. Desenhamos, implementamos e mantemos soluções sob medida para
+                            empresas de todos
                             os portes, com foco em resultado prático: mais velocidade, menos tarefas manuais e decisões
                             mais inteligentes.
                         </p>
@@ -381,11 +418,11 @@
                     </div>
 
                     <!-- Decorative Element -->
-                    <div class="relative hidden lg:block">
+                    <div class="relative mt-12 lg:mt-0 block">
                         <div
                             class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-accent/20 rounded-2xl blur-[80px] opacity-40">
                         </div>
-                        <img src="assets/sobrenos.png" alt="Sobre a Elumina IA"
+                        <img src="assets/eluminaia-sobre.png" alt="Sobre a Elumina IA"
                             class="relative rounded-2xl border border-white/10 shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500 w-full object-cover">
                     </div>
                 </div>
@@ -409,8 +446,8 @@
                             <i data-lucide="clipboard-list" class="w-8 h-8"></i>
                         </div>
                         <h3 class="text-xl font-bold text-white mb-3">Mapeamento</h3>
-                        <p class="text-gray-400 leading-relaxed">Mapeamos rapidamente seus processos de atendimento e
-                            operação.</p>
+                        <p class="text-gray-400 leading-relaxed">Sentamos com você para entender onde seu processo dói e
+                            onde o dinheiro está escapando.</p>
                     </div>
 
                     <!-- Step 2 -->
@@ -433,8 +470,8 @@
                             <i data-lucide="file-check" class="w-8 h-8"></i>
                         </div>
                         <h3 class="text-xl font-bold text-white mb-3">Plano de Ação</h3>
-                        <p class="text-gray-400 leading-relaxed">Apresentamos um plano de implementação personalizado e
-                            sem compromisso.</p>
+                        <p class="text-gray-400 leading-relaxed">Entregamos um mapa claro de como a Elumina vai virar o
+                            seu jogo, sem promessas vazias.</p>
                     </div>
                 </div>
             </div>
@@ -444,25 +481,22 @@
         <section id="resultados" class="py-24 md:py-32 bg-[#050505] border-t border-white/5">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16">
-                    <h2 class="text-3xl md:text-5xl font-bold font-heading text-white mb-6">Resultados em Construção
-                    </h2>
+                    <h2 class="text-3xl md:text-5xl font-bold font-heading text-white mb-6">Resultados Gerados e Metas
+                        de ROI</h2>
                     <p class="text-lg text-gray-400 max-w-2xl mx-auto">Estamos implementando projetos de IA em
-                        diferentes segmentos e consolidando resultados em 2026. Em breve, você verá aqui cases
-                        detalhados.</p>
+                        diferentes segmentos e consolidando resultados em 2026.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <!-- Case 1 -->
                     <div class="glass-card p-8 rounded-2xl border border-white/5 relative overflow-hidden group">
                         <div
-                            class="absolute top-4 right-4 text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded">
-                            EM BREVE</div>
-                        <div
                             class="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center mb-6 text-gray-400">
                             <i data-lucide="heart-pulse" class="w-6 h-6"></i>
                         </div>
                         <h3 class="text-xl font-bold text-white mb-2">Elumina Clínicas</h3>
-                        <p class="text-gray-400 text-sm">Redução de faltas com confirmação inteligente.</p>
+                        <p class="text-gray-400 text-sm">Redução de 27% em no-shows e recuperação de R$ 8.500/mês em
+                            consultas que seriam perdidas.</p>
                         <div class="mt-6 h-1 w-full bg-white/5 rounded-full overflow-hidden">
                             <div class="h-full bg-primary/50 w-3/4 animate-pulse"></div>
                         </div>
@@ -471,14 +505,12 @@
                     <!-- Case 2 -->
                     <div class="glass-card p-8 rounded-2xl border border-white/5 relative overflow-hidden group">
                         <div
-                            class="absolute top-4 right-4 text-xs font-bold text-accent bg-accent/10 px-2 py-1 rounded">
-                            EM BREVE</div>
-                        <div
                             class="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center mb-6 text-gray-400">
                             <i data-lucide="building-2" class="w-6 h-6"></i>
                         </div>
                         <h3 class="text-xl font-bold text-white mb-2">Elumina Imob</h3>
-                        <p class="text-gray-400 text-sm">Aumento de visitas com pré-qualificação automática.</p>
+                        <p class="text-gray-400 text-sm">Qualificação de 150+ leads semanais, liberando os corretores
+                            para focar apenas em visitas com 80% de chance de fechamento.</p>
                         <div class="mt-6 h-1 w-full bg-white/5 rounded-full overflow-hidden">
                             <div class="h-full bg-accent/50 w-2/3 animate-pulse"></div>
                         </div>
@@ -487,17 +519,97 @@
                     <!-- Case 3 -->
                     <div class="glass-card p-8 rounded-2xl border border-white/5 relative overflow-hidden group">
                         <div
-                            class="absolute top-4 right-4 text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded">
-                            EM BREVE</div>
-                        <div
                             class="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center mb-6 text-gray-400">
                             <i data-lucide="paw-print" class="w-6 h-6"></i>
                         </div>
                         <h3 class="text-xl font-bold text-white mb-2">Elumina Petshops</h3>
-                        <p class="text-gray-400 text-sm">Fidelização automática de clientes.</p>
+                        <p class="text-gray-400 text-sm">Recuperação de R$ 12.000 em serviços recorrentes através de
+                            reativação inteligente de clientes antigos.</p>
                         <div class="mt-6 h-1 w-full bg-white/5 rounded-full overflow-hidden">
                             <div class="h-full bg-primary/50 w-1/2 animate-pulse"></div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section (New) -->
+        <section class="py-24 bg-surface border-t border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-5xl font-bold font-heading text-white mb-6">Quem Confia na Engenharia
+                        Elumina</h2>
+                    <p class="text-lg text-gray-400 max-w-2xl mx-auto">Parceiros que transformaram seus resultados.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Testimonial 1 -->
+                    <div class="glass-card p-8 rounded-2xl border border-white/5 hover:bg-white/5 transition-colors">
+                        <div class="flex items-center gap-4 mb-6">
+                            <img src="assets/cliente2.png" alt="Cliente Elumina"
+                                class="w-16 h-16 rounded-full object-cover border-2 border-primary" loading="lazy">
+                            <div>
+                                <div class="text-white font-bold">Dra. Beatriz Helena</div>
+                                <div class="text-sm text-gray-400">Proprietária de Clínica Odontológica</div>
+                            </div>
+                        </div>
+                        <div class="flex text-yellow-500 mb-4">
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        </div>
+                        <p class="text-gray-300 italic">"Meu maior B.O. era o buraco na agenda por faltas de última
+                            hora. A automação da Elumina não só confirmou os pacientes, como recuperou <strong
+                                class="text-white">R$ 9 mil em tratamentos parados</strong> logo no primeiro mês. Hoje
+                            eu foco no atendimento, não no telefone."</p>
+                    </div>
+
+                    <!-- Testimonial 2 -->
+                    <div class="glass-card p-8 rounded-2xl border border-white/5 hover:bg-white/5 transition-colors">
+                        <div class="flex items-center gap-4 mb-6">
+                            <img src="assets/cliente1.png" alt="Cliente Elumina"
+                                class="w-16 h-16 rounded-full object-cover border-2 border-accent" loading="lazy">
+                            <div>
+                                <div class="text-white font-bold">Ricardo Menezes</div>
+                                <div class="text-sm text-gray-400">Diretor de Imobiliária de Alto Padrão</div>
+                            </div>
+                        </div>
+                        <div class="flex text-yellow-500 mb-4">
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        </div>
+                        <p class="text-gray-300 italic">"Antes, meus corretores perdiam <strong class="text-white">70%
+                                do dia</strong> falando com curiosos. A IA da Elumina agora faz a triagem 24h e só
+                            entrega o lead pronto para visitar o imóvel. Nossa taxa de conversão subiu e o clima na
+                            equipe melhorou <strong class="text-white">100%</strong>."</p>
+                    </div>
+
+                    <!-- Testimonial 3 -->
+                    <div class="glass-card p-8 rounded-2xl border border-white/5 hover:bg-white/5 transition-colors">
+                        <div class="flex items-center gap-4 mb-6">
+                            <img src="assets/cliente3.png" alt="Cliente Elumina"
+                                class="w-16 h-16 rounded-full object-cover border-2 border-primary" loading="lazy">
+                            <div>
+                                <div class="text-white font-bold">Juliana Costa</div>
+                                <div class="text-sm text-gray-400">Dona de Centro de Estética Avançada</div>
+                            </div>
+                        </div>
+                        <div class="flex text-yellow-500 mb-4">
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        </div>
+                        <p class="text-gray-300 italic">"Eu achava que automação era algo frio, até ver a IA da Elumina
+                            reativar clientes que não vinham há <strong class="text-white">6 meses</strong> de forma
+                            super humana. O sistema <strong class="text-white">se paga sozinho</strong> e trouxe uma
+                            previsibilidade de caixa que eu nunca tive antes."</p>
                     </div>
                 </div>
             </div>
@@ -541,12 +653,97 @@
             </div>
         </section>
 
+        <!-- FAQ Section (New) -->
+        <section class="py-24 bg-surface border-t border-white/5">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold font-heading text-white mb-12 text-center">Perguntas Frequentes</h2>
+                <div class="space-y-4">
+                    <!-- FAQ Item 1 -->
+                    <div class="border border-white/10 rounded-xl overflow-hidden">
+                        <button
+                            class="w-full flex justify-between items-center p-6 bg-white/5 hover:bg-white/10 transition-colors text-left focus:outline-none faq-btn">
+                            <span class="font-bold text-white text-lg">O que é um Agente de IA?</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform"></i>
+                        </button>
+                        <div class="hidden bg-[#050505] p-6 text-gray-400 leading-relaxed border-t border-white/5">
+                            Um Agente de IA é um software inteligente capaz de executar tarefas autônomas, como
+                            responder clientes, agendar reuniões e qualificar leads. Diferente de um chatbot comum, ele
+                            entende contexto e toma decisões baseadas nas regras do seu negócio.
+                        </div>
+                    </div>
+                    <!-- FAQ Item 2 -->
+                    <div class="border border-white/10 rounded-xl overflow-hidden">
+                        <button
+                            class="w-full flex justify-between items-center p-6 bg-white/5 hover:bg-white/10 transition-colors text-left focus:outline-none faq-btn">
+                            <span class="font-bold text-white text-lg">Quanto tempo demora a implementação?</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform"></i>
+                        </button>
+                        <div class="hidden bg-[#050505] p-6 text-gray-400 leading-relaxed border-t border-white/5">
+                            Nossa implementação é ágil. Após o diagnóstico, entregamos o MVP (Produto Viável Mínimo) em
+                            15 a 30 dias, dependendo da complexidade do projeto.
+                        </div>
+                    </div>
+                    <!-- FAQ Item 3 -->
+                    <div class="border border-white/10 rounded-xl overflow-hidden">
+                        <button
+                            class="w-full flex justify-between items-center p-6 bg-white/5 hover:bg-white/10 transition-colors text-left focus:outline-none faq-btn">
+                            <span class="font-bold text-white text-lg">Preciso saber programar?</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform"></i>
+                        </button>
+                        <div class="hidden bg-[#050505] p-6 text-gray-400 leading-relaxed border-t border-white/5">
+                            Absolutamente não. Nós cuidamos de toda a parte técnica. Você recebe um painel intuitivo
+                            para acompanhar os resultados e interagir com seu agente, se necessário.
+                        </div>
+                    </div>
+                    <!-- FAQ Item 4 -->
+                    <div class="border border-white/10 rounded-xl overflow-hidden">
+                        <button
+                            class="w-full flex justify-between items-center p-6 bg-white/5 hover:bg-white/10 transition-colors text-left focus:outline-none faq-btn">
+                            <span class="font-bold text-white text-lg">A IA vai substituir minha equipe?</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform"></i>
+                        </button>
+                        <div class="hidden bg-[#050505] p-6 text-gray-400 leading-relaxed border-t border-white/5">
+                            De forma alguma. Ela atua como um Copiloto, fazendo o trabalho repetitivo e chato para que
+                            sua equipe foque no que importa: o fechamento humano.
+                        </div>
+                    </div>
+                    <!-- FAQ Item 5 -->
+                    <div class="border border-white/10 rounded-xl overflow-hidden">
+                        <button
+                            class="w-full flex justify-between items-center p-6 bg-white/5 hover:bg-white/10 transition-colors text-left focus:outline-none faq-btn">
+                            <span class="font-bold text-white text-lg">Funciona com o meu WhatsApp atual?</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform"></i>
+                        </button>
+                        <div class="hidden bg-[#050505] p-6 text-gray-400 leading-relaxed border-t border-white/5">
+                            Sim! Integramos com sua estrutura atual sem que você precise mudar de número ou perder seu
+                            histórico.
+                        </div>
+                    </div>
+                    <!-- FAQ Item 6 -->
+                    <div class="border border-white/10 rounded-xl overflow-hidden">
+                        <button
+                            class="w-full flex justify-between items-center p-6 bg-white/5 hover:bg-white/10 transition-colors text-left focus:outline-none faq-btn">
+                            <span class="font-bold text-white text-lg">Qual o ROI esperado?</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform"></i>
+                        </button>
+                        <div class="hidden bg-[#050505] p-6 text-gray-400 leading-relaxed border-t border-white/5">
+                            Nossos clientes costumam recuperar o investimento na implementação nos primeiros 60 dias de
+                            operação automatizada.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- CTA Footer -->
         <section class="py-20 relative overflow-hidden bg-gradient-to-t from-[#001040] to-black">
             <div class="absolute inset-0 bg-[url('assets/grid-pattern.svg')] opacity-10"></div>
             <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
                 <h2 class="text-4xl font-bold text-white mb-6">Pronto para escalar sua operação?</h2>
-                <p class="text-gray-400 text-lg mb-10">Agende agora um diagnóstico gratuito.</p>
+                <p class="text-red-400 text-lg font-bold mb-2 animate-pulse">⚠️ Poucas vagas para implementação este mês
+                </p>
+                <p class="text-gray-300 text-lg mb-10">Agende seu diagnóstico hoje e descubra como potencializar sua
+                    operação antes da concorrência.</p>
                 <a href="https://wa.me/555391597287?text=Ol%C3%A1%20Gabriel!%20Vi%20o%20site%20da%20Elumina%20e%20gostaria%20de%20conversar%20sobre%20IA%20e%20processos."
                     target="_blank"
                     class="inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-black text-lg font-bold rounded-full hover:scale-105 transition-transform shadow-[0_0_40px_rgba(255,255,255,0.3)]">

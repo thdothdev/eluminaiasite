@@ -4,12 +4,14 @@ const mobileMenu = document.getElementById('mobile-menu');
 
 if (mobileMenuBtn && mobileMenu) {
     mobileMenuBtn.addEventListener('click', () => {
-        const isHidden = mobileMenu.classList.contains('hidden');
-        if (isHidden) {
-            mobileMenu.classList.remove('hidden');
+        const isClosed = mobileMenu.classList.contains('opacity-0');
+        if (isClosed) {
+            // Open
+            mobileMenu.classList.remove('opacity-0', '-translate-y-4', 'pointer-events-none');
             mobileMenuBtn.querySelector('i').setAttribute('data-lucide', 'x');
         } else {
-            mobileMenu.classList.add('hidden');
+            // Close
+            mobileMenu.classList.add('opacity-0', '-translate-y-4', 'pointer-events-none');
             mobileMenuBtn.querySelector('i').setAttribute('data-lucide', 'menu');
         }
         lucide.createIcons();
@@ -19,7 +21,7 @@ if (mobileMenuBtn && mobileMenu) {
 // Close mobile menu when clicking a link
 document.querySelectorAll('#mobile-menu a').forEach(link => {
     link.addEventListener('click', () => {
-        mobileMenu.classList.add('hidden');
+        mobileMenu.classList.add('opacity-0', '-translate-y-4', 'pointer-events-none');
         mobileMenuBtn.querySelector('i').setAttribute('data-lucide', 'menu');
         lucide.createIcons();
     });
@@ -260,6 +262,18 @@ async function initBlogPost() {
         errorMessage.classList.remove('hidden');
     }
 }
+
+// FAQ Accordion
+const faqBtns = document.querySelectorAll('.faq-btn');
+faqBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const content = btn.nextElementSibling;
+        const icon = btn.querySelector('i');
+
+        content.classList.toggle('hidden');
+        icon.classList.toggle('rotate-180');
+    });
+});
 
 // Cookie Consent Logic
 function initCookieConsent() {
