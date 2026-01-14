@@ -790,81 +790,105 @@
                 <h2 class="text-3xl font-bold font-heading text-white mb-12 text-center">Perguntas Frequentes</h2>
                 <div class="space-y-4">
                     <!-- FAQ Item 1 -->
-                    <div class="border border-white/10 rounded-xl overflow-hidden">
+                    <div class="border border-white/10 rounded-xl overflow-hidden faq-item">
                         <button
-                            class="w-full flex justify-between items-center p-6 bg-white/5 hover:bg-white/10 transition-colors text-left focus:outline-none faq-btn">
+                            class="faq-button w-full flex justify-between items-center p-6 bg-white/5 hover:bg-white/10 transition-colors text-left focus:outline-none">
                             <span class="font-bold text-white text-lg">O que é um Agente de IA?</span>
-                            <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform"></i>
+                            <i data-lucide="plus"
+                                class="faq-icon w-5 h-5 text-gray-400 transition-transform duration-300"></i>
                         </button>
-                        <div class="hidden bg-[#050505] p-6 text-gray-400 leading-relaxed border-t border-white/5">
-                            Um Agente de IA é um software inteligente capaz de executar tarefas autônomas, como
-                            responder clientes, agendar reuniões e qualificar leads. Diferente de um chatbot comum, ele
-                            entende contexto e toma decisões baseadas nas regras do seu negócio.
+                        <div class="faq-answer hidden bg-[#050505] transition-all duration-300 ease-in-out">
+                            <div class="p-6 text-gray-400 leading-relaxed border-t border-white/5">
+                                Um Agente de IA é um software inteligente capaz de executar tarefas autônomas, como
+                                responder clientes, agendar reuniões e qualificar leads. Ele oferece automação
+                                inteligente e
+                                atendimento 24/7 para o seu negócio, garantindo que nada passe despercebido.
+                            </div>
                         </div>
                     </div>
 
                     <!-- FAQ Item 2 -->
-                    <div class="border border-white/10 rounded-xl overflow-hidden">
+                    <div class="border border-white/10 rounded-xl overflow-hidden faq-item">
                         <button
-                            class="w-full flex justify-between items-center p-6 bg-white/5 hover:bg-white/10 transition-colors text-left focus:outline-none faq-btn">
+                            class="faq-button w-full flex justify-between items-center p-6 bg-white/5 hover:bg-white/10 transition-colors text-left focus:outline-none">
                             <span class="font-bold text-white text-lg">Quanto tempo demora a implementação?</span>
-                            <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform"></i>
+                            <i data-lucide="plus"
+                                class="faq-icon w-5 h-5 text-gray-400 transition-transform duration-300"></i>
                         </button>
-                        <div class="hidden bg-[#050505] p-6 text-gray-400 leading-relaxed border-t border-white/5">
-                            Nossa implementação é ágil. Após o diagnóstico, entregamos o MVP (Produto Viável Mínimo) em
-                            15 a 30 dias, dependendo da complexidade do projeto.
+                        <div class="faq-answer hidden bg-[#050505] transition-all duration-300 ease-in-out">
+                            <div class="p-6 text-gray-400 leading-relaxed border-t border-white/5">
+                                Nossa implementação é ágil. Geralmente, entregamos a solução completa no prazo de
+                                15 a 30 dias, dependendo da complexidade do projeto e das integrações necessárias.
+                            </div>
                         </div>
                     </div>
 
                     <!-- FAQ Item 3 -->
-                    <div class="border border-white/10 rounded-xl overflow-hidden">
+                    <div class="border border-white/10 rounded-xl overflow-hidden faq-item">
                         <button
-                            class="w-full flex justify-between items-center p-6 bg-white/5 hover:bg-white/10 transition-colors text-left focus:outline-none faq-btn">
+                            class="faq-button w-full flex justify-between items-center p-6 bg-white/5 hover:bg-white/10 transition-colors text-left focus:outline-none">
                             <span class="font-bold text-white text-lg">Preciso saber programar?</span>
-                            <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform"></i>
+                            <i data-lucide="plus"
+                                class="faq-icon w-5 h-5 text-gray-400 transition-transform duration-300"></i>
                         </button>
-                        <div class="hidden bg-[#050505] p-6 text-gray-400 leading-relaxed border-t border-white/5">
-                            Absolutamente não. Nós cuidamos de toda a parte técnica. Você recebe um painel intuitivo
-                            para acompanhar os resultados e interagir com seu agente, se necessário.
+                        <div class="faq-answer hidden bg-[#050505] transition-all duration-300 ease-in-out">
+                            <div class="p-6 text-gray-400 leading-relaxed border-t border-white/5">
+                                Não. A Elumina entrega tudo pronto e configurado para o cliente (no-code). Você não
+                                precisa ter
+                                nenhum conhecimento técnico para operar as nossas automações.
+                            </div>
                         </div>
                     </div>
 
                     <!-- FAQ Item 4 -->
-                    <div class="border border-white/10 rounded-xl overflow-hidden">
+                    <div class="border border-white/10 rounded-xl overflow-hidden faq-item">
                         <button
-                            class="w-full flex justify-between items-center p-6 bg-white/5 hover:bg-white/10 transition-colors text-left focus:outline-none faq-btn">
+                            class="faq-button w-full flex justify-between items-center p-6 bg-white/5 hover:bg-white/10 transition-colors text-left focus:outline-none">
                             <span class="font-bold text-white text-lg">A IA vai substituir minha equipe?</span>
-                            <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform"></i>
+                            <i data-lucide="plus"
+                                class="faq-icon w-5 h-5 text-gray-400 transition-transform duration-300"></i>
                         </button>
-                        <div class="hidden bg-[#050505] p-6 text-gray-400 leading-relaxed border-t border-white/5">
-                            De forma alguma. Ela atua como um Copiloto, fazendo o trabalho repetitivo e chato para que
-                            sua equipe foque no que importa: o fechamento humano.
+                        <div class="faq-answer hidden bg-[#050505] transition-all duration-300 ease-in-out">
+                            <div class="p-6 text-gray-400 leading-relaxed border-t border-white/5">
+                                Não, o objetivo é criar uma sinergia entre humano + IA. A IA cuida do trabalho
+                                repetitivo e de baixa
+                                qualidade, liberando sua equipe para focar em estratégias e fechamentos que exigem o
+                                toque humano.
+                            </div>
                         </div>
                     </div>
 
                     <!-- FAQ Item 5 -->
-                    <div class="border border-white/10 rounded-xl overflow-hidden">
+                    <div class="border border-white/10 rounded-xl overflow-hidden faq-item">
                         <button
-                            class="w-full flex justify-between items-center p-6 bg-white/5 hover:bg-white/10 transition-colors text-left focus:outline-none faq-btn">
+                            class="faq-button w-full flex justify-between items-center p-6 bg-white/5 hover:bg-white/10 transition-colors text-left focus:outline-none">
                             <span class="font-bold text-white text-lg">Funciona com o meu WhatsApp atual?</span>
-                            <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform"></i>
+                            <i data-lucide="plus"
+                                class="faq-icon w-5 h-5 text-gray-400 transition-transform duration-300"></i>
                         </button>
-                        <div class="hidden bg-[#050505] p-6 text-gray-400 leading-relaxed border-t border-white/5">
-                            Sim! Integramos com sua estrutura atual sem que você precise mudar de número ou perder seu
-                            histórico.
+                        <div class="faq-answer hidden bg-[#050505] transition-all duration-300 ease-in-out">
+                            <div class="p-6 text-gray-400 leading-relaxed border-t border-white/5">
+                                Sim. Realizamos a integração oficial via API diretamente no seu WhatsApp atual,
+                                permitindo que o
+                                agente atenda seus clientes sem que você precise mudar de número.
+                            </div>
                         </div>
                     </div>
 
                     <!-- FAQ Item 6 -->
-                    <div class="border border-white/10 rounded-xl overflow-hidden">
+                    <div class="border border-white/10 rounded-xl overflow-hidden faq-item">
                         <button
-                            class="w-full flex justify-between items-center p-6 bg-white/5 hover:bg-white/10 transition-colors text-left focus:outline-none faq-btn">
+                            class="faq-button w-full flex justify-between items-center p-6 bg-white/5 hover:bg-white/10 transition-colors text-left focus:outline-none">
                             <span class="font-bold text-white text-lg">Qual o ROI esperado?</span>
-                            <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform"></i>
+                            <i data-lucide="plus"
+                                class="faq-icon w-5 h-5 text-gray-400 transition-transform duration-300"></i>
                         </button>
-                        <div class="hidden bg-[#050505] p-6 text-gray-400 leading-relaxed border-t border-white/5">
-                            Nossos clientes costumam recuperar o investimento na implementação nos primeiros 60 dias de
-                            operação automatizada.
+                        <div class="faq-answer hidden bg-[#050505] transition-all duration-300 ease-in-out">
+                            <div class="p-6 text-gray-400 leading-relaxed border-t border-white/5">
+                                O ROI é imediato em termos de faturamento recuperado de leads que antes eram perdidos e
+                                na
+                                redução drástica de custos operacionais e tempo da equipe.
+                            </div>
                         </div>
                     </div>
                 </div>

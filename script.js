@@ -263,15 +263,39 @@ async function initBlogPost() {
     }
 }
 
-// FAQ Accordion
-const faqBtns = document.querySelectorAll('.faq-btn');
-faqBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        const content = btn.nextElementSibling;
-        const icon = btn.querySelector('i');
+// FAQ Accordion - Simple and Robust
+document.addEventListener('DOMContentLoaded', () => {
+    const faqButtons = document.querySelectorAll('.faq-button');
 
-        content.classList.toggle('hidden');
-        icon.classList.toggle('rotate-180');
+    faqButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Get the answer element (next sibling after the button)
+            const answer = button.nextElementSibling;
+            const icon = button.querySelector('.faq-icon');
+            const isCurrentlyOpen = !answer.classList.contains('hidden');
+
+            // Close all other FAQ items
+            faqButtons.forEach(otherButton => {
+                if (otherButton !== button) {
+                    const otherAnswer = otherButton.nextElementSibling;
+                    const otherIcon = otherButton.querySelector('.faq-icon');
+
+                    // Close the answer
+                    otherAnswer.classList.add('hidden');
+                    // Reset icon rotation
+                    otherIcon.classList.remove('rotate-45');
+                }
+            });
+
+            // Toggle current item
+            if (isCurrentlyOpen) {
+                answer.classList.add('hidden');
+                icon.classList.remove('rotate-45');
+            } else {
+                answer.classList.remove('hidden');
+                icon.classList.add('rotate-45');
+            }
+        });
     });
 });
 
