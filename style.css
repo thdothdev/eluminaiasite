@@ -17,11 +17,13 @@
     background-color: #475569;
 }
 
-/* Glassmorphism helpers if tailwind backdrop classes aren't enough (they usually are) */
-.glass {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+/* Transformando o Header em Sólido para proteger a Logo */
+.glass-nav {
+    background-color: #0a0a0b !important; /* A cor exata que você achou no scrollbar */
+    backdrop-filter: none !important;    /* Remove o efeito de vidro que mostra o erro */
+    -webkit-backdrop-filter: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Linha sutil para separar do conteúdo */
+    transition: background-color 0.3s ease;
 }
 
 /* Modal Custom Scrollbar */
@@ -66,4 +68,5 @@
 
 .animate-pulse-interval {
     animation: bounce-interval 5s infinite;
+
 }
