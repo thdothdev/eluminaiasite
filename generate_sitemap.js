@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const baseUrl = 'https://eluminaia.com';
-const postsPath = path.join(__dirname, 'data', 'blog-posts.json');
+const postsPath = path.join(__dirname, 'data', 'editorial-posts.json');
 const sitemapPath = path.join(__dirname, 'sitemap.xml');
 
 // Static pages
@@ -20,7 +20,7 @@ function generateSitemap() {
         const data = fs.readFileSync(postsPath, 'utf8');
         posts = JSON.parse(data);
     } catch (err) {
-        console.error('Error reading blog-posts.json:', err);
+        console.error('Error reading editorial-posts.json:', err);
         return;
     }
 

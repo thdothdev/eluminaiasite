@@ -4,16 +4,14 @@ const mobileMenu = document.getElementById('mobile-menu');
 
 if (mobileMenuBtn && mobileMenu) {
     mobileMenuBtn.addEventListener('click', () => {
-        const isClosed = mobileMenu.classList.contains('opacity-0');
-        if (isClosed) {
-            // Open
-            mobileMenu.classList.remove('opacity-0', '-translate-y-4', 'pointer-events-none');
-            mobileMenuBtn.querySelector('i').setAttribute('data-lucide', 'x');
-        } else {
-            // Close
-            mobileMenu.classList.add('opacity-0', '-translate-y-4', 'pointer-events-none');
-            mobileMenuBtn.querySelector('i').setAttribute('data-lucide', 'menu');
-        }
+        const isClosed = mobileMenu.classList.contains('opacity-0') || mobileMenu.classList.contains('hidden');
+        mobileMenu.classList.remove('hidden');
+        mobileMenu.classList.toggle('opacity-0', !isClosed);
+        mobileMenu.classList.toggle('-translate-y-4', !isClosed);
+        mobileMenu.classList.toggle('pointer-events-none', !isClosed);
+        mobileMenuBtn.setAttribute('aria-expanded', String(isClosed));
+        mobileMenuBtn.setAttribute('aria-label', isClosed ? 'Fechar menu' : 'Abrir menu');
+        mobileMenuBtn.innerHTML = `<i data-lucide="${isClosed ? 'x' : 'menu'}" class="w-7 h-7"></i>`;
         lucide.createIcons();
     });
 }
@@ -22,20 +20,74 @@ if (mobileMenuBtn && mobileMenu) {
 document.querySelectorAll('#mobile-menu a').forEach(link => {
     link.addEventListener('click', () => {
         mobileMenu.classList.add('opacity-0', '-translate-y-4', 'pointer-events-none');
-        mobileMenuBtn.querySelector('i').setAttribute('data-lucide', 'menu');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        mobileMenuBtn.setAttribute('aria-label', 'Abrir menu');
+        mobileMenuBtn.innerHTML = '<i data-lucide="menu" class="w-7 h-7"></i>';
         lucide.createIcons();
     });
 });
 
+// ── Fundo do hero: shader "Silk" ─────────────────────────────────────────
+// Guardado em window para dar para inspecionar o desenho pelo console.
+(() => {
+    if (typeof iniciarHeroSilk !== 'function') return;
+    window.heroSilk = iniciarHeroSilk('.hero-premium');
+})();
+
+// Pill navbar: permanece disponível em toda a home e fica mais compacta depois
+// da hero. Assim o visitante mantém acesso às seções e ao contato sem perder
+// espaço útil durante a leitura da página.
+const navPillWrap = document.querySelector('.nav-pill-wrap');
+const navPillHero = document.querySelector('.hero-premium');
+if (navPillWrap && navPillHero) {
+    const syncPill = () => {
+        const compactAfter = Math.max(80, navPillHero.offsetHeight - 100);
+        navPillWrap.classList.toggle('nav-pill-compact', window.scrollY > compactAfter);
+    };
+    syncPill();
+    window.addEventListener('scroll', syncPill, { passive: true });
+    window.addEventListener('resize', syncPill, { passive: true });
+}
+
+// Hero: efeito de rotação na palavra de destaque ("avançar." → "evoluir." → "decolar.").
+const heroRotate = document.querySelector('.hero-rotate');
+if (heroRotate) {
+    const rotateWords = [...heroRotate.querySelectorAll('.hero-rotate-word')];
+    let rotateIndex = 0;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (rotateWords.length > 1 && !reduceMotion) {
+        setInterval(() => {
+            rotateWords[rotateIndex].classList.remove('is-active');
+            rotateIndex = (rotateIndex + 1) % rotateWords.length;
+            rotateWords[rotateIndex].classList.add('is-active');
+        }, 2600);
+    }
+}
+
 // Modal Logic
+let activeModal = null;
+let modalReturnFocus = null;
+
+function getModalFocusable(modal) {
+    return [...modal.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')]
+        .filter(element => !element.hasAttribute('hidden'));
+}
+
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
+        modalReturnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        activeModal = modal;
         modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.setAttribute('aria-hidden', 'false');
         const child = modal.firstElementChild;
         child.classList.remove('scale-95');
         child.classList.add('scale-100');
         document.body.style.overflow = 'hidden';
+        requestAnimationFrame(() => {
+            const [firstFocusable] = getModalFocusable(modal);
+            (firstFocusable || modal).focus();
+        });
     }
 }
 
@@ -43,10 +95,17 @@ function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.add('opacity-0', 'pointer-events-none');
+        modal.setAttribute('aria-hidden', 'true');
         const child = modal.firstElementChild;
         child.classList.remove('scale-100');
         child.classList.add('scale-95');
         document.body.style.overflow = '';
+        if (activeModal === modal) {
+            activeModal = null;
+            const returnFocus = modalReturnFocus;
+            modalReturnFocus = null;
+            requestAnimationFrame(() => returnFocus?.focus());
+        }
     }
 }
 
@@ -57,19 +116,35 @@ window.onclick = function (event) {
 }
 
 document.addEventListener('keydown', function (event) {
-    if (event.key === 'Escape') {
-        document.querySelectorAll('[id^="modal-"]').forEach(modal => {
-            if (!modal.classList.contains('opacity-0')) {
-                closeModal(modal.id);
-            }
-        });
+    if (event.key === 'Escape' && activeModal) {
+        closeModal(activeModal.id);
+        return;
+    }
+
+    if (event.key === 'Tab' && activeModal) {
+        const focusable = getModalFocusable(activeModal);
+        if (!focusable.length) {
+            event.preventDefault();
+            activeModal.focus();
+            return;
+        }
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
     }
 });
 
 // --- BLOG SYSTEM LOGIC ---
 
 // Fallback data in case fetch fails (common in local environments/CORS)
-const FALLBACK_POSTS = [
+const LEGACY_FALLBACK_POSTS = [
     {
         "id": 4,
         "title": "Elumina Clínicas: IA em Diagnósticos e Busca de CIDs",
@@ -112,11 +187,41 @@ const FALLBACK_POSTS = [
     }
 ];
 
+const FALLBACK_POSTS = [
+    {
+        id: 206,
+        title: "Antes da IA: como mapear um processo que realmente merece automação",
+        slug: "mapear-processo-antes-da-ia",
+        date: "2026-07-30",
+        icon: "scan-line",
+        summary: "Um roteiro prático para separar gargalo, exceção e regra de negócio antes de escolher qualquer tecnologia.",
+        content: "<p>Automação começa com observação. Antes de escolher uma ferramenta, é preciso entender o que dispara o processo, quem decide, quais informações circulam e onde surgem as exceções.</p><h2>Comece pelo evento</h2><p>Todo fluxo tem um ponto de partida: uma mensagem, uma solicitação, uma mudança de status ou uma tarefa recorrente.</p><h2>Desenhe decisões e exceções</h2><p>Liste o que acontece quando faltam dados, quando uma regra não é atendida ou quando a decisão precisa continuar com uma pessoa.</p>"
+    },
+    {
+        id: 205,
+        title: "Agente, automação ou sistema sob medida: o que cada problema pede",
+        slug: "agente-automacao-ou-sistema",
+        date: "2026-07-24",
+        icon: "git-branch",
+        summary: "Três caminhos diferentes — e os sinais que ajudam a escolher a arquitetura adequada para cada operação.",
+        content: "<p>Agentes de IA, automações e software sob medida resolvem tipos diferentes de problema. A escolha depende do grau de interpretação, da previsibilidade das regras e da interface necessária para a equipe.</p>"
+    },
+    {
+        id: 204,
+        title: "O que torna uma automação observável",
+        slug: "automacao-observavel",
+        date: "2026-07-17",
+        icon: "radar",
+        summary: "Fluxo, exceções e evolução: os elementos que permitem acompanhar um sistema depois que ele entra em operação.",
+        content: "<p>Colocar um fluxo em produção não encerra o trabalho. Uma automação precisa mostrar o que aconteceu, onde parou e quando uma pessoa deve assumir.</p>"
+    }
+];
+
 // Helper: Fetch posts with fallback
 async function getBlogPosts() {
     try {
         // Add timestamp to force fresh fetch
-        const response = await fetch(`./data/blog-posts.json?v=${new Date().getTime()}`);
+        const response = await fetch(`./data/editorial-posts.json?v=${new Date().getTime()}`);
         if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
         return await response.json();
     } catch (error) {
@@ -128,7 +233,8 @@ async function getBlogPosts() {
 // Helper: Format Date
 function formatDate(dateString) {
     if (!dateString) return '';
-    const date = new Date(dateString);
+    const [year, month, day] = dateString.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
     return new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' }).format(date);
 }
 
@@ -141,31 +247,27 @@ function renderBlogGrid(containerIdOrElement, posts) {
     if (!container) return;
 
     if (!posts || posts.length === 0) {
-        container.innerHTML = `<div class="col-span-full text-center py-20">
-            <i data-lucide="alert-circle" class="w-12 h-12 text-gray-600 mx-auto mb-4"></i>
-            <p class="text-gray-400 text-lg">Não foi possível carregar os artigos no momento.</p>
+        container.innerHTML = `<div class="blog-empty">
+            <i data-lucide="alert-circle"></i>
+            <p>Não foi possível carregar os artigos no momento.</p>
         </div>`;
         lucide.createIcons();
         return;
     }
 
-    container.innerHTML = posts.map(post => `
-        <article class="glass-card rounded-2xl flex flex-col items-start hover:bg-white/5 transition-colors border border-white/5 h-full group overflow-hidden">
-            <div class="w-full h-48 relative overflow-hidden bg-gray-800">
-                <img src="${post.image || 'assets/logo.png'}" alt="${post.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+    container.classList.add('reveal-group');
+    const phases = ['sinal', 'contexto', 'decisão', 'ação'];
+    container.innerHTML = posts.map((post, index) => `
+        <article class="insight-card insight-${phases[index % phases.length].normalize('NFD').replace(/[\u0300-\u036f]/g, '')} reveal">
+            <div class="insight-meta">
+                <span>${String(index + 1).padStart(2, '0')} / ${phases[index % phases.length]} · ${formatDate(post.date)}</span>
+                <i data-lucide="${post.icon || 'binary'}"></i>
             </div>
-            <div class="p-8 flex flex-col flex-grow w-full">
-                <div class="text-sm text-gray-500 mb-3 flex items-center gap-2">
-                    <i data-lucide="calendar" class="w-4 h-4"></i>
-                    ${formatDate(post.date)}
-                </div>
-                <h3 class="text-xl font-bold text-white mb-3 line-clamp-2 group-hover:text-primary transition-colors">${post.title}</h3>
-                <p class="text-gray-400 mb-6 line-clamp-3 flex-grow">${post.summary}</p>
-                <a href="blog-post.html?id=${post.id}" class="inline-flex items-center gap-2 text-primary font-semibold hover:text-white transition-colors mt-auto">
-                    Ler artigo <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </a>
-            </div>
+            <h3>${post.title}</h3>
+            <p>${post.summary}</p>
+            <a href="blog-post.html?id=${post.id}">
+                Ler análise <i data-lucide="arrow-up-right"></i>
+            </a>
         </article>
     `).join('');
 
@@ -173,6 +275,8 @@ function renderBlogGrid(containerIdOrElement, posts) {
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
     }
+
+    observeReveals(container);
 }
 
 // 1. Initial Render for Blog Systems
@@ -198,6 +302,43 @@ async function initBlogSystem() {
     }
 }
 
+// Helper: Write per-article SEO/OG/Twitter meta tags into <head>
+function updateMetaTags(post) {
+    const pageTitle = `${post.title} | Elumina IA`;
+    const url = `https://eluminaia.com/blog-post.html?slug=${post.slug}`;
+
+    document.title = pageTitle;
+    document.getElementById('meta-description')?.setAttribute('content', post.summary);
+    document.getElementById('meta-canonical')?.setAttribute('href', url);
+
+    document.getElementById('meta-og-url')?.setAttribute('content', url);
+    document.getElementById('meta-og-title')?.setAttribute('content', pageTitle);
+    document.getElementById('meta-og-description')?.setAttribute('content', post.summary);
+
+    document.getElementById('meta-twitter-url')?.setAttribute('content', url);
+    document.getElementById('meta-twitter-title')?.setAttribute('content', pageTitle);
+    document.getElementById('meta-twitter-description')?.setAttribute('content', post.summary);
+
+    const jsonLd = document.getElementById('meta-jsonld');
+    if (jsonLd) {
+        jsonLd.textContent = JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BlogPosting',
+            headline: post.title,
+            description: post.summary,
+            datePublished: post.date,
+            url: url,
+            mainEntityOfPage: url,
+            author: { '@type': 'Organization', name: 'Elumina IA' },
+            publisher: {
+                '@type': 'Organization',
+                name: 'Elumina IA',
+                logo: { '@type': 'ImageObject', url: 'https://eluminaia.com/assets/logo-marca.png' }
+            }
+        });
+    }
+}
+
 // 2. Render logic for Blog Post Page
 async function initBlogPost() {
     const articleContainer = document.getElementById('article-container');
@@ -219,33 +360,12 @@ async function initBlogPost() {
     const posts = await getBlogPosts();
     const post = posts.find(p => p.id == postId || p.slug === postSlug);
 
-    console.log("Searching for post:", { postId, postSlug });
-    console.log("Found post:", post);
-
     if (post) {
         // Populate Data
-        document.title = `${post.title} | Elumina IA`;
+        updateMetaTags(post);
         document.getElementById('post-title').innerText = post.title;
         document.getElementById('post-date').innerText = formatDate(post.date);
         document.getElementById('post-content').innerHTML = post.content;
-
-        // Update Image
-        const imageEl = document.getElementById('post-image');
-        if (imageEl && post.image) {
-            imageEl.src = post.image;
-            imageEl.alt = post.title;
-            imageEl.classList.remove('hidden');
-        }
-
-        // Update Icon (Fallback/Optional)
-        const iconEl = document.getElementById('post-icon');
-        if (iconEl) {
-            // If we have an image, maybe hide the icon or keep it as overlay? 
-            // User requested "Correção das Imagens", so image takes precedence.
-            // Let's assume the icon container might be separate or we reuse the space.
-            // For now, let's just set the icon too if it exists.
-            iconEl.setAttribute('data-lucide', post.icon || 'file-text');
-        }
 
         // Show Content
         loadingSpinner.classList.add('hidden');
@@ -263,80 +383,341 @@ async function initBlogPost() {
     }
 }
 
-// FAQ Accordion - Simple and Robust
+// FAQ Accordion
 document.addEventListener('DOMContentLoaded', () => {
     const faqButtons = document.querySelectorAll('.faq-button');
 
-    faqButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Get the answer element (next sibling after the button)
-            const answer = button.nextElementSibling;
-            const icon = button.querySelector('.faq-icon');
-            const isCurrentlyOpen = !answer.classList.contains('hidden');
+    faqButtons.forEach((button, index) => {
+        const answer = button.nextElementSibling;
+        const answerId = answer.id || `faq-answer-${index + 1}`;
+        answer.id = answerId;
+        button.setAttribute('aria-controls', answerId);
+        button.setAttribute('aria-expanded', 'false');
 
-            // Close all other FAQ items
+        button.addEventListener('click', () => {
+            const icon = button.querySelector('.faq-icon');
+            const isCurrentlyOpen = button.getAttribute('aria-expanded') === 'true';
+
             faqButtons.forEach(otherButton => {
                 if (otherButton !== button) {
                     const otherAnswer = otherButton.nextElementSibling;
                     const otherIcon = otherButton.querySelector('.faq-icon');
-
-                    // Close the answer
                     otherAnswer.classList.add('hidden');
-                    // Reset icon rotation
+                    otherButton.setAttribute('aria-expanded', 'false');
                     otherIcon.classList.remove('rotate-45');
                 }
             });
 
-            // Toggle current item
-            if (isCurrentlyOpen) {
-                answer.classList.add('hidden');
-                icon.classList.remove('rotate-45');
-            } else {
-                answer.classList.remove('hidden');
-                icon.classList.add('rotate-45');
-            }
+            answer.classList.toggle('hidden', isCurrentlyOpen);
+            button.setAttribute('aria-expanded', String(!isCurrentlyOpen));
+            icon.classList.toggle('rotate-45', !isCurrentlyOpen);
         });
     });
 });
 
 // Cookie Consent Logic
-function initCookieConsent() {
-    if (localStorage.getItem('cookieConsent') === 'true') return;
+const ANALYTICS_ID = 'G-8MKC9WE26W';
+
+function loadAnalytics() {
+    if (document.querySelector('script[data-elumina-analytics]')) return;
+
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || function () {
+        window.dataLayer.push(arguments);
+    };
+    window.gtag('js', new Date());
+    window.gtag('config', ANALYTICS_ID, { anonymize_ip: true });
+
+    const analyticsScript = document.createElement('script');
+    analyticsScript.async = true;
+    analyticsScript.src = `https://www.googletagmanager.com/gtag/js?id=${ANALYTICS_ID}`;
+    analyticsScript.dataset.eluminaAnalytics = 'true';
+    document.head.appendChild(analyticsScript);
+}
+
+function dismissCookieBanner(cookieBanner) {
+    cookieBanner.classList.add('cookie-banner-hidden');
+    setTimeout(() => cookieBanner.remove(), 500);
+}
+
+function showCookieBanner() {
+    if (document.querySelector('.cookie-banner')) return;
 
     const cookieBanner = document.createElement('div');
-    cookieBanner.className = 'fixed bottom-0 left-0 w-full bg-[#111] text-white p-4 shadow-2xl z-50 transform translate-y-full transition-transform duration-500 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-white/10';
+    cookieBanner.className = 'cookie-banner cookie-banner-hidden';
+    cookieBanner.setAttribute('role', 'region');
+    cookieBanner.setAttribute('aria-label', 'Preferências de cookies');
     cookieBanner.innerHTML = `
-        <div class="text-sm md:text-base text-gray-300 max-w-4xl">
-            Utilizamos cookies para melhorar sua experiência e analisar o tráfego conforme a LGPD. Ao continuar navegando, você concorda com nossa Política de Privacidade.
+        <div class="cookie-copy">
+            Usamos cookies de análise somente com sua autorização para entender como o site é utilizado. Você pode aceitar ou recusar sem impedir a navegação.
         </div>
-        <button id="cookie-accept-btn" class="px-6 py-2 bg-primary hover:bg-opacity-90 text-white font-semibold rounded-full transition-all hover:scale-105 shadow-[0_0_20px_rgba(0,82,255,0.3)] whitespace-nowrap">
-            Aceitar
-        </button>
+        <div class="cookie-actions">
+            <button id="cookie-reject-btn" class="cookie-reject">Recusar análise</button>
+            <button id="cookie-accept-btn" class="cookie-accept">Aceitar análise</button>
+        </div>
     `;
 
     document.body.appendChild(cookieBanner);
+    setTimeout(() => cookieBanner.classList.remove('cookie-banner-hidden'), 100);
 
-    // Trigger animation after small delay
-    setTimeout(() => {
-        cookieBanner.classList.remove('translate-y-full');
-    }, 100);
+    cookieBanner.querySelector('#cookie-reject-btn')?.addEventListener('click', () => {
+        localStorage.setItem('cookieConsent', 'rejected');
+        dismissCookieBanner(cookieBanner);
+    });
 
-    const acceptBtn = document.getElementById('cookie-accept-btn');
-    if (acceptBtn) {
-        acceptBtn.addEventListener('click', () => {
-            localStorage.setItem('cookieConsent', 'true');
-            cookieBanner.classList.add('translate-y-full');
-            setTimeout(() => {
-                cookieBanner.remove();
-            }, 500);
-        });
+    cookieBanner.querySelector('#cookie-accept-btn')?.addEventListener('click', () => {
+        localStorage.setItem('cookieConsent', 'accepted');
+        loadAnalytics();
+        dismissCookieBanner(cookieBanner);
+    });
+}
+
+function initCookieConsent() {
+    const consent = localStorage.getItem('cookieConsent');
+    if (consent === 'accepted' || consent === 'true') {
+        loadAnalytics();
+        return;
     }
+    if (consent === 'rejected') return;
+    showCookieBanner();
+}
+
+function openCookiePreferences() {
+    localStorage.removeItem('cookieConsent');
+    showCookieBanner();
+}
+
+// Scroll Reveal (fade + slide-up as elements enter the viewport)
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const revealObserver = reduceMotion ? null : new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            revealObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+function observeReveals(root = document) {
+    root.querySelectorAll('.reveal:not([data-reveal-bound])').forEach(el => {
+        el.setAttribute('data-reveal-bound', 'true');
+        if (reduceMotion) {
+            el.classList.add('is-visible');
+            return;
+        }
+        revealObserver.observe(el);
+    });
+
+    root.querySelectorAll('.reveal-group').forEach(group => {
+        const items = group.querySelectorAll(':scope > .reveal');
+        items.forEach((item, i) => {
+            // 'important' vence o `transition: ... !important` de cards como o
+            // .light-card e garante a cascata em todos os elementos do grupo.
+            item.style.setProperty('transition-delay', `${i * 90}ms`, 'important');
+        });
+    });
+}
+
+function initScrollStory() {
+    const story = document.querySelector('[data-scroll-story]');
+    if (!story) return;
+
+    const panels = [...story.querySelectorAll('[data-scroll-story-panel]')];
+    const counter = story.querySelector('[data-scroll-story-count]');
+    if (!panels.length) return;
+
+    if (reduceMotion) {
+        panels.forEach(panel => panel.classList.add('is-active'));
+        return;
+    }
+
+    let ticking = false;
+
+    const setActivePanel = () => {
+        const maxScroll = Math.max(1, story.offsetHeight - window.innerHeight);
+        const progress = Math.min(1, Math.max(0, -story.getBoundingClientRect().top / maxScroll));
+        const index = Math.min(panels.length - 1, Math.floor(progress * panels.length));
+
+        story.style.setProperty('--story-progress', progress.toFixed(4));
+        panels.forEach((panel, panelIndex) => {
+            panel.classList.toggle('is-active', panelIndex === index);
+        });
+
+        if (counter) {
+            counter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(panels.length).padStart(2, '0')}`;
+        }
+
+        ticking = false;
+    };
+
+    const requestUpdate = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(setActivePanel);
+    };
+
+    window.addEventListener('scroll', requestUpdate, { passive: true });
+    window.addEventListener('resize', requestUpdate);
+    setActivePanel();
+}
+
+// Traço do método: desenha o circuito entre os 4 passos conforme a seção sobe na tela.
+// Sem pin — o efeito acontece na passagem normal, sem segurar o visitante.
+// Silencioso por natureza: se o GSAP não carregar, a seção fica como sempre foi.
+function initMethodTrace() {
+    const secao = document.querySelector('.diagnostic-section');
+    if (!secao) return;
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const traco = secao.querySelector('.method-trace');
+    const nos = [...secao.querySelectorAll('[data-step]')];
+    const cards = [...secao.querySelectorAll('.diagnostic-grid article')];
+    if (!traco) return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    // A seção só fica presa a partir do tablet (ver o @media no style.css). No celular
+    // o percurso é a própria altura da seção passando pela tela.
+    const presa = window.matchMedia('(min-width: 768px)').matches;
+
+    const linha = gsap.timeline({
+        scrollTrigger: {
+            trigger: secao,
+            start: presa ? 'top top' : 'top 72%',
+            end: presa ? 'bottom bottom' : 'bottom 88%',
+            scrub: 0.6
+        }
+    });
+
+    // Cada passo ocupa uma fatia igual do percurso; a última sobra deixa o visitante ver
+    // o quadro completo antes da seção liberar a página.
+    const passo = 1;
+    const totalPassos = cards.length;
+
+    // O traço se desenha porque o stroke-dashoffset acompanha a rolagem, terminando
+    // junto com a revelação do último card.
+    const comprimento = traco.getTotalLength();
+    gsap.set(traco, { strokeDasharray: comprimento, strokeDashoffset: comprimento });
+    linha.to(traco, {
+        strokeDashoffset: 0,
+        duration: totalPassos * passo,
+        ease: 'none'
+    }, 0);
+
+    cards.forEach((card, i) => {
+        const quando = i * passo;
+
+        // O card entra...
+        linha.fromTo(card,
+            { opacity: 0, y: 28 },
+            { opacity: 1, y: 0, duration: passo * 0.7, ease: 'none' },
+            quando
+        );
+
+        // ...com o nó do circuito acima dele...
+        if (nos[i]) {
+            linha.fromTo(nos[i],
+                { opacity: 0, scale: 0.3, transformOrigin: 'center' },
+                { opacity: 1, scale: 1, duration: passo * 0.5, ease: 'none' },
+                quando + passo * 0.45
+            );
+        }
+
+        // ...e o ícone acendendo. Anima-se a variável do card, não o <svg>: o Lucide
+        // recria os ícones quando o blog injeta os posts, e uma referência ao elemento
+        // viraria um órfão animado fora do documento.
+        linha.fromTo(card,
+            { '--node': 0 },
+            { '--node': 1, duration: passo * 0.5, ease: 'none' },
+            quando + passo * 0.45
+        );
+    });
+
+    // Uma folga final: os quatro passos ficam visíveis juntos antes de soltar a seção.
+    linha.to({}, { duration: passo * 0.6 });
+
+    // A página só atinge a altura final depois que os ícones do Lucide e as fontes
+    // carregam — sem recalcular, o ScrollTrigger guarda as posições medidas cedo demais
+    // e o traço aparece já completo, fora de sincronia com a rolagem.
+    window.addEventListener('load', () => ScrollTrigger.refresh());
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => ScrollTrigger.refresh());
+    }
+}
+
+// Trilho das soluções — versão em JS puro do timeline do Aceternity.
+// O original usa framer-motion (useScroll + useTransform); aqui o percurso é o
+// ScrollTrigger que a home já carrega, e o desenho sai de duas variáveis CSS.
+// Os offsets do original traduzem direto: ["start 10%", "end 50%"] vira
+// start 'top 10%' / end 'bottom 50%'.
+function initTrilhaSolucoes() {
+    const pilha = document.querySelector('.solutions-stack');
+    if (!pilha) return;
+
+    const linhas = [...pilha.querySelectorAll('.solution-row')];
+    if (!linhas.length) return;
+
+    // Sem movimento: trilho cheio e pontos acesos. Some o efeito, fica o desenho —
+    // esconder o trilho deixaria os pontos órfãos, soltos ao lado dos cartões.
+    const acenderTudo = () => {
+        pilha.style.setProperty('--trilha-altura', '100%');
+        pilha.style.setProperty('--trilha-opacidade', '1');
+        linhas.forEach(l => l.classList.add('is-lit'));
+    };
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+        acenderTudo();
+        return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Distância de cada ponto até o topo da pilha, medida uma vez por refresh em
+    // vez de a cada quadro — getBoundingClientRect dentro do onUpdate força
+    // recálculo de layout na rolagem.
+    let marcos = [];
+    let alturaPilha = 0;
+    const medir = () => {
+        alturaPilha = pilha.offsetHeight;
+        const topo = pilha.getBoundingClientRect().top;
+        marcos = linhas.map(l => l.getBoundingClientRect().top - topo + 54);
+    };
+
+    ScrollTrigger.create({
+        trigger: pilha,
+        start: 'top 10%',
+        end: 'bottom 50%',
+        scrub: true,
+        onRefresh: medir,
+        onUpdate: self => {
+            const avanco = self.progress;
+            const altura = avanco * alturaPilha;
+            pilha.style.setProperty('--trilha-altura', altura + 'px');
+            // no original a opacidade sobe de 0 a 1 no primeiro décimo do percurso
+            pilha.style.setProperty('--trilha-opacidade', Math.min(1, avanco / 0.1));
+            linhas.forEach((l, i) => l.classList.toggle('is-lit', altura >= marcos[i]));
+        }
+    });
+
+    medir();
 }
 
 // Initialize everything
 document.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();
+    initMethodTrace();
+    initTrilhaSolucoes();
+    initScrollStory();
     initBlogSystem();
     initBlogPost();
     initCookieConsent();
+    observeReveals();
+
+    const requestedModal = new URLSearchParams(window.location.search).get('modal');
+    if (requestedModal === 'privacy' || requestedModal === 'terms') {
+        openModal(`modal-${requestedModal}`);
+    }
 });

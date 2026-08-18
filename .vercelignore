@@ -1,0 +1,14 @@
+# Conteúdo do blog antigo e imagens órfãs — preservados no histórico do git,
+# não fazem parte do site publicado.
+_archive/
+
+# Ferramentas locais, não são servidas.
+.impeccable/
+generate_sitemap.js
+generate_sitemap.ps1
+
+# Config órfã do tempo do Tailwind via CDN; nenhum HTML a referencia.
+tailwind-config.js
+
+# Gerador de carrossel — ferramenta interna, não faz parte do site.
+carrossel/

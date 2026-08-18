@@ -1,23 +1,27 @@
 tailwind.config = {
-    darkMode: 'class',
+    darkMode: 'media',
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Inter', 'sans-serif'],
-                heading: ['Outfit', 'sans-serif'],
+                sans: ['Manrope', 'system-ui', 'sans-serif'],
+                heading: ['Manrope', 'system-ui', 'sans-serif'],
             },
             colors: {
-                background: '#000000', // Absolute Black
-                surface: '#0a0a0a', // Slightly lighter for contrast
-                primary: '#0052FF', // Blue Start
-                secondary: '#4b5563', // Gray
-                accent: '#00A3FF', // Blue End
+                background: '#F6F8FB',
+                ink: '#111827',
+                surface: '#FFFFFF',
+                'surface-alt': '#EAF0F6',
+                primary: '#1D4ED8',
+                'primary-dark': '#173EA8',
+                secondary: '#526173',
+                accent: '#1D4ED8',
+                'text-ink': '#111827',
+                'text-inverse': '#F8FAFC',
+                muted: '#526173',
             },
             animation: {
-                'fade-in': 'fadeIn 0.8s ease-out forwards',
-                'slide-up': 'slideUp 0.8s ease-out forwards',
-                'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                'pulse-blue': 'pulseBlue 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                'fade-in': 'fadeIn 0.72s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                'slide-up': 'slideUp 0.72s cubic-bezier(0.16, 1, 0.3, 1) forwards',
             },
             keyframes: {
                 fadeIn: {
@@ -25,13 +29,9 @@ tailwind.config = {
                     '100%': { opacity: '1' },
                 },
                 slideUp: {
-                    '0%': { opacity: '0', transform: 'translateY(20px)' },
+                    '0%': { opacity: '0', transform: 'translateY(18px)' },
                     '100%': { opacity: '1', transform: 'translateY(0)' },
                 },
-                pulseBlue: {
-                    '0%, 100%': { boxShadow: '0 0 0 2px #0052FF, 0 0 10px rgba(0, 82, 255, 0.4)' }, // Blue start
-                    '50%': { boxShadow: '0 0 0 2px #00A3FF, 0 0 20px rgba(0, 163, 255, 0.6)' }, // Cyan peak
-                }
             }
         }
     }

@@ -1,0 +1,3075 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de carrossel — Elumina IA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Spline+Sans+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- html2canvas: rasteriza o slide usando a fonte já carregada, em vez de
+         serializar SVG (que exigiria embutir a Manrope inteira em data URI).
+         Versão fixada para a exportação não mudar de comportamento sozinha.
+         Se não carregar, o botão avisa e o PDF continua funcionando. -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        /* Paleta idêntica à do site (style.css) — o carrossel é a mesma marca. */
+        :root {
+            --paper: #f3f6fb;
+            --paper-blue: #e9eef7;
+            --ink: #0a1020;
+            --ink-soft: #526176;
+            --cobalt: #4f70ff;
+            --accent: #00a3ff;   /* azul-claro de destaque, mesmo do site */
+            --line: rgba(20, 36, 62, 0.14);
+            --font: "Manrope", system-ui, sans-serif;
+            --mono: "Spline Sans Mono", monospace;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 40px 20px 80px;
+            background: #2a2f3a;
+            font-family: var(--font);
+        }
+
+        /* ---------- barra de controle (não entra na imagem) ---------- */
+        .painel {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            max-width: 1080px;
+            margin: 0 auto 28px;
+            padding: 14px 18px;
+            border-radius: 14px;
+            background: #10141d;
+            color: #cfd8e8;
+            font-size: 13px;
+        }
+
+        .painel strong { color: #fff; }
+
+        .painel button {
+            padding: 8px 14px;
+            border: 1px solid #33405c;
+            border-radius: 8px;
+            background: #1a2130;
+            color: #dbe4f5;
+            font: inherit;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .painel button:hover { border-color: var(--cobalt); }
+
+        /* ══════════ GALERIA ══════════
+           A porta de entrada: um link só, com todos os carrosséis prontos.
+           A miniatura é o slide de capa DE VERDADE, encolhido por transform —
+           não é imagem gerada, então nunca fica desatualizada em relação ao
+           conteúdo. */
+        .galeria {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 26px;
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        .cartao-deck {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #2b3346;
+            border-radius: 18px;
+            background: #10141d;
+            color: inherit;
+            text-decoration: none;
+            transition: border-color 160ms ease, transform 160ms ease;
+        }
+
+        .cartao-deck:hover {
+            border-color: var(--cobalt);
+            transform: translateY(-3px);
+        }
+
+        /* a janela da miniatura: 4:5 como o slide */
+        .vitrine {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            aspect-ratio: 1080 / 1350;
+            background: #0b0e15;
+        }
+
+        .vitrine .escala {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1080px;
+            height: 1350px;
+            transform-origin: top left;
+        }
+
+        .ficha {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 18px 20px 20px;
+        }
+
+        .ficha b {
+            color: #eef2fa;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .ficha span {
+            color: #7c88a0;
+            font-family: var(--mono);
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .titulo-galeria {
+            max-width: 1080px;
+            margin: 0 auto 26px;
+            color: #eef2fa;
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        .titulo-galeria small {
+            display: block;
+            margin-top: 6px;
+            color: #7c88a0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        #painel a { color: #cfd8e8; }
+
+        /* ---- fila de pedidos ---- */
+        .cartao-novo {
+            display: grid;
+            place-content: center;
+            gap: 8px;
+            min-height: 240px;
+            padding: 24px;
+            border: 1px dashed #3a445c;
+            border-radius: 18px;
+            background: transparent;
+            color: #7c88a0;
+            font: inherit;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 160ms ease, color 160ms ease;
+        }
+
+        .cartao-novo:hover { border-color: var(--cobalt); color: #cfd8e8; }
+        .cartao-novo b { display: block; color: #eef2fa; font-size: 16px; }
+        .cartao-novo span { font-size: 13px; }
+
+        .cartao-pedido {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 22px;
+            border: 1px dashed #3a445c;
+            border-radius: 18px;
+            background: rgba(79, 112, 255, 0.06);
+        }
+
+        .cartao-pedido .marca-pendente {
+            align-self: flex-start;
+            padding: 5px 12px;
+            border-radius: 999px;
+            background: rgba(79, 112, 255, 0.22);
+            color: #9db0ff;
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .cartao-pedido b { color: #eef2fa; font-size: 17px; line-height: 1.3; }
+        .cartao-pedido p { margin: 0; color: #8896ae; font-size: 13px; line-height: 1.5; }
+        .cartao-pedido .acoes-pedido { display: flex; gap: 8px; margin-top: auto; }
+
+        .cartao-pedido button {
+            padding: 7px 12px;
+            border: 1px solid #33405c;
+            border-radius: 8px;
+            background: #1a2130;
+            color: #dbe4f5;
+            font: inherit;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .cartao-pedido button:hover { border-color: var(--cobalt); }
+
+        .formulario {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 22px;
+            border: 1px solid var(--cobalt);
+            border-radius: 18px;
+            background: #10141d;
+        }
+
+        .formulario label {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            color: #8896ae;
+            font-size: 12px;
+        }
+
+        .formulario input,
+        .formulario textarea {
+            padding: 10px 12px;
+            border: 1px solid #33405c;
+            border-radius: 8px;
+            background: #0b0e15;
+            color: #eef2fa;
+            font: inherit;
+            font-size: 14px;
+        }
+
+        .formulario textarea { min-height: 66px; resize: vertical; }
+        .formulario input:focus, .formulario textarea:focus { outline: 2px solid var(--cobalt); outline-offset: 1px; }
+        .formulario .linha { display: flex; gap: 8px; }
+        .formulario .linha button { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #33405c; background: #1a2130; color: #dbe4f5; font: inherit; font-weight: 600; cursor: pointer; }
+        .formulario .linha button.principal { border-color: transparent; background: var(--cobalt); color: #fff; }
+        .aviso-servidor { margin: 0; color: #8896ae; font-size: 12px; line-height: 1.5; }
+        .aviso-servidor code { color: #9db0ff; }
+
+        /* ---------- o slide ----------
+           1080x1350 é o formato 4:5, o que mais ocupa tela no feed. */
+        .slide {
+            position: relative;
+            width: 1080px;
+            height: 1350px;
+            margin: 0 auto 28px;
+            padding: 84px 88px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--paper);
+            color: var(--ink);
+        }
+
+        /* Textura de papel: ruído gerado em SVG, sem arquivo externo. */
+        .slide::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            opacity: 0.5;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
+        }
+
+        .slide > * { position: relative; }
+
+        /* moldura fina no topo e no rodapé, como na referência */
+        .moldura {
+            flex: none;
+            height: 44px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+        }
+
+        /* Ancorado no topo, não centralizado. Centralizar fazia o título subir
+           e descer conforme a quantidade de conteúdo — 248px de diferença entre
+           o slide mais cheio e o mais vazio. Num carrossel a pessoa desliza, e
+           título que pula faz seis imagens soltas em vez de uma série. */
+        .corpo {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            min-height: 0;
+            padding: 44px 0 48px;
+        }
+
+        /* O miolo fica entre a cabeça (rótulo + título, presos no topo) e a
+           base. `margin-block: auto` faz ele absorver a sobra e se centralizar
+           no espaço restante — assim o título não pula entre slides E o
+           conteúdo não fica jogado no alto com um vazio de 30% embaixo.
+           Quando o conteúdo enche o slide, a margem automática vira zero
+           sozinha e nada muda. */
+        .miolo {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            margin-block: auto;
+        }
+
+        /* ══════════ A CAPA ══════════
+           É o único slide que decide se a pessoa abre o carrossel — não pode
+           ter o mesmo peso dos internos. Ganha lavagem de cobalto vindo do
+           canto do símbolo, tipografia maior e ilustração dominante.
+           O degradê entra como background-image do próprio slide: a textura
+           mora no ::before e continua pintando por cima. */
+        .slide.escuro.capa {
+            /* especificidade acima de `.slide.escuro`, que usa o atalho
+               `background` e zeraria esta imagem */
+            background-image: radial-gradient(115% 80% at 80% 104%, rgba(79, 112, 255, 0.5), transparent 62%);
+        }
+
+        /* Só título curto aguenta corpo maior; com 60+ caracteres ele passa de
+           cinco linhas e estoura. O tamanho segue o texto. */
+        .slide.capa .titulo.enorme { font-size: 112px; }
+
+        .slide.capa .simbolo svg { width: 300px; height: 300px; }
+
+        /* rótulo invertido: sobre a lavagem azul, pílula cobalta some */
+        .slide.capa .sobretitulo {
+            background: var(--paper);
+            color: var(--ink);
+        }
+
+        .slide.capa .apoio {
+            color: var(--paper);
+            font-size: 40px;
+            font-weight: 500;
+            opacity: 0.85;
+        }
+
+        /* ---------- tipografia ---------- */
+        .titulo {
+            margin: 0;
+            font-size: 92px;
+            font-weight: 480;
+            line-height: 1.04;
+            letter-spacing: -0.015em;
+        }
+
+        .titulo.menor { font-size: 68px; }
+        .titulo.maior { font-size: 108px; }
+
+        .apoio {
+            margin: 38px 0 0;
+            max-width: 24ch;
+            color: var(--ink-soft);
+            font-size: 38px;
+            font-weight: 400;
+            line-height: 1.45;
+        }
+
+        /* Pílula, não parágrafo. Antes o sobretítulo tinha a MESMA cor do apoio
+           e tamanho próximo (27 contra 34), então os dois liam como um bloco só.
+           Como pílula ele vira a âncora da série — em "5 dores", saber em qual
+           você está é a informação mais importante depois do título. */
+        .sobretitulo {
+            align-self: flex-start;
+            margin: 0 0 26px;
+            padding: 11px 24px;
+            border-radius: var(--raio-pilula);
+            background: var(--cobalt);
+            color: #fff;
+            font-family: var(--mono);
+            font-size: 21px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        /* marca-texto: o traço azul por trás da palavra.
+           `font-style: normal` porque a marcação usa <em>, que sairia em itálico. */
+        .marca {
+            position: relative;
+            z-index: 0;
+            padding: 0 6px;
+            font-style: normal;
+        }
+
+        .marca::after {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            inset: 18% -4px 12%;
+            background: var(--cobalt);
+            opacity: 0.34;
+            transform: rotate(-0.6deg);
+        }
+
+        .azul { color: var(--cobalt); }
+
+        /* Parágrafo de abertura: entra entre o título e o bloco, para o slide
+           poder argumentar antes de mostrar. O `apoio` continua fechando depois
+           do bloco — os dois têm papéis diferentes. */
+        .texto-corrido {
+            margin: 0 0 6px;
+            max-width: 34ch;
+            color: var(--ink);
+            font-size: 33px;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .texto-corrido strong { font-weight: 700; }
+
+        .slide.escuro .texto-corrido { color: #cfd9e8; }
+
+        /* ---------- lista em cartão ---------- */
+        .cartao {
+            margin: 44px 0 0;
+            padding: 40px 44px;
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.55);
+        }
+
+        .cartao.escuro {
+            border-color: transparent;
+            background: var(--ink);
+            color: var(--paper);
+        }
+
+        .cartao ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .cartao li {
+            display: flex;
+            gap: 18px;
+            align-items: baseline;
+            font-size: 34px;
+            line-height: 1.62;
+        }
+
+        .cartao li::before {
+            content: "";
+            flex: none;
+            width: 9px;
+            height: 9px;
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            transform: translateY(-4px);
+        }
+
+        .cartao .fecho {
+            margin: 26px 0 0;
+            font-size: 30px;
+            font-weight: 600;
+            line-height: 1.45;
+        }
+
+        /* ══════════ DIAGRAMAS ══════════
+           Cor semântica: cobalto = desejado, azul-claro = destaque/atenção, neutro = o resto. */
+
+        /* ---- matriz 2×2 com eixos ---- */
+        .matriz {
+            display: grid;
+            margin: 40px 0 0;
+            grid-template-columns: 44px 1fr;
+            grid-template-rows: 1fr 44px;
+            gap: 14px;
+        }
+
+        .matriz .eixoY {
+            display: grid;
+            place-items: center;
+            font-family: var(--mono);
+            font-size: 17px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+        }
+
+        .matriz .eixoX {
+            grid-column: 2;
+            display: grid;
+            place-items: center;
+            font-family: var(--mono);
+            font-size: 17px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+        }
+
+        .quadrantes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .quadrante {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 10px;
+            padding: 30px 28px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .quadrante b {
+            font-size: 30px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .quadrante span {
+            color: var(--ink-soft);
+            font-size: 24px;
+            line-height: 1.4;
+        }
+
+        /* estados do quadrante */
+        .quadrante.vazio {
+            border-style: dashed;
+            background: transparent;
+        }
+
+        .quadrante.alvo {
+            border-color: transparent;
+            background: var(--cobalt);
+            color: #fff;
+        }
+
+        .quadrante.alvo span { color: rgba(255, 255, 255, 0.82); }
+
+        .quadrante .selo-mini {
+            align-self: flex-start;
+            margin-top: 6px;
+            padding: 8px 18px;
+            border-radius: 999px;
+            background: var(--accent);
+            color: var(--ink);
+            font-family: var(--mono);
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        /* ---- fluxo: caixas encadeadas ---- */
+        .fluxo {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: center;
+            margin: 40px 0 0;
+        }
+
+        .fluxo .no {
+            padding: 22px 30px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.55);
+            font-size: 30px;
+            font-weight: 600;
+        }
+
+        .fluxo .no.alvo {
+            border-color: transparent;
+            background: var(--cobalt);
+            color: #fff;
+        }
+
+        .fluxo .liga {
+            color: var(--cobalt);
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        /* ---- confronto: dois cartões lado a lado ---- */
+        .confronto {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 40px 0 0;
+        }
+
+        .confronto > div {
+            padding: 34px 32px;
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.55);
+        }
+
+        .confronto .rotulo {
+            display: block;
+            margin-bottom: 14px;
+            font-family: var(--mono);
+            font-size: 17px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .confronto .ruim .rotulo { color: var(--accent); }
+        .confronto .bom .rotulo { color: var(--cobalt); }
+
+        .confronto .ruim { border-style: dashed; background: transparent; }
+
+        .confronto .bom {
+            border-color: transparent;
+            background: var(--ink);
+            color: var(--paper);
+        }
+
+        .confronto p {
+            margin: 0;
+            font-size: 29px;
+            line-height: 1.45;
+        }
+
+        /* ---- pills com check ---- */
+        .checks {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin: 40px 0 0;
+        }
+
+        .checks div {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            padding: 20px 28px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.6);
+            font-size: 30px;
+        }
+
+        .checks i {
+            display: grid;
+            place-items: center;
+            flex: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--cobalt);
+            color: #fff;
+            font-size: 20px;
+            font-style: normal;
+        }
+
+        /* ---- número gigante: ancora o slide num dado só ---- */
+        .numero {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin: 36px 0 0;
+        }
+
+        .numero b {
+            color: var(--cobalt);
+            font-size: 232px;
+            font-weight: 700;
+            line-height: 0.84;
+            letter-spacing: -0.045em;
+        }
+
+        .numero b i {
+            font-size: 0.36em;
+            font-style: normal;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+        }
+
+        .numero span {
+            max-width: 20ch;
+            color: var(--ink-soft);
+            font-size: 32px;
+            line-height: 1.42;
+        }
+
+        /* ---- etapas: passos numerados ligados por uma linha ---- */
+        .etapas {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 26px;
+            margin: 40px 0 0;
+        }
+
+        /* a linha corre atrás das bolas; cada bola tem fundo opaco e a "corta" */
+        .etapas::before {
+            content: "";
+            position: absolute;
+            top: 30px;
+            bottom: 30px;
+            left: 27px;
+            width: 2px;
+            background: var(--line);
+        }
+
+        .etapas .passo {
+            position: relative;
+            display: grid;
+            grid-template-columns: 56px 1fr;
+            gap: 26px;
+            align-items: start;
+        }
+
+        .etapas .bola {
+            display: grid;
+            place-items: center;
+            width: 56px;
+            height: 56px;
+            border: 2px solid var(--line);
+            border-radius: 50%;
+            background: var(--paper);
+            font-family: var(--mono);
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .etapas .passo.alvo .bola {
+            border-color: transparent;
+            background: var(--cobalt);
+            color: #fff;
+        }
+
+        .etapas b {
+            display: block;
+            font-size: 33px;
+            font-weight: 700;
+            line-height: 1.24;
+        }
+
+        .etapas .passo span {
+            display: block;
+            margin-top: 5px;
+            color: var(--ink-soft);
+            font-size: 26px;
+            line-height: 1.4;
+        }
+
+        /* ---- barras: comparação por comprimento, sem eixo ---- */
+        /* Grid de 3 colunas na LISTA (não em cada linha) com `display: contents`
+           nas linhas: assim as colunas se alinham entre si e o valor ganha
+           largura própria. Se o valor dividisse espaço com a barra, barra
+           comprida empurrava o texto pra fora do slide. */
+        .barras {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 24px 22px;
+            align-items: center;
+            margin: 40px 0 0;
+        }
+
+        .barras .linha { display: contents; }
+
+        .barras .rot {
+            color: var(--ink-soft);
+            font-family: var(--mono);
+            font-size: 22px;
+            text-align: right;
+        }
+
+        .barras .preenche {
+            height: 46px;
+            border-radius: 999px;
+            background: var(--cobalt);
+        }
+
+        .barras .valor {
+            font-size: 26px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .barras .linha.fraca .preenche { background: rgba(20, 36, 62, 0.2); }
+        .barras .linha.fraca .valor { color: var(--ink-soft); }
+
+        /* ---- chat: a conversa como ela chega ---- */
+        /* Respiros curtos de propósito: o slide de conversa acumula
+           sobretítulo + título + três balões + nota, e era o único do deck que
+           não fechava nos 1350px. */
+        .chat {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 26px 0 0;
+        }
+
+        .chat .balao {
+            /* mais largo poupa linha nos balões compridos, o que rende mais
+               altura do que continuar cortando margem */
+            max-width: 84%;
+            padding: 23px 28px;
+            border-radius: 28px;
+            font-size: 30px;
+            line-height: 1.4;
+        }
+
+        .chat .deles {
+            align-self: flex-start;
+            border: 1px solid var(--line);
+            border-bottom-left-radius: 8px;
+            background: rgba(255, 255, 255, 0.75);
+        }
+
+        .chat .nosso {
+            align-self: flex-end;
+            border-bottom-right-radius: 8px;
+            background: var(--cobalt);
+            color: #fff;
+        }
+
+        .chat .hora {
+            display: block;
+            margin-top: 8px;
+            font-family: var(--mono);
+            font-size: 18px;
+            opacity: 0.55;
+        }
+
+        /* ---- anotações desenhadas ----
+           Os traços são SVG esticado sobre a palavra (preserveAspectRatio="none");
+           `non-scaling-stroke` mantém a espessura constante apesar do esticão. */
+        .circulado,
+        .rabisco {
+            position: relative;
+            display: inline-block;
+            font-style: normal;
+        }
+
+        /* mantém a anotação e a pontuação seguinte na mesma linha */
+        .cola { white-space: nowrap; }
+
+        /* Os dois traços à mão precisam de respiro: o círculo é mais alto que a
+           mancha e encostava na linha de cima; o rabisco cai abaixo da palavra e
+           ficava a 7px da letra seguinte. Respiro pequeno de propósito: o
+           suficiente pra afastar, sem quebrar o ritmo dos outros slides. */
+        :is(.titulo, .apoio, .fecho, .sobretitulo):has(:is(.circulado, .rabisco)) { line-height: 1.14; }
+
+        /* padding abre espaço pro traço; a margem negativa devolve esse espaço
+           ao texto, senão sobra um vão antes da próxima palavra ("vazando ?"). */
+        .circulado {
+            margin: 0 -8px;
+            padding: 0 12px;
+        }
+
+        /* top/height destes dois são calculados em JS (posicionarDesenhos), porque
+           dependem da baseline e da mancha real do glifo — nenhum dos dois é
+           dedutível em CSS. Aqui fica só o eixo horizontal. */
+        .circulado svg,
+        .rabisco svg {
+            position: absolute;
+            right: -2px;
+            left: -2px;
+            overflow: visible;
+            pointer-events: none;
+        }
+
+        .circulado path,
+        .rabisco path,
+        .nota .seta path {
+            fill: none;
+            stroke-linecap: round;
+            stroke-width: 3.5;
+            vector-effect: non-scaling-stroke;
+        }
+
+        .circulado path { stroke: var(--accent); }
+        .rabisco path { stroke: var(--cobalt); stroke-width: 5; }
+
+        /* ---- nota: recado colado torto, com seta apontando pro conteúdo ---- */
+        /* A seta era absoluta em left:-118px, ou seja, o desenho ficava inteiro
+           FORA da caixa da nota — e na exportação o que passa do pai é
+           recortado. Agora ela é item de flex ao lado da nota: fica no fluxo,
+           dentro do contêiner, e sobrevive ao PNG. */
+        .nota-area {
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-end;
+            gap: 16px;
+            margin: 26px 0 0;
+        }
+
+        .nota-area .seta {
+            flex: none;
+            width: 128px;
+            margin-top: 26px;
+            overflow: visible;
+        }
+
+        .nota {
+            position: relative;
+            max-width: 26ch;
+            padding: 26px 30px;
+            border-radius: 18px;
+            background: var(--accent);
+            color: var(--ink);
+            font-size: 27px;
+            font-weight: 600;
+            line-height: 1.38;
+            transform: rotate(1.6deg);
+        }
+
+        .nota-area .seta path { stroke: var(--accent); }
+
+        /* ---- selo colado no canto do slide ----
+           top centraliza na moldura (padding 84 + metade dos 44 de altura),
+           pra leitura de adesivo colado por cima, e não de colisão. */
+        .slide > .selo-canto {
+            position: absolute;
+            top: 74px;
+            right: 76px;
+            padding: 14px 26px;
+            border-radius: 999px;
+            background: var(--accent);
+            color: var(--ink);
+            font-family: var(--mono);
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transform: rotate(4deg);
+        }
+
+
+        /* ══════════ PELE DO DECK ══════════
+           O que identifica a Elumina (paleta, tipografia, selo, trilha) não muda.
+           O que muda a cada carrossel é a pele: fundo, dureza dos cantos e
+           moldura. Trocar `VISUAL` lá embaixo troca o registro do deck inteiro. */
+        :root {
+            --raio-cartao: 22px;
+            --raio-caixa: 16px;
+            --raio-pilula: 999px;
+        }
+
+        .cantos-reto {
+            --raio-cartao: 3px;
+            --raio-caixa: 3px;
+            --raio-pilula: 4px;
+        }
+
+        .cantos-macio {
+            --raio-cartao: 30px;
+            --raio-caixa: 26px;
+            --raio-pilula: 999px;
+        }
+
+        /* fundos alternativos — trocam a textura do ::before */
+        /* Halo em cobalto no lugar de uma grade de linhas: o grid foi tirado do
+           site de propósito, não faz sentido voltar por aqui. */
+        .pele-halo .slide::before {
+            opacity: 1;
+            background-image: radial-gradient(120% 72% at 16% 0%, rgba(79, 112, 255, 0.17), transparent 62%);
+        }
+
+        .pele-pontos .slide::before {
+            opacity: 1;
+            background-image: radial-gradient(rgba(20, 36, 62, 0.16) 1.6px, transparent 1.6px);
+            background-size: 34px 34px;
+        }
+
+        .pele-liso .slide::before { opacity: 0; }
+
+        .pele-halo .slide.escuro::before {
+            background-image: radial-gradient(120% 72% at 16% 0%, rgba(79, 112, 255, 0.32), transparent 62%);
+        }
+
+        .pele-pontos .slide.escuro::before {
+            background-image: radial-gradient(rgba(184, 199, 224, 0.2) 1.6px, transparent 1.6px);
+        }
+
+        /* variações de moldura */
+        .moldura.linha {
+            height: 0;
+            border: none;
+            border-top: 2px solid var(--line);
+            border-radius: 0;
+        }
+
+        .moldura.cantos {
+            border-right: none;
+            border-left: none;
+            border-width: 2px;
+            border-radius: 0;
+        }
+
+        .moldura.nenhuma { display: none; }
+
+        /* ---- ícones ---- */
+        .ic {
+            flex: none;
+            width: 1em;
+            height: 1em;
+            stroke: currentColor;
+        }
+
+        /* ---- destaque: citação de peso ---- */
+        .destaque {
+            margin: 38px 0 0;
+            padding: 46px 44px 40px;
+            border-radius: var(--raio-cartao);
+            background: var(--cobalt);
+            color: #fff;
+            font-size: 44px;
+            font-weight: 600;
+            line-height: 1.32;
+        }
+
+        .destaque .aspas {
+            display: block;
+            margin-bottom: 12px;
+            font-size: 76px;
+            font-weight: 800;
+            line-height: 0.5;
+            opacity: 0.45;
+        }
+
+        .destaque .autoria {
+            display: block;
+            margin-top: 26px;
+            font-family: var(--mono);
+            font-size: 20px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            opacity: 0.75;
+        }
+
+        /* ---- grade de ícones ---- */
+        .icones {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin: 40px 0 0;
+        }
+
+        .icones.tres { grid-template-columns: repeat(3, 1fr); }
+
+        .icones .caixa {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            padding: 26px 28px;
+            border: 1px solid var(--line);
+            border-radius: var(--raio-caixa);
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .icones .caixa > .ic {
+            width: 52px;
+            height: 52px;
+            color: var(--cobalt);
+            stroke-width: 1.6;
+        }
+
+        .icones b {
+            font-size: 30px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .icones span {
+            color: var(--ink-soft);
+            font-size: 24px;
+            line-height: 1.4;
+        }
+
+        .icones .caixa.alvo {
+            border-color: transparent;
+            background: var(--cobalt);
+            color: #fff;
+        }
+
+        .icones .caixa.alvo > .ic { color: #fff; }
+        .icones .caixa.alvo span { color: rgba(255, 255, 255, 0.82); }
+
+        /* ---- estatísticas lado a lado ---- */
+        .estatisticas {
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: 1fr;
+            gap: 22px;
+            margin: 44px 0 0;
+        }
+
+        .estatisticas > div {
+            padding: 28px 0 0;
+            border-top: 3px solid var(--cobalt);
+        }
+
+        .estatisticas b {
+            display: block;
+            font-size: 80px;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -0.03em;
+        }
+
+        .estatisticas span {
+            display: block;
+            margin-top: 12px;
+            color: var(--ink-soft);
+            font-size: 25px;
+            line-height: 1.35;
+        }
+
+        .estatisticas > div.fraca { border-top-color: var(--line); }
+        .estatisticas > div.fraca b { color: var(--ink-soft); }
+
+        /* ---- pilha: camadas que afunilam ---- */
+        .pilha {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 40px 0 0;
+        }
+
+        .pilha div {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            padding: 28px 34px;
+            border: 1px solid var(--line);
+            border-radius: var(--raio-caixa);
+            background: rgba(255, 255, 255, 0.55);
+            font-size: 31px;
+        }
+
+        .pilha .ic {
+            width: 34px;
+            height: 34px;
+            color: var(--cobalt);
+        }
+
+        /* cada camada mais estreita que a de cima */
+        .pilha div:nth-child(2) { width: 93%; }
+        .pilha div:nth-child(3) { width: 86%; }
+        .pilha div:nth-child(4) { width: 79%; }
+        .pilha div:nth-child(5) { width: 72%; }
+
+        .pilha div:last-child {
+            border-color: transparent;
+            background: var(--cobalt);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .pilha div:last-child .ic { color: #fff; }
+
+
+        /* ══════════ MOLDURA TIPO JANELA ══════════
+           Contorno limpo que envolve o conteúdo. Vale como `moldura: 'janela'`
+           no VISUAL. */
+        .slide > .quadro {
+            position: absolute;
+            inset: 46px;
+            border: 3px solid var(--ink);
+            border-radius: 30px;
+            pointer-events: none;
+        }
+
+        .slide.escuro > .quadro { border-color: rgba(184, 199, 224, 0.28); }
+
+        /* ---- assinatura em mono no topo ---- */
+        .marca-topo {
+            flex: none;
+            display: flex;
+            justify-content: space-between;
+            color: var(--ink-soft);
+            font-family: var(--mono);
+            font-size: 21px;
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .slide.escuro .marca-topo { color: #8595ad; }
+
+        /* ---- símbolo: ilustração de linha da rotina da corretora ---- */
+        .simbolo {
+            display: flex;
+            flex: none;
+            justify-content: center;
+            margin: 30px 0 0;
+            color: var(--ink);
+        }
+
+        .simbolo svg {
+            width: 330px;
+            height: 330px;
+        }
+
+        .simbolo.pequeno svg { width: 220px; height: 220px; }
+
+        /* `canto` tira o símbolo do fluxo: encostado no alto à direita, sem
+           consumir altura. Antes ele só subia com margem negativa e continuava
+           ocupando ~290px — foi o que estourou os slides 2 e 9. */
+        /* Encosta na moldura em vez de flutuar no canto: com 200px ele lia
+           como adesivo. O recuo negativo o leva até a borda do quadro. */
+        .simbolo.canto {
+            position: absolute;
+            top: 4px;
+            right: -42px;
+            margin: 0;
+        }
+
+        .simbolo.canto svg { width: 260px; height: 260px; }
+
+        /* O texto recua para não correr por baixo do símbolo do canto. A calha
+           é estreita de propósito: cada 60px a menos aqui pode custar uma linha
+           inteira de título a 92px — foi o que estourou o slide do chat. */
+        .corpo:has(.simbolo.canto) > .titulo {
+            max-width: calc(100% - 250px);
+        }
+
+        .slide.escuro .simbolo { color: var(--paper); }
+
+        /* ---- diagrama radial: um centro, satélites em volta ---- */
+        .radial {
+            position: relative;
+            display: grid;
+            margin: 40px 0 0;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 26px;
+        }
+
+        .radial .centro {
+            display: grid;
+            place-items: center;
+            gap: 8px;
+            width: 210px;
+            height: 210px;
+            border-radius: var(--raio-cartao);
+            background: var(--cobalt);
+            color: #fff;
+            text-align: center;
+        }
+
+        .radial .centro b {
+            font-size: 34px;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        .radial .centro span {
+            font-family: var(--mono);
+            font-size: 17px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        .radial .lado {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .radial .lado.direita { align-items: flex-end; text-align: right; }
+
+        .radial .sat {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .radial .lado.direita .sat { flex-direction: row-reverse; }
+
+        .radial .sat .caixa {
+            display: grid;
+            place-items: center;
+            flex: none;
+            width: 62px;
+            height: 62px;
+            border: 1px solid var(--line);
+            border-radius: var(--raio-caixa);
+            background: rgba(255, 255, 255, 0.6);
+            color: var(--cobalt);
+            font-size: 30px;
+        }
+
+        .radial .sat b {
+            display: block;
+            font-size: 27px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .radial .sat small {
+            display: block;
+            color: var(--ink-soft);
+            font-size: 20px;
+        }
+
+        .slide.escuro .radial .sat .caixa {
+            border-color: rgba(184, 199, 224, 0.2);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .slide.escuro .radial .sat small { color: #a5b2c6; }
+
+        /* ---- rótulo do confronto vira pílula sobreposta ao cartão ---- */
+        .confronto > div { position: relative; padding-top: 46px; }
+
+        .confronto .rotulo {
+            position: absolute;
+            top: -17px;
+            left: 50%;
+            transform: translateX(-50%);
+            margin: 0;
+            padding: 8px 24px;
+            border-radius: var(--raio-pilula);
+            white-space: nowrap;
+        }
+
+        .confronto .ruim .rotulo {
+            background: var(--ink);
+            color: var(--paper);
+        }
+
+        .confronto .bom .rotulo {
+            background: var(--accent);
+            color: var(--ink);
+        }
+
+        /* variantes no escuro */
+        .slide.escuro .quadrante,
+        .slide.escuro .fluxo .no,
+        .slide.escuro .confronto > div,
+        .slide.escuro .checks div,
+        .slide.escuro .chat .deles {
+            border-color: rgba(184, 199, 224, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .slide.escuro .quadrante.vazio,
+        .slide.escuro .confronto .ruim { background: transparent; }
+
+        .slide.escuro .quadrante.alvo,
+        .slide.escuro .fluxo .no.alvo {
+            border-color: transparent;
+            background: var(--cobalt);
+        }
+
+        .slide.escuro .confronto .bom {
+            background: var(--paper);
+            color: var(--ink);
+        }
+
+        .slide.escuro .quadrante span,
+        .slide.escuro .etapas .passo span,
+        .slide.escuro .numero span,
+        .slide.escuro .barras .rot,
+        .slide.escuro .eixoY,
+        .slide.escuro .eixoX { color: #a5b2c6; }
+
+        /* a bola precisa do fundo do slide escuro pra continuar cortando a linha */
+        .slide.escuro .etapas .bola {
+            border-color: rgba(184, 199, 224, 0.2);
+            background: #070a12;
+        }
+
+        .slide.escuro .etapas::before { background: rgba(184, 199, 224, 0.2); }
+
+        .slide.escuro .etapas .passo.alvo .bola {
+            border-color: transparent;
+            background: var(--cobalt);
+        }
+
+        .slide.escuro .barras .linha.fraca .preenche { background: rgba(184, 199, 224, 0.25); }
+        .slide.escuro .barras .linha.fraca .valor { color: #a5b2c6; }
+
+        .slide.escuro .icones .caixa,
+        .slide.escuro .pilha div {
+            border-color: rgba(184, 199, 224, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .slide.escuro .icones .caixa.alvo,
+        .slide.escuro .pilha div:last-child {
+            border-color: transparent;
+            background: var(--cobalt);
+        }
+
+        .slide.escuro .icones span,
+        .slide.escuro .estatisticas span { color: #a5b2c6; }
+
+        .slide.escuro .estatisticas > div.fraca { border-top-color: rgba(184, 199, 224, 0.22); }
+        .slide.escuro .estatisticas > div.fraca b { color: #a5b2c6; }
+
+        /* ---------- rodapé do slide ---------- */
+        .rodape {
+            flex: none;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .selo {
+            padding: 12px 30px;
+            border-radius: 999px;
+            background: var(--ink);
+            color: var(--paper);
+            font-family: var(--mono);
+            font-size: 20px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .trilha {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            height: 44px;
+            padding: 0 24px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+        }
+
+        .ponto {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--line);
+        }
+
+        .ponto.on { background: var(--ink); }
+
+        /* capa e fecho usam o fundo escuro da marca */
+        .slide.escuro {
+            background: #070a12;
+            color: var(--paper);
+        }
+
+        .slide.escuro .apoio,
+        .slide.escuro .sobretitulo { color: #a5b2c6; }
+
+        .slide.escuro .moldura,
+        .slide.escuro .trilha { border-color: rgba(184, 199, 224, 0.2); }
+
+        .slide.escuro .selo { background: var(--paper); color: var(--ink); }
+
+        .slide.escuro .ponto { background: rgba(184, 199, 224, 0.25); }
+
+        .slide.escuro .ponto.on { background: var(--paper); }
+
+        .slide.escuro .cartao {
+            border-color: rgba(184, 199, 224, 0.18);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .marcaDagua {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            font-size: 26px;
+            font-weight: 600;
+        }
+
+        .marcaDagua span {
+            display: grid;
+            place-items: center;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--cobalt);
+            color: #fff;
+            font-size: 24px;
+        }
+
+        /* ---------- diagnóstico ----------
+           Dentro de @media screen de propósito: nem o selo nem a marca de erro
+           podem existir na exportação. Se estivessem fora, um @media print
+           teria que desfazê-los — e bastaria um esquecimento pra sair no PNG. */
+        @media screen {
+            #diagnostico {
+                padding: 6px 14px;
+                border-radius: 999px;
+                font-weight: 600;
+            }
+
+            #diagnostico.ok {
+                background: rgba(34, 197, 94, 0.14);
+                color: #4ade80;
+            }
+
+            #diagnostico.ruim {
+                background: rgba(239, 68, 68, 0.16);
+                color: #f87171;
+                cursor: pointer;
+            }
+
+            .tem-erro {
+                outline: 3px dashed #ef4444;
+                outline-offset: 6px;
+            }
+        }
+
+        /* Ao imprimir/exportar, some tudo que não é slide.
+           A borda branca do PDF vinha daqui: sem @page o navegador usa A4 com
+           margem, e o slide de 1080×1350 fica centrado numa folha maior. Com a
+           página do tamanho exato do slide e margem zero, o PDF sai sangrado. */
+        @page {
+            size: 1080px 1350px;
+            margin: 0;
+        }
+
+        @media print {
+            body { padding: 0; background: #fff; }
+            .painel { display: none; }
+
+            .slide {
+                margin: 0;
+                page-break-after: always;
+                /* o navegador ignora background por padrão na impressão */
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .slide:last-child { page-break-after: auto; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="painel" id="painel">
+        <strong>Carrossel Elumina</strong>
+        <a id="voltar" href="./" hidden>← todos os carrosséis</a>
+        <span id="contador">—</span>
+        <button id="baixarPng">Baixar PNGs (1080×1350)</button>
+        <button id="copiarPendentes" hidden onclick="copiarPendentes()">Copiar pendentes</button>
+        <button id="exportarPdf" onclick="window.print()">Exportar PDF</button>
+        <span id="diagnostico">verificando…</span>
+        <span id="progresso" style="opacity:.75"></span>
+    </div>
+
+    <div id="saida"></div>
+
+    <script>
+        /* ────────────────────────────────────────────────────────────────
+           EDITE DAQUI PARA BAIXO. Cada objeto é um slide.
+           tipo:   'capa' | 'texto' | 'lista' | 'fecho'
+
+           MARCAÇÃO no meio de qualquer texto:
+             {palavra}     marca-texto azul por trás
+             ((palavra))   círculo desenhado à mão em volta
+             __palavra__   rabisco por baixo
+             **palavra**   negrito
+
+           BLOCOS (pode combinar mais de um no mesmo slide):
+             itens: []                    lista em cartão (+ fecho: '')
+             matriz: {}                   4 quadrantes com eixos
+             fluxo: []                    caixas encadeadas
+             confronto: { ruim, bom }     dois cartões lado a lado
+             checks: []                   pílulas com ✓
+             numero: { valor, unidade, legenda }
+             etapas: []                   passos ligados por linha (aceita icone)
+             barras: []                   comparação por comprimento
+             chat: []                     balões de conversa
+             icones: []                   grade de cartões com ícone
+             estatisticas: []             2 ou 3 números lado a lado
+             pilha: []                    camadas que afunilam (aceita icone)
+             destaque: { texto }          citação de peso, fundo cobalto
+             nota: ''                     recado torto com seta
+             seloCanto: ''                selo colado no canto do slide
+
+           CADA CARROSSEL DEVE TER CARA PRÓPRIA. O que nunca muda é a marca:
+           paleta, tipografia, selo e trilha do rodapé. O que muda a cada post
+           é o VISUAL (logo abaixo) e a escolha de blocos — não repita a mesma
+           sequência de blocos em dois carrosséis seguidos.
+
+             pele:    papel | halo | pontos | liso
+             cantos:  padrao | macio | reto
+             moldura: pilula | linha | cantos | nenhuma
+
+           ÍCONES disponíveis (campo `icone` em icones/etapas/pilha/checks):
+             relogio conversa apolice escudo carro calendario alerta
+             dinheiro grafico engrenagem cliente telefone lupa pasta raio check
+
+           Ao recarregar, o selo no painel diz se está tudo no lugar. Se ficar
+           vermelho, clique nele: pula pro primeiro problema, que fica com
+           contorno tracejado. Detalhes no console. Nada disso sai no PDF.
+           NÃO exporte com o selo vermelho.
+           ──────────────────────────────────────────────────────────────── */
+const VISUAL = {
+            pele: 'papel',      // papel | halo | pontos | liso
+            cantos: 'padrao',   // padrao | macio | reto
+            moldura: 'janela',  // pilula | linha | cantos | janela | nenhuma
+            marcaTopo: 'Automação para corretoras'   // '' desliga
+        };
+
+        /* Ícones em SVG inline — traço de 1.7 como o do site. Inline e não CDN
+           porque a exportação é print: se a rede falhar na hora, o ícone some
+           da imagem sem avisar. `icone('relogio')` em qualquer bloco. */
+        const ICONES = {
+            relogio: '<circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/>',
+            conversa: '<path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.9 9.9 0 0 1-3.9-.8L3 20.5l1.4-4.1A8.4 8.4 0 0 1 3.6 12a8.4 8.4 0 0 1 8.4-8.4 8.4 8.4 0 0 1 9 7.9z"/>',
+            apolice: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>',
+            escudo: '<path d="M12 3l7 3v6c0 4.4-3 7.9-7 9-4-1.1-7-4.6-7-9V6z"/><path d="M9.2 12.2l2 2 3.6-3.9"/>',
+            carro: '<path d="M5 16v2M19 16v2M4 13l1.6-4.4A2 2 0 0 1 7.5 7h9a2 2 0 0 1 1.9 1.6L20 13"/><rect x="3" y="13" width="18" height="4" rx="1.4"/><path d="M6.5 15h.01M17.5 15h.01"/>',
+            calendario: '<rect x="3.5" y="5" width="17" height="16" rx="2.2"/><path d="M8 3v4M16 3v4M3.5 10h17"/>',
+            alerta: '<path d="M10.3 4.3 2.8 17a2 2 0 0 0 1.7 3h15a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4M12 17.2h.01"/>',
+            dinheiro: '<circle cx="12" cy="12" r="9"/><path d="M14.6 9.3a3 3 0 0 0-2.6-1.3c-1.6 0-2.6.8-2.6 2s1 1.7 2.6 2 2.7.8 2.7 2-1.1 2-2.7 2a3 3 0 0 1-2.7-1.4M12 6.4v11.2"/>',
+            grafico: '<path d="M4 20V4"/><path d="M4 20h16"/><path d="M8 16v-4M12.5 16V8M17 16v-6"/>',
+            engrenagem: '<circle cx="12" cy="12" r="3.1"/><path d="M19.4 14.5a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.2a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 2.9-1.2V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 2.9 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0 1.2 2.9h.2a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.6 1.2z"/>',
+            cliente: '<circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>',
+            telefone: '<path d="M21.5 16.9v2.6a2 2 0 0 1-2.2 2 19.6 19.6 0 0 1-8.6-3 19.3 19.3 0 0 1-6-6 19.6 19.6 0 0 1-3-8.7 2 2 0 0 1 2-2.2h2.6a2 2 0 0 1 2 1.7c.1 1 .3 1.9.7 2.8a2 2 0 0 1-.5 2.1l-1.1 1.1a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.9.4 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/>',
+            lupa: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.9-3.9"/>',
+            pasta: '<path d="M3.5 7.5a2 2 0 0 1 2-2h3.6l2 2.4h7.4a2 2 0 0 1 2 2v8.6a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/>',
+            raio: '<path d="M13.5 2 4 13.8h6.6L10 22l9.5-11.8h-6.6z"/>',
+            check: '<path d="M4.5 12.5 9.5 17.5 19.5 6.5"/>'
+        };
+
+        /* `stroke` como atributo pelo mesmo motivo dos traços à mão: na
+           exportação o CSS não acompanha o SVG serializado. currentColor
+           mantém o comportamento contextual (cobalto no cartão claro, branco
+           no cartão alvo) porque é resolvido no próprio elemento. */
+        const icone = (nome, extra = '') => ICONES[nome]
+            ? `<svg class="ic ${extra}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONES[nome]}</svg>`
+            : '';
+
+
+        /* ══════════ SÍMBOLOS ══════════
+           Ilustrações de linha da rotina da corretora. Cumprem o papel que o
+           mascote cumpre nas referências — dar densidade e um assunto visual
+           por slide — sem inventar um personagem, que seria decisão de marca.
+           Traço e sombra de chão vão como ATRIBUTO (stroke/currentColor), não
+           via CSS, para sobreviverem à serialização na exportação em PNG. */
+        /* ══════════ SÍMBOLOS ══════════
+           Ilustrações da rotina da corretora. Cumprem o papel que o mascote
+           cumpre nas referências — dar densidade e um assunto visual por slide
+           — sem inventar um personagem, que seria decisão de marca.
+
+           Cada símbolo é montado em três camadas, e é isso que dá volume:
+             1. a silhueta deslocada e preenchida, como um recorte de papel
+                projetando sombra;
+             2. o contorno grosso por cima;
+             3. os detalhes em cobalto.
+           Traço fino e chapado lia como pictograma de placa; com as camadas
+           vira ilustração.
+
+           Tudo vai como ATRIBUTO (currentColor resolvido em fixarCores), não
+           via CSS, para sobreviver à serialização na exportação em PNG. */
+        /* Sombra no chão: só faz sentido onde existe superfície clara. No slide
+           escuro uma elipse clara flutuando vira borrão — lá o eco em cobalto da
+           camada de volume já dá a profundidade. */
+        const CHAO = '<ellipse data-chao cx="60" cy="112" rx="34" ry="4.5" fill="currentColor" opacity="0.12"/>';
+
+        const SIMBOLOS = {
+            apolice: {
+                silhueta: '<path d="M30 14h38l22 21v64a5 5 0 0 1-5 5H35a5 5 0 0 1-5-5V19a5 5 0 0 1 5-5z"/>',
+                traco: '<path d="M68 14v21h22"/><path d="M43 52h30M43 65h30M43 78h18"/>',
+                azul: '<circle cx="76" cy="86" r="13"/><path d="M70 86.5l4.5 4.5L83 81"/>'
+            },
+            vigencia: {
+                silhueta: '<rect x="21" y="27" width="78" height="72" rx="9"/>',
+                traco: '<path d="M21 48h78"/><path d="M40 17v18M80 17v18"/><path d="M37 65h10M56 65h10M37 83h10"/>',
+                azul: '<circle cx="77" cy="80" r="13"/>'
+            },
+            conversa: {
+                silhueta: '<path d="M22 36a11 11 0 0 1 11-11h54a11 11 0 0 1 11 11v33a11 11 0 0 1-11 11H47L31 95V80h-9a11 11 0 0 1-11-11z"/>',
+                traco: '<path d="M38 46h44M38 60h28"/>',
+                azul: '<circle cx="88" cy="28" r="9"/>'
+            },
+            processo: {
+                silhueta: '<circle cx="60" cy="58" r="14"/>',
+                traco: '<path d="M60 92a34 34 0 0 1-32-45"/><path d="M34 53l-6-9-9 6"/>',
+                azul: '<path d="M60 24a34 34 0 0 1 32 45"/><path d="M86 63l6 9 9-6"/>'
+            },
+            sinistro: {
+                silhueta: '<path d="M60 16l35 14v31c0 23-15 41-35 46-20-5-35-23-35-46V30z"/>',
+                traco: '',
+                azul: '<path d="M60 43v24"/><path d="M60 80v.5"/>'
+            },
+            cotacao: {
+                silhueta: '<path d="M63 19H32a9 9 0 0 0-9 9v31a9 9 0 0 0 2.6 6.4l37 37a9 9 0 0 0 12.7 0l29-29a9 9 0 0 0 0-12.7l-37-37A9 9 0 0 0 63 19z"/>',
+                traco: '',
+                azul: '<circle cx="45" cy="41" r="8"/>'
+            },
+            carteira: {
+                silhueta: '<rect x="23" y="45" width="56" height="57" rx="7"/>',
+                traco: '<path d="M39 25h49a6 6 0 0 1 6 6v51"/><path d="M31 35h49a6 6 0 0 1 6 6v51"/>',
+                azul: '<path d="M36 64h30M36 80h20"/>'
+            },
+            prazo: {
+                silhueta: '<circle cx="60" cy="58" r="36"/>',
+                traco: '<path d="M60 35v23l15 9"/>',
+                azul: '<path d="M60 22a36 36 0 0 1 34 25"/>'
+            }
+        };
+
+        const ESPESSURA = 4.2;
+
+        const simboloSVG = nome => {
+            const d = SIMBOLOS[nome];
+            if (!d) return '';
+            const linha = `fill="none" stroke-width="${ESPESSURA}" stroke-linecap="round" stroke-linejoin="round"`;
+            return CHAO
+                // 1. silhueta deslocada: o volume vem daqui
+                + `<g data-volume transform="translate(6.5,7)" fill="currentColor" opacity="0.13" stroke="none">${d.silhueta}</g>`
+                // 2. contorno
+                + `<g ${linha} stroke="currentColor">${d.silhueta}${d.traco || ''}</g>`
+                // 3. detalhes de marca
+                + `<g ${linha} stroke="#4f70ff">${d.azul || ''}</g>`;
+        };
+
+        const simbolo = (nome, extra = '') => SIMBOLOS[nome]
+            ? `<div class="simbolo ${extra}"><svg viewBox="0 0 120 120" aria-hidden="true">${simboloSVG(nome)}</svg></div>`
+            : '';
+
+
+        const SELO = 'Elumina';
+
+        /* ── Os carrosséis ────────────────────────────────────────────────
+           Cada tema é uma entrada aqui. Troque ATIVO para gerar outro — assim
+           um deck pronto não se perde quando o próximo é escrito. */
+        const DECKS = {
+
+            cotacao: [
+
+            {
+                tipo: 'capa',
+                sobretitulo: 'Corretora de seguros',
+                titulo: 'Por que a cotação {demora} — e quase nunca é culpa da seguradora.',
+                apoio: 'O tempo não se perde no cálculo. Se perde antes dele.',
+                simbolo: 'prazo'
+            },
+            {
+                tipo: 'texto',
+                titulo: 'A pergunta vem sem nada do que a cotação precisa.',
+                chat: [
+                    { de: 'cliente', texto: 'Oi, quanto fica o seguro do meu carro?', hora: '09:12' },
+                    { de: 'nos', texto: 'Bom dia! Preciso do CPF, modelo, ano, CEP onde dorme e se tem garagem', hora: '09:41' },
+                    { de: 'cliente', texto: 'Ah tá, depois te mando', hora: '14:07' }
+                ],
+                nota: 'A conversa não morreu no preço. Morreu na terceira pergunta.',
+                simbolo: 'conversa',
+                simboloCanto: true
+            },
+            {
+                tipo: 'texto',
+                sobretitulo: 'Antes de existir preço, a cotação precisa de:',
+                titulo: 'Quatro coisas que o cliente não manda sozinho.',
+                texto: 'O cliente manda uma pergunta. Você precisa de quatro respostas antes de conseguir devolver um número.',
+                icones: [
+                    { icone: 'cliente', titulo: 'Quem é', texto: 'CPF, idade, quem dirige de fato' },
+                    { icone: 'carro', titulo: 'O que se protege', texto: 'modelo, ano, versão, uso' },
+                    { icone: 'pasta', titulo: 'O histórico', texto: 'apólice atual, sinistros, bônus' },
+                    { icone: 'escudo', titulo: 'Até onde proteger', texto: 'coberturas, franquia, assistências', alvo: true }
+                ]
+            },
+            {
+                tipo: 'texto',
+                escuro: true,
+                titulo: 'Quem ganha a cotação:',
+                numero: {
+                    valor: '1º',
+                    legenda: 'Raramente é quem tem o melhor preço. Quase sempre é quem chega primeiro com um número que dá pra confiar.'
+                },
+                simbolo: 'cotacao',
+                simboloCanto: true
+            },
+            {
+                tipo: 'lista',
+                titulo: 'Onde a cotação {trava}:',
+                texto: 'Repare que nenhum destes é problema de preço. São todos de **processo** — e processo você controla.',
+                itens: [
+                    'A pergunta chega solta, sem os dados do risco',
+                    'Cada dado que falta vira uma ida e volta',
+                    'Entre uma resposta e outra, o cliente esfria',
+                    'A cotação que não virou proposta não deixa rastro'
+                ],
+                fecho: 'Nenhum desses é problema de preço. São de processo.'
+            },
+            {
+                tipo: 'texto',
+                escuro: true,
+                titulo: 'O que precisa conversar antes de sair um número:',
+                radial: {
+                    centro: { titulo: 'Cotação', rotulo: 'o pedido' },
+                    satelites: [
+                        { icone: 'conversa', titulo: 'A conversa', texto: 'onde o pedido nasce' },
+                        { icone: 'cliente', titulo: 'O segurado', texto: 'quem é, quem dirige' },
+                        { icone: 'carro', titulo: 'O bem', texto: 'modelo, uso, onde dorme' },
+                        { icone: 'apolice', titulo: 'A apólice atual', texto: 'cobertura e histórico' }
+                    ]
+                },
+                apoio: 'Quatro fontes. Nenhuma delas chega junto com a pergunta.'
+            },
+            {
+                tipo: 'texto',
+                titulo: 'O mesmo pedido, dois {desfechos}:',
+                texto: 'A diferença entre ganhar e perder essa conta não está na tabela da seguradora. Está em quantas horas passaram.',
+                confronto: {
+                    ruim: { rotulo: 'Hoje', texto: 'Cinco mensagens depois, o cliente já tem dois números na mão. O seu chega em terceiro.' },
+                    bom: { rotulo: 'Com processo', texto: 'A primeira resposta já vem com número. A conversa vira sobre cobertura, não sobre prazo.' }
+                }
+            },
+            {
+                tipo: 'texto',
+                titulo: 'A cotação esfria por hora, não por dia:',
+                /* escala qualitativa — o comprimento mostra o sentido, não uma medição */
+                texto: 'Cada hora que passa, você não perde só tempo. Perde poder de negociar.',
+                barras: [
+                    { rotulo: 'ainda na conversa', pct: 90, valor: 'ele está te ouvindo' },
+                    { rotulo: 'algumas horas', pct: 58, valor: 'ainda dá' },
+                    { rotulo: 'no dia seguinte', pct: 30, valor: 'já comparou', fraca: true },
+                    { rotulo: 'na semana', pct: 11, valor: 'já fechou', fraca: true }
+                ]
+            },
+            {
+                tipo: 'texto',
+                escuro: true,
+                seloCanto: 'o caminho',
+                titulo: 'Como uma cotação __deveria__ andar:',
+                simbolo: 'processo',
+                simboloCanto: true,
+                texto: 'Nada aqui exige ferramenta nova. Exige que a ordem das coisas pare de depender de alguém lembrar.',
+                etapas: [
+                    { icone: 'conversa', titulo: 'A pergunta já chega com o essencial', texto: 'o cliente responde uma vez, não cinco' },
+                    { icone: 'relogio', titulo: 'O que falta é pedido na hora', texto: 'não no dia seguinte, quando ele já esfriou' },
+                    { icone: 'apolice', titulo: 'A cotação sai com o contexto junto', texto: 'apólice atual, cobertura, histórico' },
+                    { icone: 'cliente', titulo: 'O corretor entra pra recomendar', texto: 'na parte que só gente resolve: qual cobertura faz sentido', alvo: true }
+                ]
+            },
+            {
+                tipo: 'texto',
+                sobretitulo: 'Onde o tempo some:',
+                titulo: 'Cada etapa devolve menos do que recebeu.',
+                pilha: [
+                    { icone: 'conversa', texto: 'perguntas que chegam' },
+                    { icone: 'lupa', texto: 'as que reúnem dado suficiente' },
+                    { icone: 'dinheiro', texto: 'as que viram cotação' },
+                    { icone: 'check', texto: 'as que viram proposta' }
+                ],
+                apoio: 'O funil não afunila no preço. Afunila antes, na coleta.'
+            },
+            {
+                tipo: 'texto',
+                escuro: true,
+                sobretitulo: 'O ponto:',
+                titulo: 'Cotar não é o trabalho do corretor.',
+                destaque: {
+                    texto: 'É o que vem {antes} dele. O que você sabe sobre risco, o cliente não compra em lugar nenhum — juntar dado, ele compra em qualquer um.'
+                }
+            },
+            {
+                tipo: 'fecho',
+                titulo: 'O corretor não é pago pra ((juntar dado)).',
+                apoio: 'É pago pelo que sabe sobre risco. Toda hora gasta na coleta é uma hora que não virou conselho.',
+                simbolo: 'carteira'
+            }
+            ],
+
+            dores: [
+            {
+                tipo: 'capa',
+                sobretitulo: 'Corretora de seguros',
+                titulo: 'As 5 maiores dores de uma corretora de seguros.',
+                apoio: 'Nenhuma delas se resolve trabalhando mais.',
+                simbolo: 'carteira'
+            },
+            {
+                tipo: 'texto',
+                sobretitulo: 'Dor 1 — Cotação',
+                titulo: 'A pergunta chega {crua}.',
+                texto: 'Você recebe a pergunta, mas não recebe nada do que precisa pra responder. Aí começa o vai e volta.',
+                chat: [
+                    { de: 'cliente', texto: 'Oi, quanto fica o seguro do meu carro?', hora: '09:12' },
+                    { de: 'nos', texto: 'Bom dia! Preciso do CPF, modelo, ano e CEP onde dorme', hora: '09:41' },
+                    { de: 'cliente', texto: 'Ah tá, depois te mando', hora: '14:07' }
+                ],
+                simbolo: 'cotacao',
+                simboloCanto: true
+            },
+            {
+                tipo: 'texto',
+                escuro: true,
+                sobretitulo: 'Dor 2 — Renovação',
+                titulo: 'O vencimento não avisa ninguém.',
+                numero: {
+                    valor: '30',
+                    unidade: 'dias',
+                    legenda: 'é a janela entre saber que vence e o cliente decidir. Ela existe — só não dispara sozinha.'
+                },
+                simbolo: 'vigencia',
+                simboloCanto: true
+            },
+            {
+                tipo: 'lista',
+                sobretitulo: 'Dor 3 — Endosso',
+                titulo: 'O pedido pequeno come o {dia inteiro}.',
+                texto: 'Cada um leva poucos minutos. Junte todos de um mês e você tem um funcionário inteiro ocupado.',
+                itens: [
+                    'Trocar o carro da apólice',
+                    'Incluir um condutor',
+                    'Mudar o endereço de pernoite',
+                    'Corrigir um dado do segurado'
+                ],
+                fecho: 'Nenhum aparece em relatório. Todos consomem a equipe.'
+            },
+            {
+                tipo: 'texto',
+                sobretitulo: 'Dor 4 — Sinistro',
+                titulo: 'É onde o cliente decide se fica.',
+                texto: 'É o único momento em que o cliente descobre pra que serviu pagar você o ano inteiro.',
+                confronto: {
+                    ruim: { rotulo: 'Hoje', texto: 'Ele avisa sem saber o que fazer, e a resposta sai no ritmo que der.' },
+                    bom: { rotulo: 'O que ele espera', texto: 'Saber o próximo passo na hora, sem precisar perguntar duas vezes.' }
+                },
+                simbolo: 'sinistro',
+                simboloCanto: true
+            },
+            {
+                tipo: 'texto',
+                escuro: true,
+                sobretitulo: 'Dor 5 — A carteira',
+                titulo: 'Você não sabe o que {tem}.',
+                icones: [
+                    { icone: 'calendario', titulo: 'O que vence este mês?', texto: 'sem abrir planilha' },
+                    { icone: 'lupa', titulo: 'Quantas cotações pararam?', texto: 'e há quanto tempo' },
+                    { icone: 'dinheiro', titulo: 'Quanto se perdeu?', texto: 'em renovação que não voltou' },
+                    { icone: 'grafico', titulo: 'Onde está o gargalo?', texto: 'com número, não com achismo', alvo: true }
+                ],
+                apoio: 'Sem resposta para essas quatro, as outras quatro dores não têm como melhorar.'
+            }
+            ],
+
+            renovacaoInvisivel: [
+            {
+                tipo: 'capa',
+                sobretitulo: 'Corretora de seguros',
+                titulo: 'A renovação que {escapa} sem ninguém perceber.',
+                apoio: 'Ela não é cancelada. Ela nunca chega a ser lembrada.',
+                simbolo: 'vigencia'
+            },
+            {
+                tipo: 'texto',
+                sobretitulo: 'Onde a renovação mora',
+                titulo: 'Ela só sobrevive se alguém {olhar} pra ela antes do prazo.',
+                matriz: {
+                    eixoY: 'quem sabe',
+                    eixoX: 'quem age',
+                    quadrantes: [
+                        { titulo: 'Ninguém sabe', texto: 'a data existe só no papel', vazio: true },
+                        { titulo: 'Só o sistema sabe', texto: 'a informação está lá, mas não chega a ninguém' },
+                        { titulo: 'O cliente sabe', texto: 'e decide por conta própria, sem te ouvir' },
+                        { titulo: 'Você chegou primeiro', texto: 'a renovação vira conversa antes do prazo', alvo: true }
+                    ]
+                }
+            },
+            {
+                tipo: 'texto',
+                escuro: true,
+                titulo: 'O vencimento não manda aviso. Alguém precisa ((ver)) a data.',
+                numero: {
+                    valor: '0',
+                    legenda: 'é quantos alertas uma apólice dispara por conta própria quando o prazo chega. A data fica onde foi anotada — e só vale se alguém for olhar.'
+                },
+                simbolo: 'prazo',
+                simboloCanto: true
+            },
+            {
+                tipo: 'lista',
+                titulo: 'O que passa __antes__ de uma renovação se perder:',
+                itens: [
+                    'A vigência muda de mês sem ninguém marcar',
+                    'A cotação de renovação fica pronta e não sai da tela de quem a fez',
+                    'O aviso, quando existe, chega junto com o vencimento — não antes',
+                    'Quando o cliente pergunta, já está com proposta de outro corretor na mão'
+                ],
+                fecho: 'Cada um desses passos parece pequeno. Juntos, são a apólice indo embora.'
+            },
+            {
+                tipo: 'texto',
+                titulo: 'A diferença não é o {preço} da renovação.',
+                confronto: {
+                    ruim: { rotulo: 'Quando escapa', texto: 'O corretor descobre que perdeu o cliente ao ver a apólice ativa em outra corretora.' },
+                    bom: { rotulo: 'Quando é vista', texto: 'O corretor chega antes do vencimento, com a proposta na mão e a conversa já aberta.' }
+                }
+            },
+            {
+                tipo: 'texto',
+                escuro: true,
+                titulo: 'A atenção ao vencimento não é constante — ela {cai}.',
+                /* escala qualitativa — o comprimento mostra o sentido, não uma medição */
+                barras: [
+                    { rotulo: 'apólice nova', pct: 92, valor: 'todo mundo olha' },
+                    { rotulo: 'meio da vigência', pct: 55, valor: 'já é rotina' },
+                    { rotulo: 'perto do fim', pct: 34, valor: 'some na lista', fraca: true },
+                    { rotulo: 'depois do prazo', pct: 9, valor: 'já foi', fraca: true }
+                ]
+            },
+            {
+                tipo: 'fecho',
+                titulo: 'Renovação não se perde no preço. Se perde no ((silêncio)) antes dele.',
+                apoio: 'A apólice que ninguém olhou a tempo não é uma venda perdida — é uma que nunca chegou a competir.',
+                simbolo: 'apolice'
+            }
+            ],
+
+            umaPorVez: [
+            {
+                tipo: 'capa',
+                sobretitulo: 'Corretora de seguros',
+                titulo: 'Cotar em __cada__ seguradora é entrar de novo, sempre.',
+                apoio: 'O preço não muda pelo número de cliques. O tempo, sim.',
+                simbolo: 'processo'
+            },
+            {
+                tipo: 'texto',
+                titulo: 'O mesmo roteiro, seguradora após seguradora:',
+                etapas: [
+                    { icone: 'telefone', titulo: 'Entrar no site', texto: 'usuário, senha, às vezes verificação' },
+                    { icone: 'apolice', titulo: 'Preencher os dados outra vez', texto: 'os mesmos do site anterior' },
+                    { icone: 'relogio', titulo: 'Esperar o retorno', texto: 'no tempo de cada seguradora, não no seu' },
+                    { icone: 'lupa', titulo: 'Anotar o preço em outro lugar', texto: 'porque nenhum site fala com o próximo' }
+                ],
+                simbolo: 'cotacao',
+                simboloCanto: true
+            },
+            {
+                tipo: 'texto',
+                escuro: true,
+                titulo: 'Comparar direito custa {tempo} — a questão é de quem.',
+                matriz: {
+                    eixoY: 'quantas seguradoras',
+                    eixoX: 'quanto tempo leva',
+                    quadrantes: [
+                        { titulo: 'Poucas, rápido', texto: 'a cotação sai cedo, comparando de menos' },
+                        { titulo: 'Muitas, rápido', texto: 'a resposta chega completa e ainda dentro do prazo', alvo: true },
+                        { titulo: 'Poucas, lento', texto: 'nem economizou tempo, nem comparou de verdade', vazio: true },
+                        { titulo: 'Muitas, lento', texto: 'a cotação mais completa é a que chega por último' }
+                    ]
+                }
+            },
+            {
+                tipo: 'lista',
+                titulo: 'O que se repete em __cada__ portal:',
+                itens: [
+                    'Login e senha só daquele sistema',
+                    'O mesmo formulário, preenchido de novo',
+                    'Uma tela de resultado que não conversa com a anterior',
+                    'Um preço que precisa ser copiado à mão para comparar'
+                ],
+                fecho: 'Multiplique isso pelo número de seguradoras que valem a pena consultar.'
+            },
+            {
+                tipo: 'texto',
+                titulo: 'A diferença não está no {preço} de nenhuma seguradora.',
+                confronto: {
+                    ruim: { rotulo: 'Uma por vez', texto: 'A cotação sai completa, mas depois que o cliente já esfriou — ou já fechou com outro corretor.' },
+                    bom: { rotulo: 'Com o preço já reunido', texto: 'A resposta chega comparada, e o corretor entra pra explicar a diferença, não pra ainda buscar o número.' }
+                }
+            },
+            {
+                tipo: 'texto',
+                escuro: true,
+                titulo: 'Enquanto isso, o cliente espera.',
+                texto: 'Você na quinta aba. Ele olhando a primeira resposta que chegou.',
+                chat: [
+                    { de: 'cliente', texto: 'E aí, ficou pra quanto?', hora: '10:20' },
+                    { de: 'nos', texto: 'Já entrei em três, faltam mais duas pra te passar o melhor preço', hora: '11:45' },
+                    { de: 'cliente', texto: 'Beleza, manda quando fechar', hora: '11:50' }
+                ],
+                nota: 'Ele não está sendo paciente. Está esfriando.',
+                simbolo: 'conversa',
+                simboloCanto: true
+            },
+            {
+                tipo: 'texto',
+                titulo: 'A atenção {esvazia} a cada portal aberto.',
+                /* escala qualitativa — o comprimento mostra o sentido, não uma medição */
+                barras: [
+                    { rotulo: 'primeira seguradora', pct: 88, valor: 'atenção total' },
+                    { rotulo: 'segunda', pct: 64, valor: 'ainda comparando' },
+                    { rotulo: 'terceira', pct: 41, valor: 'só querendo terminar', fraca: true },
+                    { rotulo: 'quarta em diante', pct: 18, valor: 'qualquer preço serve', fraca: true }
+                ]
+            },
+            {
+                tipo: 'fecho',
+                titulo: 'Comparar preço não devia ser um trabalho de __digitação__.',
+                apoio: 'A parte que exige o corretor é decidir qual cobertura serve. A que só exige repetição, não exige corretor nenhum.',
+                simbolo: 'apolice'
+            }
+            ],
+
+            anunciosIA: [
+            {
+                tipo: 'capa',
+                sobretitulo: 'Inteligência artificial',
+                titulo: 'A IA que você usa de graça começou a {vender}.',
+                apoio: 'E o Brasil acabou de entrar no teste.',
+                simbolo: 'conversa'
+            },
+            {
+                tipo: 'texto',
+                sobretitulo: 'O que mudou',
+                titulo: 'Anúncio dentro da conversa.',
+                texto: 'Não é banner piscando no canto da tela. É um bloco pago **dentro** do chat, no meio da resposta que você foi buscar.',
+                estatisticas: [
+                    { valor: '5', legenda: 'países entraram de uma vez. O Brasil é um deles' },
+                    { valor: '2', legenda: 'planos exibem anúncio: o gratuito e o mais barato' },
+                    { valor: '0', legenda: 'perto de saúde e política — por enquanto', fraca: true }
+                ],
+                apoio: 'Quem usa a versão gratuita já está vendo.'
+            },
+            {
+                tipo: 'texto',
+                escuro: true,
+                sobretitulo: 'O que prometeram',
+                titulo: 'No papel, está tudo certo.',
+                texto: 'Antes de você se tranquilizar, repare em quem está fazendo a promessa.',
+                checks: [
+                    'O anúncio não muda a resposta',
+                    'Vem marcado como patrocinado',
+                    'O anunciante não lê a sua conversa'
+                ],
+                apoio: 'Promessa de quem vende o espaço. Ninguém de fora consegue conferir.'
+            },
+            {
+                tipo: 'texto',
+                sobretitulo: 'Como escolhem o que te mostrar',
+                titulo: 'O que você conta vira {alvo}.',
+                texto: 'Você não escolhe o que aparece do lado. Isso é decidido por três coisas que você já entregou sem perceber.',
+                fluxo: ['o que você digita', 'suas conversas antigas', 'seus cliques', 'o anúncio'],
+                apoio: 'A resposta continua neutra. A oferta do lado dela, não.',
+                simbolo: 'processo',
+                simboloCanto: true
+            },
+            {
+                tipo: 'texto',
+                sobretitulo: 'Tem saída',
+                titulo: 'Dá pra desligar. Tem preço.',
+                nota: 'Menos anúncio em troca de menos mensagens por dia.',
+                apoio: 'Ou você paga com dinheiro, ou paga com atenção. Grátis mesmo, não existe.'
+            },
+            {
+                tipo: 'texto',
+                escuro: true,
+                sobretitulo: 'O ponto',
+                titulo: 'Ferramenta gratuita não é ferramenta {neutra}.',
+                destaque: {
+                    texto: 'Alguém está pagando a conta. E quem paga escolhe o que aparece do lado da resposta que você foi buscar.'
+                }
+            },
+            {
+                tipo: 'fecho',
+                titulo: 'Toda IA responde a ((alguém)).',
+                apoio: 'Vale saber a quem antes de confiar uma decisão a ela.',
+                simbolo: 'sinistro'
+            }
+            ]
+
+        };
+
+        /* Ajuste por carrossel, sobre o VISUAL global. Serve para o deck cujo
+           tema não é da corretora não anunciar o nicho no topo. */
+        const VISUAL_POR_DECK = {
+            anunciosIA: { marcaTopo: '' }
+        };
+
+        let VIS = VISUAL;
+
+        const ATIVO = 'anunciosIA';
+        let SLIDES = DECKS[ATIVO];
+
+        /* ── daqui para baixo é a máquina; normalmente não precisa mexer ── */
+
+        /* Traços "à mão": propositalmente tortos. O viewBox é esticado sobre a
+           palavra, então as proporções aqui não importam — só o formato. */
+        /* O traço vai como ATRIBUTO, não só no CSS. Na exportação em PNG o
+           html2canvas serializa o <svg> sozinho e o CSS da página não vai
+           junto — sem os atributos, o desenho sairia como mancha preta. O CSS
+           continua existindo e vence na tela; os atributos são a rede. */
+        const RISCO = 'fill="none" stroke-linecap="round" vector-effect="non-scaling-stroke"';
+
+        const SVG_CIRCULO = `<svg viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true">`
+            + `<path ${RISCO} stroke="#00a3ff" stroke-width="3.5" d="M186 25C179 10 141 3 97 4 51 5 12 15 10 30c-2 15 41 26 90 26 45 0 88-9 90-24 1-9-12-16-32-21"/></svg>`;
+
+        /* O viewBox é alto e o traço fica no rodapé dele de propósito: assim a
+           caixa do SVG SOBREPÕE a palavra em vez de ficar inteiramente abaixo.
+           O html2canvas recorta filho posicionado fora da caixa do pai — era
+           por isso que o rabisco sumia do PNG e o círculo não. */
+        /* O traço fica a 3/4 da altura, com folga sobrando embaixo. A folga é
+           obrigatória: na exportação o SVG é rasterizado sozinho e RECORTA no
+           próprio viewBox — sem margem, a onda saía cortada em pedaços. */
+        const RABISCO_Y = 30 / 40;
+        const SVG_RABISCO = `<svg viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true">`
+            + `<path ${RISCO} stroke="#4f70ff" stroke-width="5" d="M4 30c26-7 52 4 76-1s52-8 76-1"/></svg>`;
+
+        const SVG_SETA = `<svg class="seta" viewBox="0 0 128 96" aria-hidden="true">`
+            + `<path ${RISCO} stroke="#00a3ff" stroke-width="3.5" d="M120 88C104 46 72 18 26 12"/>`
+            + `<path ${RISCO} stroke="#00a3ff" stroke-width="3.5" d="M18 28l8-16 18 6"/></svg>`;
+
+        /* Ordem importa: os delimitadores mais específicos primeiro.
+           O último passo cola a pontuação que vier logo depois da anotação: o
+           <em> é inline-block, o que abre oportunidade de quebra de linha ali,
+           e o "?" acabava sozinho na linha seguinte. */
+        const marcar = t => (t || '')
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\(\((.+?)\)\)/g, `<em class="circulado">$1${SVG_CIRCULO}</em>`)
+            .replace(/__(.+?)__/g, `<em class="rabisco">$1${SVG_RABISCO}</em>`)
+            .replace(/\{(.+?)\}/g, '<em class="marca">$1</em>')
+            .replace(/(<em class="(?:circulado|rabisco|marca)">.*?<\/em>)([?!.,:;)»”]+)/g,
+                     '<span class="cola">$1$2</span>');
+
+        /* O quadro é a moldura tipo janela: só o contorno envolvendo o conteúdo.
+           As outras molduras continuam sendo a barra fina no topo. */
+        const quadro = () => VIS.moldura !== 'janela' ? ''
+            : '<div class="quadro" aria-hidden="true"></div>';
+
+        const topo = () => VIS.moldura === 'janela'
+            ? `<div class="marca-topo"><span>${VIS.marcaTopo || ''}</span><span>@eluminaia</span></div>`
+            : `<div class="moldura ${VIS.moldura}"></div>`;
+
+        const rodape = (i, total) => `
+            <div class="rodape">
+                <div class="selo">${SELO}</div>
+                <div class="trilha">
+                    ${Array.from({ length: total }, (_, n) =>
+                        `<i class="ponto${n === i ? ' on' : ''}"></i>`).join('')}
+                </div>
+            </div>`;
+
+        const corpo = s => {
+            const partes = [];
+            // o dois-pontos final fazia sentido como frase, não como rótulo
+            if (s.sobretitulo) partes.push(`<p class="sobretitulo">${marcar(s.sobretitulo.replace(/\s*:$/, ''))}</p>`);
+            if (s.titulo) {
+                const cls = s.tipo === 'capa'
+                    ? 'titulo maior' + (s.titulo.length <= 52 ? ' enorme' : '')
+                    : (s.itens ? 'titulo menor' : 'titulo');
+                partes.push(`<h2 class="${cls}">${marcar(s.titulo)}</h2>`);
+            }
+            if (s.texto) partes.push(`<p class="texto-corrido">${marcar(s.texto)}</p>`);
+
+            if (s.itens) {
+                partes.push(`<div class="cartao">
+                    <ul>${s.itens.map(i => `<li>${marcar(i)}</li>`).join('')}</ul>
+                    ${s.fecho ? `<p class="fecho">${marcar(s.fecho)}</p>` : ''}
+                </div>`);
+            }
+
+            /* matriz: 4 quadrantes na ordem cima-esq, cima-dir, baixo-esq, baixo-dir.
+               Marque um com alvo:true (o desejado) e outros com vazio:true (ausência). */
+            if (s.matriz) {
+                const q = s.matriz.quadrantes.map(x => `
+                    <div class="quadrante${x.alvo ? ' alvo' : ''}${x.vazio ? ' vazio' : ''}">
+                        <b>${x.titulo}</b>
+                        ${x.texto ? `<span>${x.texto}</span>` : ''}
+                        ${x.selo ? `<span class="selo-mini">${x.selo}</span>` : ''}
+                    </div>`).join('');
+                partes.push(`
+                    <div class="matriz">
+                        <div class="eixoY">${s.matriz.eixoY || ''}</div>
+                        <div class="quadrantes">${q}</div>
+                        <div class="eixoX">${s.matriz.eixoX || ''}</div>
+                    </div>`);
+            }
+
+            /* fluxo: cadeia de etapas; a última entra em destaque por padrão */
+            if (s.fluxo) {
+                partes.push(`<div class="fluxo">${
+                    s.fluxo.map((n, i) =>
+                        `<div class="no${i === s.fluxo.length - 1 ? ' alvo' : ''}">${n}</div>` +
+                        (i < s.fluxo.length - 1 ? '<span class="liga">›</span>' : '')
+                    ).join('')}</div>`);
+            }
+
+            /* confronto: o problema à esquerda (tracejado), a saída à direita */
+            if (s.confronto) {
+                partes.push(`
+                    <div class="confronto">
+                        <div class="ruim">
+                            <span class="rotulo">${s.confronto.ruim.rotulo}</span>
+                            <p>${marcar(s.confronto.ruim.texto)}</p>
+                        </div>
+                        <div class="bom">
+                            <span class="rotulo">${s.confronto.bom.rotulo}</span>
+                            <p>${marcar(s.confronto.bom.texto)}</p>
+                        </div>
+                    </div>`);
+            }
+
+            if (s.checks) {
+                partes.push(`<div class="checks">${
+                    s.checks.map(c => typeof c === 'string'
+                        ? `<div><i>✓</i>${marcar(c)}</div>`
+                        : `<div><i>${icone(c.icone) || '✓'}</i>${marcar(c.texto)}</div>`).join('')}</div>`);
+            }
+
+            /* número: um dado só, do tamanho da página */
+            if (s.numero) {
+                partes.push(`
+                    <div class="numero">
+                        <b>${s.numero.valor}${s.numero.unidade ? ` <i>${s.numero.unidade}</i>` : ''}</b>
+                        ${s.numero.legenda ? `<span>${marcar(s.numero.legenda)}</span>` : ''}
+                    </div>`);
+            }
+
+            /* etapas: passos numerados; marque um com alvo:true */
+            if (s.etapas) {
+                partes.push(`<div class="etapas">${
+                    s.etapas.map((e, n) => `
+                        <div class="passo${e.alvo ? ' alvo' : ''}">
+                            <div class="bola">${e.icone ? icone(e.icone) : n + 1}</div>
+                            <div>
+                                <b>${marcar(e.titulo)}</b>
+                                ${e.texto ? `<span>${marcar(e.texto)}</span>` : ''}
+                            </div>
+                        </div>`).join('')}</div>`);
+            }
+
+            /* barras: `pct` é só o comprimento do traço. Se for publicar número
+               medido, use número seu — aqui a escala é qualitativa de propósito. */
+            if (s.barras) {
+                partes.push(`<div class="barras">${
+                    s.barras.map(b => `
+                        <div class="linha${b.fraca ? ' fraca' : ''}">
+                            <div class="rot">${b.rotulo}</div>
+                            <div class="trilho"><div class="preenche" style="width:${b.pct}%"></div></div>
+                            <div class="valor">${marcar(b.valor || '')}</div>
+                        </div>`).join('')}</div>`);
+            }
+
+            /* chat: de:'cliente' cai à esquerda, qualquer outro à direita */
+            if (s.chat) {
+                partes.push(`<div class="chat">${
+                    s.chat.map(m => `
+                        <div class="balao ${m.de === 'cliente' ? 'deles' : 'nosso'}">
+                            ${marcar(m.texto)}
+                            ${m.hora ? `<span class="hora">${m.hora}</span>` : ''}
+                        </div>`).join('')}</div>`);
+            }
+
+            /* destaque: a frase que sustenta o post */
+            if (s.destaque) {
+                partes.push(`
+                    <div class="destaque">
+                        <span class="aspas">&ldquo;</span>
+                        ${marcar(s.destaque.texto || s.destaque)}
+                        ${s.destaque.autoria ? `<span class="autoria">${s.destaque.autoria}</span>` : ''}
+                    </div>`);
+            }
+
+            /* icones: grade de 2 ou 3 colunas; marque um com alvo:true */
+            if (s.icones) {
+                const tres = s.icones.length % 3 === 0 && s.icones.length > 2;
+                partes.push(`<div class="icones${tres ? ' tres' : ''}">${
+                    s.icones.map(x => `
+                        <div class="caixa${x.alvo ? ' alvo' : ''}">
+                            ${icone(x.icone)}
+                            <b>${marcar(x.titulo)}</b>
+                            ${x.texto ? `<span>${marcar(x.texto)}</span>` : ''}
+                        </div>`).join('')}</div>`);
+            }
+
+            /* estatisticas: 2 ou 3 números lado a lado */
+            if (s.estatisticas) {
+                partes.push(`<div class="estatisticas">${
+                    s.estatisticas.map(x => `
+                        <div${x.fraca ? ' class="fraca"' : ''}>
+                            <b>${x.valor}</b>
+                            <span>${marcar(x.legenda)}</span>
+                        </div>`).join('')}</div>`);
+            }
+
+            /* pilha: camadas que afunilam até a última */
+            if (s.pilha) {
+                partes.push(`<div class="pilha">${
+                    s.pilha.map(x => typeof x === 'string'
+                        ? `<div>${marcar(x)}</div>`
+                        : `<div>${icone(x.icone)}${marcar(x.texto)}</div>`).join('')}</div>`);
+            }
+
+            /* símbolo: a ilustração que dá assunto visual ao slide */
+            if (s.simbolo) partes.push(simbolo(s.simbolo, s.simboloCanto ? 'canto' : ''));
+
+            /* radial: um centro com satélites dos dois lados */
+            if (s.radial) {
+                const meio = Math.ceil(s.radial.satelites.length / 2);
+                const coluna = (lista, lado) => `<div class="lado ${lado}">${
+                    lista.map(x => `
+                        <div class="sat">
+                            <div class="caixa">${icone(x.icone)}</div>
+                            <div><b>${x.titulo}</b>${x.texto ? `<small>${x.texto}</small>` : ''}</div>
+                        </div>`).join('')}</div>`;
+                partes.push(`
+                    <div class="radial">
+                        ${coluna(s.radial.satelites.slice(0, meio), 'esquerda')}
+                        <div class="centro"><b>${s.radial.centro.titulo}</b><span>${s.radial.centro.rotulo || ''}</span></div>
+                        ${coluna(s.radial.satelites.slice(meio), 'direita')}
+                    </div>`);
+            }
+
+            if (s.apoio) partes.push(`<p class="apoio">${marcar(s.apoio)}</p>`);
+            if (s.nota) partes.push(`<div class="nota-area">${SVG_SETA}<div class="nota">${marcar(s.nota)}</div></div>`);
+
+            /* rótulo e título são a cabeça e ficam presos no topo; o resto vai
+               para o miolo. O símbolo do canto é absoluto e se posiciona contra
+               o .corpo, então precisa continuar filho direto dele. */
+            const nCabeca = (s.sobretitulo ? 1 : 0) + (s.titulo ? 1 : 0);
+            const cabeca = partes.slice(0, nCabeca).join('');
+            const resto = partes.slice(nCabeca);
+            const canto = resto.filter(x => x.includes('simbolo canto')).join('');
+            const meio = resto.filter(x => !x.includes('simbolo canto')).join('');
+
+            return `<div class="corpo">${cabeca}<div class="miolo">${meio}</div>${canto}</div>`;
+        };
+
+        document.body.classList.add('pele-' + VISUAL.pele, 'cantos-' + VISUAL.cantos);
+
+        const htmlDoSlide = (s, i, total) => `
+            <section class="slide${(s.tipo === 'capa' || s.tipo === 'fecho' || s.escuro) ? ' escuro' : ''}${s.tipo === 'capa' ? ' capa' : ''}">
+                ${quadro()}
+                ${s.seloCanto ? `<div class="selo-canto">${s.seloCanto}</div>` : ''}
+                ${topo()}
+                ${corpo(s)}
+                ${rodape(i, total)}
+            </section>`;
+
+        const saida = document.getElementById('saida');
+        const painel = document.getElementById('painel');
+
+        /* nome de exibição: sai do título da capa, então acompanha o conteúdo
+           sozinho — nada de manter uma lista de rótulos em paralelo. */
+        const nomeDoDeck = slides => (slides[0].titulo || slides[0].sobretitulo || '')
+            .replace(/[{}]|\(\(|\)\)|__/g, '').trim();
+
+        async function copiarUm(i) {
+            const p = lerPedidos()[i];
+            try { await navigator.clipboard.writeText(textoDoPedido(p)); avisar('✓ copiado — cole na conversa'); }
+            catch (e) { console.log(textoDoPedido(p)); avisar('texto no console'); }
+        }
+
+        function renderizarDeck(nome) {
+            VIS = { ...VISUAL, ...(VISUAL_POR_DECK[nome] || {}) };
+            SLIDES = DECKS[nome];
+            DECK_ATUAL = nome;
+            saida.className = '';
+            saida.innerHTML = SLIDES.map((s, i) => htmlDoSlide(s, i, SLIDES.length)).join('');
+            document.getElementById('contador').textContent = `${nome} · ${SLIDES.length} slides · 1080×1350`;
+            document.getElementById('voltar').hidden = false;
+            document.getElementById('baixarPng').hidden = false;
+            document.getElementById('exportarPdf').hidden = false;
+            document.getElementById('diagnostico').hidden = false;
+            document.getElementById('copiarPendentes').hidden = true;
+        }
+
+        /* ══════════ FILA DE PEDIDOS ══════════
+           A página não tem servidor e não conversa com o Claude — ele só roda
+           quando você manda mensagem. Então a fila serve para ANOTAR: os temas
+           ficam salvos no navegador e, quando você pedir "faz os pendentes",
+           ele lê tudo daqui de uma vez. Evita ter que lembrar e redigitar. */
+        const CHAVE = 'elumina-pedidos';
+
+        const lerPedidos = () => {
+            try { return JSON.parse(localStorage.getItem(CHAVE)) || []; }
+            catch (e) { return []; }
+        };
+
+        const salvarPedidos = lista => localStorage.setItem(CHAVE, JSON.stringify(lista));
+
+        function adicionarPedido(tema, slides, obs) {
+            const lista = lerPedidos();
+            lista.push({ tema, slides: Number(slides) || 8, obs: obs || '', criadoEm: new Date().toISOString().slice(0, 10) });
+            salvarPedidos(lista);
+            renderizarGaleria();
+        }
+
+        function removerPedido(i) {
+            const lista = lerPedidos();
+            lista.splice(i, 1);
+            salvarPedidos(lista);
+            renderizarGaleria();
+        }
+
+        function textoDoPedido(p) {
+            return `Novo carrossel — tema: ${p.tema}. ${p.slides} slides.` + (p.obs ? ` Observações: ${p.obs}` : '');
+        }
+
+        async function copiarPendentes() {
+            const lista = lerPedidos();
+            if (!lista.length) return;
+            const txt = lista.length === 1 ? textoDoPedido(lista[0])
+                : 'Cria estes carrosséis:\n' + lista.map((p, i) => `${i + 1}. ${textoDoPedido(p)}`).join('\n');
+            try { await navigator.clipboard.writeText(txt); avisar('✓ copiado — cole na conversa'); }
+            catch (e) { avisar('não consegui copiar; o texto está no console'); console.log(txt); }
+        }
+
+        function abrirFormulario() {
+            const alvo = document.getElementById('slotNovo');
+            alvo.outerHTML = `
+                <form class="formulario" id="slotNovo" onsubmit="return false">
+                    <label>Tema do carrossel
+                        <input id="fTema" placeholder="ex: renovação que escapa" autofocus>
+                    </label>
+                    <label>Quantos slides
+                        <input id="fSlides" type="number" min="4" max="20" value="8">
+                    </label>
+                    <label>Observações (opcional)
+                        <textarea id="fObs" placeholder="ângulo, o que não pode faltar…"></textarea>
+                    </label>
+                    <div class="linha">
+                        <button class="principal" id="fGerar">Gerar agora</button>
+                        <button id="fSalvar">Só anotar</button>
+                        <button id="fCancelar">Cancelar</button>
+                    </div>
+                    <p class="aviso-servidor" id="avisoServidor" hidden></p>
+                </form>`;
+            document.getElementById('fSalvar').onclick = () => {
+                const t = document.getElementById('fTema').value.trim();
+                if (!t) return document.getElementById('fTema').focus();
+                adicionarPedido(t, document.getElementById('fSlides').value, document.getElementById('fObs').value.trim());
+            };
+            document.getElementById('fGerar').onclick = gerarAgora;
+            document.getElementById('fCancelar').onclick = renderizarGaleria;
+            document.getElementById('fTema').focus();
+            /* o botão só promete o que o servidor pode cumprir */
+            fetch('/api/status').catch(() => {
+                const b = document.getElementById('fGerar');
+                b.disabled = true;
+                b.style.opacity = '.45';
+                const av = document.getElementById('avisoServidor');
+                av.hidden = false;
+                av.textContent = 'Para gerar direto daqui, rode  node servidor.js  na pasta do carrossel e abra pela porta 4319. Sem ele, dá para anotar e pedir na conversa.';
+            });
+        }
+
+        /* Dispara a geração no servidor e acompanha até terminar. O trabalho
+           pesado é do Claude rodando em `claude -p` do outro lado; aqui só
+           mostramos o andamento e recarregamos quando o deck entrar no
+           arquivo. */
+        async function gerarAgora() {
+            const tema = document.getElementById('fTema').value.trim();
+            if (!tema) return document.getElementById('fTema').focus();
+            const pedido = {
+                tema,
+                slides: document.getElementById('fSlides').value,
+                obs: document.getElementById('fObs').value.trim()
+            };
+
+            const alvo = document.getElementById('slotNovo');
+            alvo.outerHTML = `<div class="formulario" id="slotNovo">
+                <b style="color:#eef2fa;font-size:15px">Gerando “${tema}”…</b>
+                <p style="margin:0;color:#8896ae;font-size:13px" id="andamento">enviando o pedido…</p>
+                <p style="margin:0;color:#66748f;font-size:12px">Costuma levar de um a três minutos. Pode deixar a aba aberta.</p>
+            </div>`;
+            const passo = t => { const e = document.getElementById('andamento'); if (e) e.textContent = t; };
+
+            let r;
+            try {
+                r = await fetch('/api/gerar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(pedido)
+                });
+            } catch (e) {
+                passo('não achei o servidor. Rode  node servidor.js  e abra pela porta 4319.');
+                return;
+            }
+            if (!r.ok) { passo('recusado: ' + ((await r.json().catch(() => ({}))).erro || r.status)); return; }
+
+            passo('o Claude está escrevendo o deck…');
+            const inicio = Date.now();
+            while (Date.now() - inicio < 10 * 60 * 1000) {
+                await new Promise(r => setTimeout(r, 2500));
+                const st = await fetch('/api/status').then(x => x.json()).catch(() => null);
+                if (!st) continue;
+                if (st.estado === 'livre' || st.estado === 'pronto') {
+                    passo('pronto — recarregando…');
+                    return setTimeout(() => location.reload(), 700);
+                }
+                if (st.estado === 'falhou') { passo('falhou. Veja o terminal do servidor.'); return; }
+                passo(`o Claude está escrevendo o deck… (${Math.round((Date.now() - inicio) / 1000)}s)`);
+            }
+            passo('demorou demais. Veja o terminal do servidor.');
+        }
+
+        function renderizarGaleria() {
+            DECK_ATUAL = null;
+            document.getElementById('voltar').hidden = true;
+            document.getElementById('baixarPng').hidden = true;
+            document.getElementById('exportarPdf').hidden = true;
+            document.getElementById('diagnostico').hidden = true;
+            document.getElementById('contador').textContent =
+                `${Object.keys(DECKS).length} carrosséis`;
+
+            saida.className = 'galeria';
+            saida.insertAdjacentHTML('beforebegin', document.getElementById('cabecalhoGaleria')
+                ? '' : `<div class="titulo-galeria" id="cabecalhoGaleria">Carrosséis Elumina
+                    <small>Clique para abrir, revisar e baixar os PNGs em 1080×1350.</small></div>`);
+            const pedidos = lerPedidos();
+            const escapar = t => t.replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
+
+            saida.innerHTML = Object.entries(DECKS).map(([nome, slides]) => {
+                VIS = { ...VISUAL, ...(VISUAL_POR_DECK[nome] || {}) };
+                return `
+                <a class="cartao-deck" href="?deck=${nome}">
+                    <div class="vitrine"><div class="escala">${htmlDoSlide(slides[0], 0, slides.length)}</div></div>
+                    <div class="ficha">
+                        <b>${nomeDoDeck(slides)}</b>
+                        <span>${nome} · ${slides.length} slides</span>
+                    </div>
+                </a>`; }).join('')
+                + pedidos.map((p, i) => `
+                <div class="cartao-pedido">
+                    <span class="marca-pendente">pedido · ${p.criadoEm}</span>
+                    <b>${escapar(p.tema)}</b>
+                    <p>${p.slides} slides${p.obs ? ' · ' + escapar(p.obs) : ''}</p>
+                    <div class="acoes-pedido">
+                        <button onclick="copiarUm(${i})">Copiar</button>
+                        <button onclick="removerPedido(${i})">Remover</button>
+                    </div>
+                </div>`).join('')
+                + `<button class="cartao-novo" id="slotNovo" onclick="abrirFormulario()">
+                        <b>+ Novo tema</b>
+                        <span>anota aqui e peça &ldquo;faz os pendentes&rdquo; na conversa</span>
+                   </button>`;
+
+            const btn = document.getElementById('copiarPendentes');
+            btn.hidden = !pedidos.length;
+            btn.textContent = `Copiar ${pedidos.length} pendente${pedidos.length > 1 ? 's' : ''}`;
+
+            /* a miniatura é o slide real encolhido; a escala depende da largura
+               do cartão, que só existe depois do layout */
+            saida.querySelectorAll('.vitrine').forEach(v => {
+                v.querySelector('.escala').style.transform = `scale(${v.clientWidth / 1080})`;
+            });
+        }
+
+        let DECK_ATUAL = null;
+        const pedido = new URLSearchParams(location.search).get('deck');
+        if (pedido && DECKS[pedido]) renderizarDeck(pedido);
+        else renderizarGaleria();
+
+        /* ── posicionamento dos traços à mão ──────────────────────────────
+           Por que em JS: o traço tem que abraçar a MANCHA da palavra, e a
+           mancha depende da baseline e das métricas do glifo. Em CSS só dá
+           pra mirar na caixa de linha, que muda de altura conforme o
+           line-height de cada estilo (1.04 no título, 1.5 no apoio) — foi o
+           que jogou o círculo uma linha acima da palavra.
+           Aqui a baseline vem de uma âncora de altura zero e a mancha vem do
+           measureText do canvas. Roda depois das fontes carregarem, senão as
+           métricas medidas são as da fonte de fallback. */
+        const medidor = document.createElement('canvas').getContext('2d');
+
+        /* y da baseline: âncora de altura zero alinhada por vertical-align */
+        function baselineDe(el) {
+            const a = document.createElement('i');
+            a.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline';
+            el.appendChild(a);
+            const y = a.getBoundingClientRect().bottom;
+            a.remove();
+            return y;
+        }
+
+        /* topo e base da tinta real do texto (não da caixa de linha) */
+        function mancha(el) {
+            const cs = getComputedStyle(el);
+            medidor.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+            const m = medidor.measureText(el.textContent);
+            const b = baselineDe(el);
+            return { topo: b - m.actualBoundingBoxAscent, base: b + m.actualBoundingBoxDescent };
+        }
+
+        function posicionarDesenhos() {
+            document.querySelectorAll('.circulado, .rabisco').forEach(el => {
+                const svg = el.querySelector('svg');
+                if (!svg) return;
+
+                const tinta = mancha(el);
+                const corpo = parseFloat(getComputedStyle(el).fontSize);
+                const topoCaixa = el.getBoundingClientRect().top;
+
+                let altura;
+                if (el.classList.contains('circulado')) {
+                    const folga = corpo * 0.17;          // respiro do traço em volta
+                    svg.style.top = (tinta.topo - topoCaixa - folga) + 'px';
+                    altura = tinta.base - tinta.topo + folga * 2;
+                } else {
+                    /* A caixa começa no topo da tinta (é o que faz o desenho
+                       sobreviver à exportação) e o traço mora a RABISCO_Y dela.
+                       A altura sai de onde o traço precisa cair: um pouco
+                       abaixo da palavra, sem entrar na linha de baixo.
+                       Antes era um valor arbitrário e o traço invadia 15px. */
+                    svg.style.top = (tinta.topo - topoCaixa) + 'px';
+                    const quedaDesejada = (tinta.base - tinta.topo) + corpo * 0.09;
+                    altura = quedaDesejada / RABISCO_Y;
+                }
+                svg.style.height = altura + 'px';
+
+                /* Largura e altura como ATRIBUTO, não só via CSS. Na exportação o
+                   html2canvas serializa cada <svg> isolado; sem dimensão
+                   intrínseca ele fica sem tamanho e é descartado — era por isso
+                   que o rabisco e o círculo sumiam do PNG. */
+                const largura = el.offsetWidth + 4;      // os -2px de cada lado
+                svg.style.left = '-2px';
+                svg.style.right = 'auto';
+                svg.style.width = largura + 'px';
+                svg.setAttribute('width', Math.round(largura));
+                svg.setAttribute('height', Math.round(altura));
+            });
+        }
+
+        /* ══════════ AUTOVERIFICAÇÃO ══════════
+           Roda a cada carga, depois das fontes e do posicionamento dos traços.
+           Existe porque a saída é IMAGEM: o que estiver fora do lugar não dá
+           erro nenhum, só vira PNG torto — e aí já foi pro feed.
+           As marcas de erro vivem só em @media screen, então não entram no PDF. */
+        const ALTURA_SLIDE = 1350;
+
+        function auditar() {
+            const r = e => e.getBoundingClientRect();
+            const achados = [];
+            const slides = [...document.querySelectorAll('.slide')];
+            const anota = (slide, tipo, detalhe, el) => achados.push({ slide, tipo, detalhe, el });
+
+            if (slides.length > 20) {
+                anota('—', 'carrossel longo demais', `${slides.length} slides; o Instagram aceita 20`, null);
+            }
+
+            /* Nome errado de símbolo ou ícone devolve string vazia e o desenho
+               simplesmente não aparece — sem erro no console. Confere contra o
+               que os SLIDES pediram, não contra o que renderizou. */
+            (DECKS[DECK_ATUAL] || []).forEach((s, i) => {
+                if (s.simbolo && !SIMBOLOS[s.simbolo]) {
+                    anota(i + 1, 'símbolo inexistente', `"${s.simbolo}" — use: ${Object.keys(SIMBOLOS).join(', ')}`, null);
+                }
+                const comIcone = [...(s.icones || []), ...(s.etapas || []), ...(s.pilha || []), ...(s.checks || []),
+                                  ...((s.radial && s.radial.satelites) || [])];
+                comIcone.forEach(x => {
+                    if (x && x.icone && !ICONES[x.icone]) {
+                        anota(i + 1, 'ícone inexistente', `"${x.icone}" em "${x.titulo || x.texto || ''}"`, null);
+                    }
+                });
+            });
+
+            slides.forEach((s, i) => {
+                const n = i + 1;
+                const cx = r(s);
+
+                if (Math.round(cx.height) !== ALTURA_SLIDE) {
+                    anota(n, 'altura fora do formato', `${Math.round(cx.height)}px em vez de ${ALTURA_SLIDE}`, s);
+                }
+
+                /* 1. peça escapando da borda — sai cortada na exportação */
+                s.querySelectorAll('*').forEach(el => {
+                    if (el.closest('svg') && el.tagName !== 'svg') return;
+                    const b = r(el);
+                    if (!b.width || !b.height) return;
+                    const fora = [];
+                    if (b.left < cx.left - 1) fora.push(`${Math.round(cx.left - b.left)}px à esquerda`);
+                    if (b.right > cx.right + 1) fora.push(`${Math.round(b.right - cx.right)}px à direita`);
+                    if (b.top < cx.top - 1) fora.push(`${Math.round(cx.top - b.top)}px acima`);
+                    if (b.bottom > cx.bottom + 1) fora.push(`${Math.round(b.bottom - cx.bottom)}px abaixo`);
+                    if (fora.length) anota(n, 'escapa do slide', `${el.className || el.tagName}: ${fora.join(', ')}`, el);
+                });
+
+                /* 2. texto maior que a caixa: some sem avisar */
+                s.querySelectorAll('h2, p, b, span, div, li').forEach(el => {
+                    if (el.children.length || !el.clientWidth) return;
+                    if (el.scrollWidth > el.clientWidth + 1) {
+                        anota(n, 'texto cortado', `"${el.textContent.trim().slice(0, 34)}"`, el);
+                    }
+                });
+
+                /* 3. corpo maior que o espaço entre moldura e rodapé */
+                const corpo = s.querySelector('.corpo');
+                if (corpo.scrollHeight > corpo.clientHeight + 1) {
+                    anota(n, 'conteúdo não cabe', `sobra ${corpo.scrollHeight - corpo.clientHeight}px — tire texto ou um bloco`, corpo);
+                }
+
+                /* 4. blocos irmãos se sobrepondo — nos DOIS eixos.
+                      Checar só o vertical dava falso positivo com peça posta no
+                      canto: ela divide a altura com o título mas fica ao lado.
+                      O miolo é um invólucro: o que interessa são os filhos dele. */
+                const miolo = corpo.querySelector('.miolo');
+                const blocos = [...corpo.children, ...(miolo ? miolo.children : [])]
+                    .filter(e => e !== miolo && r(e).height > 0);
+                for (let a = 0; a < blocos.length; a++) {
+                    for (let b = a + 1; b < blocos.length; b++) {
+                        const x = r(blocos[a]), y = r(blocos[b]);
+                        const cruzaY = x.top < y.bottom - 2 && y.top < x.bottom - 2;
+                        const cruzaX = x.left < y.right - 2 && y.left < x.right - 2;
+                        if (cruzaY && cruzaX) {
+                            anota(n, 'blocos sobrepostos', `${blocos[a].className} × ${blocos[b].className}`, blocos[b]);
+                        }
+                    }
+                }
+
+                /* 4b. peça absoluta quase toda fora do pai. Na exportação o
+                      html2canvas recorta o que passa da caixa do pai, então ela
+                      sai cortada ou some — foi assim que o rabisco e a seta da
+                      nota sumiram do PNG. */
+                /* offsetParent NÃO existe em elemento SVG — usar isso deixava a
+                   checagem inerte justo nos casos que ela existe para pegar. */
+                const paiPosicionado = el => {
+                    let p = el.parentElement;
+                    while (p && getComputedStyle(p).position === 'static') p = p.parentElement;
+                    return p;
+                };
+                s.querySelectorAll('.simbolo.canto, .circulado svg, .rabisco svg, .selo-canto').forEach(el => {
+                    const pai = paiPosicionado(el);
+                    if (!pai) return;
+                    const b = r(el), p = r(pai);
+                    const largura = Math.min(b.right, p.right) - Math.max(b.left, p.left);
+                    const altura = Math.min(b.bottom, p.bottom) - Math.max(b.top, p.top);
+                    const dentro = Math.max(0, largura) * Math.max(0, altura) / (b.width * b.height);
+                    if (dentro < 0.25) {
+                        anota(n, 'peça fora do pai (some no PNG)',
+                            `${el.className || el.tagName}: só ${Math.round(dentro * 100)}% dentro de ${pai.className.split(' ')[0]}`, el);
+                    }
+                });
+
+                /* 5. decoração por cima de texto. O selo cruza a moldura de
+                      propósito, então só texto conta como colisão. */
+                const cruza = (a, b) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+                s.querySelectorAll('.selo-canto, .nota .seta, .simbolo.canto').forEach(dec => {
+                    const db = r(dec);
+                    s.querySelectorAll('.corpo h2, .corpo p, .corpo b, .corpo li').forEach(t => {
+                        if (t.closest('.nota')) return;
+                        if (cruza(db, r(t))) {
+                            anota(n, 'decoração sobre texto', `${dec.className || dec.tagName} × "${t.textContent.trim().slice(0, 26)}"`, dec);
+                        }
+                    });
+                });
+
+                /* 5b. marcação que não virou nada. Sintaxe errada no texto sai
+                      literal na imagem — o `**` apareceu num slide exatamente
+                      assim, com selo verde. */
+                s.querySelectorAll('.corpo p, .corpo h2, .corpo li, .corpo b, .corpo span').forEach(el => {
+                    if (el.children.length) return;
+                    const sobrou = (el.textContent.match(/\*\*|__|\{|\}|\(\(|\)\)/g) || [])[0];
+                    if (sobrou) anota(n, 'marcação não convertida', `"${sobrou}" em "${el.textContent.trim().slice(0, 34)}"`, el);
+                });
+
+                /* 6. sobra órfã: última linha curtíssima (o "?" sozinho) */
+                s.querySelectorAll('h2, p, .fecho, .etapas b, .quadrante b').forEach(el => {
+                    if (!el.clientWidth) return;
+                    const rg = document.createRange();
+                    rg.selectNodeContents(el);
+                    const linhas = [...rg.getClientRects()].filter(x => x.height > 15);
+                    if (linhas.length < 2) return;
+                    const ultima = linhas.reduce((m, x) => x.top > m.top ? x : m, linhas[0]);
+                    if (ultima.width < el.clientWidth * 0.12) {
+                        anota(n, 'sobra órfã na última linha', `"${el.textContent.trim().slice(-26)}"`, el);
+                    }
+                });
+
+                /* 7. traço à mão desalinhado — ou grande demais.
+                      O defeito original era ALTURA: o círculo tinha 158% da
+                      caixa de linha e invadia a linha de cima. Ficava quase
+                      centrado, então checar só o centro não pegava. */
+                s.querySelectorAll('.circulado').forEach(el => {
+                    const svg = el.querySelector('svg');
+                    if (!svg) return;
+                    const t = mancha(el), b = r(svg), caixa = r(el);
+                    const desvio = Math.round((b.top + b.bottom) / 2 - (t.topo + t.base) / 2);
+
+                    if (Math.abs(desvio) > 4 || b.top > t.topo || b.bottom < t.base) {
+                        anota(n, 'círculo fora da palavra', `"${el.textContent}" desviado ${desvio}px`, el);
+                        return;
+                    }
+
+                    /* O círculo é sempre mais alto que a caixa de linha — é um
+                       traço à mão, transbordar pra espaço vazio é o normal. Só
+                       vira defeito quando encosta em TINTA vizinha. Medir contra
+                       a caixa de linha dava falso positivo. */
+                    const banda = c => ({ top: c.top + c.height * 0.16, bottom: c.bottom - c.height * 0.2, left: c.left, right: c.right });
+                    const encosta = c => b.left < c.right && c.left < b.right && b.top < c.bottom - 3 && c.top < b.bottom - 3;
+
+                    const bloco = el.closest('h2, p, div');
+                    const rg = document.createRange();
+                    rg.selectNodeContents(bloco);
+                    const outrasLinhas = [...rg.getClientRects()].filter(l =>
+                        l.height > 15 && l.width > 4 &&
+                        Math.abs((l.top + l.bottom) / 2 - (caixa.top + caixa.bottom) / 2) > 20);
+
+                    const vizinhos = [...corpo.children].filter(x => x !== bloco && !x.contains(el));
+
+                    if (outrasLinhas.some(l => encosta(banda(l)))) {
+                        anota(n, 'círculo encostando na linha vizinha', `"${el.textContent}"`, el);
+                    } else if (vizinhos.some(v => encosta(banda(r(v))))) {
+                        anota(n, 'círculo encostando no bloco vizinho', `"${el.textContent}"`, el);
+                    }
+                });
+                /* Compara a altura do TRAÇO, não do topo da caixa: a caixa cobre a
+                   palavra de propósito (é o que faz o desenho sobreviver à
+                   exportação) e o traço mora no rodapé dela. */
+                s.querySelectorAll('.rabisco').forEach(el => {
+                    const svg = el.querySelector('svg');
+                    if (!svg) return;
+                    const t = mancha(el), b = r(svg);
+                    const yTraco = b.top + b.height * RABISCO_Y;
+                    if (yTraco < t.base - 2) anota(n, 'rabisco em cima do texto', `"${el.textContent}"`, el);
+                });
+            });
+
+            return achados;
+        }
+
+        function mostrarDiagnostico() {
+            document.querySelectorAll('.tem-erro').forEach(e => e.classList.remove('tem-erro'));
+            const achados = auditar();
+            const caixa = document.getElementById('diagnostico');
+            if (!caixa) return;
+
+            if (!achados.length) {
+                caixa.className = 'ok';
+                caixa.textContent = `✓ ${document.querySelectorAll('.slide').length} slides, tudo no lugar`;
+                console.log('%c✓ carrossel sem erros de layout', 'color:#22c55e;font-weight:600');
+                return;
+            }
+
+            achados.forEach(a => a.el && a.el.classList.add('tem-erro'));
+            caixa.className = 'ruim';
+            caixa.textContent = `⚠ ${achados.length} ${achados.length === 1 ? 'problema' : 'problemas'} — ver console`;
+            caixa.onclick = () => {
+                const primeiro = achados.find(a => a.el);
+                if (primeiro) primeiro.el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+            };
+            console.group('%c⚠ problemas de layout no carrossel', 'color:#ef4444;font-weight:600');
+            console.table(achados.map(({ slide, tipo, detalhe }) => ({ slide, tipo, detalhe })));
+            console.groupEnd();
+        }
+
+        /* `currentColor` não sobrevive à exportação: o html2canvas serializa cada
+           <svg> sozinho, o CSS não acompanha, e a cor cai para o preto inicial —
+           símbolo branco em slide escuro simplesmente sumia do PNG.
+           Aqui o navegador resolve a cor de cada SVG no contexto real e o valor
+           é gravado como atributo. Vale para qualquer contexto, inclusive os que
+           ainda não existem (ícone branco em cartão cobalto, e por aí). */
+        function fixarCores() {
+            document.querySelectorAll('.simbolo svg, svg.ic').forEach(svg => {
+                const cor = getComputedStyle(svg).color;
+                svg.style.color = cor;
+
+                /* A camada de volume é uma sombra: no claro, tinta translúcida
+                   funciona. No escuro nada é mais escuro que o fundo, e a mesma
+                   regra pintava um borrão cinza claro atrás do desenho. Ali ela
+                   vira eco em cobalto — lê como profundidade, não como sujeira. */
+                const escuro = !!svg.closest('.slide.escuro');
+                svg.querySelectorAll('[data-volume]').forEach(g => {
+                    g.setAttribute('fill', escuro ? '#4f70ff' : cor);
+                    g.setAttribute('opacity', escuro ? '0.3' : '0.13');
+                });
+                svg.querySelectorAll('[data-chao]').forEach(e => {
+                    e.setAttribute('fill', cor);
+                    e.setAttribute('opacity', escuro ? '0' : '0.12');
+                });
+
+                svg.querySelectorAll('[stroke="currentColor"]').forEach(e => e.setAttribute('stroke', cor));
+                svg.querySelectorAll('[fill="currentColor"]').forEach(e => e.setAttribute('fill', cor));
+
+                /* mesma rede do traço à mão: tamanho como atributo */
+                const b = svg.getBoundingClientRect();
+                if (b.width && b.height) {
+                    svg.setAttribute('width', Math.round(b.width));
+                    svg.setAttribute('height', Math.round(b.height));
+                }
+            });
+        }
+
+        function verificar() {
+            posicionarDesenhos();
+            fixarCores();
+            if (DECK_ATUAL) mostrarDiagnostico();
+        }
+
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(verificar);
+        } else {
+            window.addEventListener('load', verificar);
+        }
+
+        /* reflow por zoom/janela muda quebra de linha — reavalia */
+        let repique;
+        addEventListener('resize', () => { clearTimeout(repique); repique = setTimeout(verificar, 250); });
+
+        /* ══════════ EXPORTAR PNG ══════════
+           Sai 1080×1350 exato, que é o 4:5 do feed — nada de converter PDF.
+           `scale: 1` é obrigatório: sem isso o html2canvas multiplica pelo
+           devicePixelRatio e o arquivo sai com tamanho errado.
+           A marca de erro do diagnóstico vive em @media screen, e o
+           html2canvas renderiza estilos de tela — então ela sairia dentro do
+           PNG. Por isso as classes são removidas durante a captura. */
+        const LARGURA = 1080, ALTURA = 1350;
+
+        function avisar(txt) { document.getElementById('progresso').textContent = txt; }
+
+        function baixar(blob, nome) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = nome;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 4000);
+        }
+
+        async function exportarPngs() {
+            if (typeof html2canvas === 'undefined') {
+                avisar('html2canvas não carregou — sem internet? Use Exportar PDF.');
+                return;
+            }
+
+            const slides = [...document.querySelectorAll('.slide')];
+            const marcados = [...document.querySelectorAll('.tem-erro')];
+            const problemas = auditar().length;
+            if (problemas && !confirm(`O diagnóstico acusa ${problemas} problema(s). Exportar mesmo assim?`)) return;
+
+            marcados.forEach(e => e.classList.remove('tem-erro'));
+            const botao = document.getElementById('baixarPng');
+            botao.disabled = true;
+
+            try {
+                for (let i = 0; i < slides.length; i++) {
+                    avisar(`gerando ${i + 1}/${slides.length}…`);
+                    const canvas = await html2canvas(slides[i], {
+                        width: LARGURA,
+                        height: ALTURA,
+                        scale: 1,
+                        useCORS: true,
+                        backgroundColor: null,
+                        logging: false
+                    });
+                    const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+                    baixar(blob, `elumina-${DECK_ATUAL}-${String(i + 1).padStart(2, '0')}.png`);
+                    // o Chrome engasga com downloads em rajada
+                    await new Promise(r => setTimeout(r, 350));
+                }
+                avisar(`✓ ${slides.length} PNGs baixados`);
+            } catch (e) {
+                avisar('falhou: ' + e.message);
+                console.error(e);
+            } finally {
+                marcados.forEach(e => e.classList.add('tem-erro'));
+                botao.disabled = false;
+            }
+        }
+
+        document.getElementById('baixarPng').addEventListener('click', exportarPngs);
+
+    </script>
+</body>
+
+</html>

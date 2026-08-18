@@ -1,34 +1,767 @@
-/* Custom Styles if needed, mostly handled by Tailwind */
+:root {
+    --page: #f6f8fb;
+    --surface: #ffffff;
+    --surface-soft: #eaf0f6;
+    --ink: #111827;
+    --muted: #526173;
+    --line: #d8e0e9;
+    --accent: #1d4ed8;
+    --accent-strong: #173ea8;
+    --accent-soft: #dbe7ff;
+    --radius: 16px;
+    --shadow: 0 24px 70px -44px rgba(15, 31, 54, 0.45);
+}
 
-/* Smooth scrolling is handled by class="scroll-smooth" in HTML */
+* {
+    box-sizing: border-box;
+}
 
-/* Example: Custom Scrollbar for a truly premium feel */
+html {
+    background: var(--page);
+    color-scheme: light dark;
+    scroll-padding-top: 80px;
+}
+
+body {
+    /* Rede de segurança, não correção de bug: auditado em 375/768/1280/1920px e o
+       documento não tem estouro horizontal nenhum mesmo com esta linha desativada.
+       Fica só para blindar seções full-bleed (hero e scroll-story usam 100dvh +
+       elementos posicionados) contra regressão futura. */
+    overflow-x: hidden;
+    background: var(--page) !important;
+    color: var(--ink) !important;
+    font-family: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    text-rendering: optimizeLegibility;
+}
+
+body::selection {
+    background: var(--accent);
+    color: #f8fafc;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    font-family: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    text-wrap: balance;
+}
+
+p {
+    text-wrap: pretty;
+}
+
+a,
+button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    outline-offset: 4px;
+}
+
+img {
+    color: transparent;
+}
+
 ::-webkit-scrollbar {
-    width: 8px;
-    background-color: #060606;
+    width: 9px;
+    background: var(--page);
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #334155;
-    border-radius: 4px;
+    border: 2px solid var(--page);
+    border-radius: 999px;
+    background: #9aa8b8;
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background-color: #475569;
+.gradient-bg {
+    background: var(--accent) !important;
 }
 
-/* Transformando o Header em Sólido para proteger a Logo */
 .glass-nav {
-    background-color: #060606 !important; /* A cor exata que você achou no scrollbar */
-    backdrop-filter: none !important;    /* Remove o efeito de vidro que mostra o erro */
-    -webkit-backdrop-filter: none !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Linha sutil para separar do conteúdo */
-    transition: background-color 0.3s ease;
+    background: color-mix(in srgb, var(--page) 92%, transparent) !important;
+    border-bottom: 1px solid color-mix(in srgb, var(--line) 82%, transparent) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(140%) !important;
+    backdrop-filter: blur(18px) saturate(140%) !important;
 }
 
-/* Modal Custom Scrollbar */
+.glass-nav > div:first-child > div {
+    height: 72px !important;
+}
+
+.glass-nav img,
+.site-home footer img,
+.site-blog footer img,
+.site-article footer img {
+    filter: brightness(0) saturate(100%);
+}
+
+.glass-nav nav a,
+.glass-nav #mobile-menu a:not(.gradient-bg),
+.glass-nav button {
+    color: var(--muted) !important;
+}
+
+.glass-nav nav a:hover,
+.glass-nav #mobile-menu a:not(.gradient-bg):hover,
+.glass-nav button:hover {
+    color: var(--ink) !important;
+}
+
+.glass-nav nav a span {
+    background: var(--accent) !important;
+}
+
+.glass-nav .nav-cta {
+    border: 1px solid var(--ink);
+    border-radius: 12px !important;
+    background: var(--ink) !important;
+    color: var(--page) !important;
+    box-shadow: none !important;
+}
+
+.site-home .glass-nav {
+    background: rgba(5, 6, 7, 0.9) !important;
+    border-bottom-color: #1b1e22 !important;
+}
+
+.site-home .glass-nav img {
+    filter: none;
+}
+
+.site-home .glass-nav nav a,
+.site-home .glass-nav button,
+.site-home .glass-nav #mobile-menu a:not(.gradient-bg) {
+    color: #8b919a !important;
+}
+
+.site-home .glass-nav nav a:hover,
+.site-home .glass-nav button:hover,
+.site-home .glass-nav #mobile-menu a:not(.gradient-bg):hover {
+    color: #f4f6f8 !important;
+}
+
+.site-home .glass-nav .nav-cta {
+    border-color: #24282e;
+    background: #17191d !important;
+    color: #f4f6f8 !important;
+}
+
+.site-home #mobile-menu {
+    background: #090a0c !important;
+    border-bottom-color: #1b1e22 !important;
+}
+
+.glass-nav .nav-cta:active,
+.button-primary:active,
+.button-secondary:active {
+    transform: translateY(1px) !important;
+}
+
+#mobile-menu {
+    background: var(--page) !important;
+    border-color: var(--line) !important;
+}
+
+.site-home main * {
+    min-width: 0;
+}
+
+.site-home main > section,
+.site-blog main,
+.site-article main {
+    background: var(--page) !important;
+    color: var(--ink) !important;
+}
+
+.site-home .bg-surface,
+.site-home .bg-surface-alt,
+.site-home .section-dark {
+    background: var(--page) !important;
+    color: var(--ink) !important;
+}
+
+.site-home .section-dark .text-white,
+.site-home .section-dark .text-gray-200,
+.site-home .section-dark .text-gray-300,
+.site-home .section-dark .text-gray-400,
+.site-home .section-dark .text-gray-500 {
+    color: var(--ink) !important;
+}
+
+.site-home .hero-premium {
+    position: relative;
+    display: flex;
+    min-height: 100dvh;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+    background: #050607 !important;
+    color: #f5f7fa !important;
+}
+
+.hero-shell {
+    width: 100%;
+    max-width: var(--el-container);
+    margin: 0 auto;
+    padding: 132px var(--el-gutter) 84px;
+}
+
+.hero-copy {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.hero-copy h1 {
+    width: 100%;
+    max-width: 1120px;
+    margin: 0;
+    font-size: clamp(3.6rem, 7.1vw, 7rem);
+    font-weight: 480;
+    letter-spacing: -0.07em;
+    line-height: 0.92;
+}
+
+.hero-copy h1 > span {
+    display: block;
+}
+
+.hero-line-muted {
+    color: #34373c;
+}
+
+.hero-line-strong {
+    color: #f4f6f8;
+}
+
+.hero-accent {
+    color: #5f8cff;
+}
+
+.hero-summary {
+    max-width: 45rem;
+    margin: 36px auto 0;
+    color: #858b94;
+    font-size: clamp(1rem, 1.35vw, 1.15rem);
+    line-height: 1.55;
+}
+
+.hero-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.button-primary,
+.button-secondary {
+    display: inline-flex;
+    min-height: 52px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-radius: 12px;
+    padding: 0 22px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease;
+}
+
+.button-primary {
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #f8fafc;
+}
+
+.button-primary:hover {
+    background: var(--accent-strong);
+    border-color: var(--accent-strong);
+    transform: translateY(-2px);
+}
+
+.button-secondary {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+}
+
+.button-secondary:hover {
+    border-color: #aeb9c7;
+    transform: translateY(-2px);
+}
+
+.site-home .capability-strip {
+    background: var(--surface) !important;
+    /* py-10 do Tailwind (40px) + a sobreposição da seção seguinte, para a curva pousar
+       em espaço vazio em vez de cobrir a linha de ícones. */
+    padding-bottom: calc(40px + var(--el-boleado)) !important;
+}
+
+.site-home .capability-strip p {
+    color: var(--muted) !important;
+}
+
+.site-home .capability-strip .reveal-group {
+    justify-content: space-between !important;
+}
+
+.site-home .capability-strip .reveal-group span {
+    color: var(--muted) !important;
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.site-home .capability-strip svg {
+    color: var(--accent);
+}
+
+.section-heading {
+    max-width: 760px;
+    margin-bottom: 54px;
+}
+.section-heading h2,
+.about-copy h2,
+.final-cta h2,
+#solucoes h2,
+#blog h2,
+.site-home section:has(.faq-item) h2 {
+    margin: 0;
+    color: var(--ink) !important;
+    font-size: clamp(2.25rem, 4vw, 3.8rem);
+    font-weight: 480;
+    letter-spacing: -0.045em;
+    line-height: 1.02;
+}
+.section-heading p,
+.about-copy > p,
+.final-cta p,
+#solucoes > div > .reveal > p {
+    max-width: 62ch;
+    margin: 20px 0 0 !important;
+    color: var(--muted) !important;
+    font-size: 1.08rem;
+    line-height: 1.7;
+}
+
+#solucoes {
+    background: var(--page) !important;
+}
+
+#solucoes > div > .reveal:first-child {
+    max-width: 760px;
+    margin: 0 0 54px !important;
+    text-align: left !important;
+}
+
+#solucoes > div > .reveal-group {
+    display: grid !important;
+    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+    gap: 18px !important;
+}
+
+#solucoes > div > .reveal-group > :nth-child(1) {
+    grid-column: span 7;
+}
+
+#solucoes > div > .reveal-group > :nth-child(2) {
+    grid-column: span 5;
+    background: var(--surface-soft);
+}
+
+#solucoes > div > .reveal-group > :nth-child(3) {
+    grid-column: 3 / span 8;
+}
+
+.light-card {
+    border: 1px solid var(--line) !important;
+    border-radius: var(--radius) !important;
+    background: var(--surface) !important;
+    box-shadow: none !important;
+    transition: border-color 180ms ease, transform 180ms ease !important;
+}
+
+.light-card:hover {
+    border-color: #aeb9c7 !important;
+    box-shadow: none !important;
+    transform: translateY(-3px) !important;
+}
+
+.service-label {
+    margin-bottom: 16px;
+    color: var(--accent) !important;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.light-card h3,
+.light-card strong,
+.faq-item span {
+    color: var(--ink) !important;
+}
+
+.light-card p,
+.light-card li,
+.light-card span,
+.faq-item div {
+    color: var(--muted) !important;
+}
+
+.light-card > div:first-child > div:first-child,
+.verticals-grid article > div,
+.diagnostic-grid article > div {
+    border-radius: 12px !important;
+}
+
+.light-card a {
+    border-radius: 12px !important;
+}
+
+.operating-band {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: var(--surface) !important;
+}
+
+.operating-band > div > div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--ink);
+    font-weight: 560;
+}
+
+.operating-band svg {
+    width: 22px;
+    color: var(--accent);
+    stroke-width: 1.7;
+}
+
+.verticals-section {
+    background: var(--page) !important;
+}
+
+.verticals-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.verticals-grid article {
+    min-height: 240px;
+    padding: 34px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+
+.verticals-grid article:nth-child(1) {
+    grid-column: span 7;
+    background: var(--accent);
+}
+
+.verticals-grid article:nth-child(2) {
+    grid-column: span 5;
+}
+
+.verticals-grid article:nth-child(3) {
+    grid-column: span 5;
+}
+
+.verticals-grid article:nth-child(4) {
+    grid-column: span 7;
+    background: var(--surface-soft);
+}
+
+.verticals-grid svg {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 46px;
+    color: var(--accent);
+    stroke-width: 1.6;
+}
+
+.verticals-grid article:nth-child(1) svg,
+.verticals-grid article:nth-child(1) h3,
+.verticals-grid article:nth-child(1) p {
+    color: #f8fafc;
+}
+
+.verticals-grid h3 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 1.45rem;
+    font-weight: 560;
+}
+
+.verticals-grid p {
+    max-width: 48ch;
+    margin: 12px 0 0;
+    color: var(--muted);
+    line-height: 1.65;
+}
+
+.measurement-section {
+    background: var(--surface-soft) !important;
+}
+
+.measurement-grid {
+    display: grid;
+    grid-template-columns: 1.18fr 0.82fr;
+    grid-template-rows: repeat(2, minmax(180px, auto));
+    gap: 18px;
+}
+
+.measurement-grid article {
+    padding: 34px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+
+.measurement-grid .measurement-feature {
+    grid-row: 1 / span 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: var(--ink);
+}
+
+.measurement-grid svg {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 44px;
+    color: var(--accent);
+    stroke-width: 1.6;
+}
+
+.measurement-grid .measurement-feature svg,
+.measurement-grid .measurement-feature h3,
+.measurement-grid .measurement-feature p {
+    color: #f8fafc;
+}
+
+.measurement-grid h3 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 1.55rem;
+    font-weight: 560;
+}
+
+.measurement-grid p {
+    max-width: 42ch;
+    margin: 12px 0 0;
+    color: var(--muted);
+    line-height: 1.65;
+}
+
+.about-section {
+    background: var(--page) !important;
+}
+
+.about-media {
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface-soft);
+}
+
+.about-media img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
+
+.about-copy ul {
+    display: grid;
+    gap: 0;
+    margin: 34px 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+}
+
+.about-copy li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.about-copy svg {
+    width: 21px;
+    flex: 0 0 auto;
+    color: var(--accent);
+    stroke-width: 1.7;
+}
+
+.diagnostic-section {
+    background: var(--surface) !important;
+}
+
+.diagnostic-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr 1fr;
+    gap: 18px;
+}
+
+.diagnostic-grid article {
+    min-height: 270px;
+    padding: 32px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--page);
+}
+
+.diagnostic-grid article:nth-child(2) {
+    background: var(--surface-soft);
+}
+
+.diagnostic-grid svg {
+    width: 27px;
+    height: 27px;
+    margin-bottom: 58px;
+    color: var(--accent);
+    stroke-width: 1.6;
+}
+
+.diagnostic-grid h3 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 1.45rem;
+    font-weight: 560;
+}
+
+.diagnostic-grid p {
+    margin: 12px 0 0;
+    color: var(--muted);
+    line-height: 1.65;
+}
+
+#blog {
+    background: var(--page) !important;
+}
+
+#blog > div > h2,
+.site-home section:has(.faq-item) h2 {
+    margin-bottom: 48px !important;
+    text-align: left !important;
+}
+
+#home-blog-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 18px !important;
+}
+
+#home-blog-grid article:first-child {
+    grid-column: 1 / -1;
+    display: grid !important;
+    grid-template-columns: 0.9fr 1.1fr;
+}
+
+#home-blog-grid article:first-child > div:first-child {
+    height: 100% !important;
+    min-height: 320px;
+}
+
+#home-blog-grid article img {
+    filter: saturate(0.78) contrast(1.03);
+}
+
+.site-home section:has(.faq-item) {
+    background: var(--surface-soft) !important;
+}
+
+.faq-item {
+    border-width: 0 0 1px !important;
+    border-color: var(--line) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+}
+
+.faq-item button,
+.faq-answer,
+.faq-answer > div {
+    background: transparent !important;
+}
+
+.faq-item button {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.faq-answer > div {
+    border: 0 !important;
+    padding: 0 42px 24px 0 !important;
+}
+
+.final-cta {
+    border-top: 1px solid var(--line);
+    background: var(--surface) !important;
+}
+
+.final-cta p {
+    max-width: 650px;
+    margin-right: auto !important;
+    margin-left: auto !important;
+}
+
+.final-cta .button-primary {
+    margin-top: 32px;
+}
+
+.site-home footer,
+.site-blog footer,
+.site-article footer {
+    border-top: 1px solid var(--line) !important;
+    background: var(--page) !important;
+}
+
+.site-home footer a,
+.site-home footer p,
+.site-home footer button,
+.site-blog footer a,
+.site-blog footer p,
+.site-blog footer button,
+.site-article footer a,
+.site-article footer p,
+.site-article footer button {
+    color: var(--muted) !important;
+}
+
+.site-home footer a:hover,
+.site-home footer button:hover,
+.site-blog footer a:hover,
+.site-article footer a:hover {
+    color: var(--ink) !important;
+}
+
+.reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 620ms cubic-bezier(0.16, 1, 0.3, 1), transform 620ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
+    width: 7px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
@@ -36,38 +769,3518 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #334155;
-    border-radius: 20px;
-    border: 2px solid transparent;
-    background-clip: content-box;
+    border: 0;
+    background: #64748b;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: #475569;
+@media (max-width: 1023px) {
+    .hero-copy h1 {
+        max-width: 13ch;
+    }
+
+    #solucoes > div > .reveal-group > :nth-child(n),
+    .verticals-grid article:nth-child(n) {
+        grid-column: span 6;
+    }
 }
 
-/* Custom Interval Bounce Animation (every 5s) */
-@keyframes bounce-interval {
+@media (max-width: 767px) {
+    .glass-nav > div:first-child > div {
+        height: 68px !important;
+    }
 
-    0%,
-    10%,
-    25%,
-    50%,
-    100% {
+    .hero-premium {
+        min-height: 100svh;
+        padding-top: 0 !important;
+    }
+
+    .hero-shell {
+        padding: 116px var(--el-gutter) 64px;
+    }
+
+    .hero-copy h1 {
+        font-size: clamp(2.65rem, 12.5vw, 4rem);
+        letter-spacing: -0.065em;
+        line-height: 0.94;
+    }
+
+    .hero-summary {
+        max-width: 31rem;
+        margin-top: 28px;
+        font-size: 0.98rem;
+    }
+
+    .hero-actions {
+        width: 100%;
+        margin-top: 26px;
+    }
+
+    .hero-actions .button-primary {
+        width: 100%;
+        max-width: 320px;
+    }
+
+    .site-home main > section {
+        padding-top: 76px !important;
+        padding-bottom: 76px !important;
+    }
+
+    .site-home main > section.hero-premium {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    .site-home main .operating-band {
+        padding-top: 28px !important;
+        padding-bottom: calc(28px + var(--el-boleado)) !important;
+    }
+
+    /* O padding mobile da .capability-strip é definido mais abaixo no arquivo, junto
+       das demais regras dessa faixa — duas declarações aqui só se anulariam. */
+
+    .section-heading {
+        margin-bottom: 36px;
+    }
+
+    #solucoes > div > .reveal-group,
+    .verticals-grid,
+    .measurement-grid,
+    .diagnostic-grid,
+    #home-blog-grid {
+        grid-template-columns: 1fr !important;
+        grid-template-rows: auto !important;
+    }
+
+    #solucoes > div > .reveal-group > :nth-child(n),
+    .verticals-grid article:nth-child(n),
+    .measurement-grid .measurement-feature,
+    #home-blog-grid article:first-child {
+        grid-column: auto !important;
+        grid-row: auto !important;
+    }
+
+    #solucoes .light-card,
+    .verticals-grid article,
+    .measurement-grid article,
+    .diagnostic-grid article {
+        min-height: 0;
+        padding: 26px !important;
+    }
+
+    .verticals-grid svg,
+    .measurement-grid svg,
+    .diagnostic-grid svg {
+        margin-bottom: 32px;
+    }
+
+
+
+
+
+    #home-blog-grid article:first-child {
+        display: flex !important;
+    }
+
+    #home-blog-grid article:first-child > div:first-child {
+        min-height: 220px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto !important;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .reveal,
+    [class*="animate-"] {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --page: #0d1219;
+        --surface: #131a23;
+        --surface-soft: #18212c;
+        --ink: #edf2f7;
+        --muted: #a7b3c2;
+        --line: #2b3745;
+        --accent: #6f9fff;
+        --accent-strong: #8eb3ff;
+        --accent-soft: #233b67;
+        --shadow: 0 24px 70px -44px rgba(0, 0, 0, 0.85);
+    }
+
+    .glass-nav img,
+    .site-home footer img,
+    .site-blog footer img,
+    .site-article footer img {
+        filter: none;
+    }
+
+    .glass-nav .nav-cta {
+        border-color: var(--ink);
+        background: var(--ink) !important;
+        color: var(--page) !important;
+    }
+
+    .verticals-grid article:nth-child(1) {
+        background: #264fbb;
+    }
+
+    .measurement-grid .measurement-feature {
+        background: #1d4ed8;
+    }
+
+    #home-blog-grid article img {
+        filter: saturate(0.68) brightness(0.84);
+    }
+}
+
+/* ==========================================================================
+   ELUMINA 2026 — OPERATIONAL CIRCUIT
+   A technical drafting-board system for AI, automation and connected software.
+   ========================================================================== */
+
+:root {
+    --el-night: #070a12;
+    --el-night-raised: #0c1220;
+    --el-night-soft: #111a2b;
+    --el-paper: #f3f6fb;
+    --el-paper-blue: #e9eef7;
+    --el-ink: #0a1020;
+    --el-ink-soft: #526176;
+    --el-white: #eef4ff;
+    --el-white-muted: #a5b2c6;
+    --el-cobalt: #4f70ff;
+    --el-cobalt-deep: #2948d7;
+    /* Azul-claro de destaque. Mais luminoso que o --el-cobalt, para que os
+       gradientes e marcadores continuem tendo dois tons. Mesmo valor do
+       gradiente de marca (#0052FF -> #00A3FF) já usado no HTML. */
+    --el-accent: #00a3ff;
+    --el-line-dark: rgba(184, 199, 224, 0.14);
+    --el-line-light: rgba(20, 36, 62, 0.14);
+    --el-font: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --el-data: "Spline Sans Mono", "SFMono-Regular", Consolas, monospace;
+    --el-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    /* Igual ao max-w-7xl do Tailwind (80rem), para que as seções escritas à mão e as
+       com classes utilitárias tenham exatamente a mesma caixa de conteúdo. */
+    --el-container: 1280px;
+
+    /* Escala responsiva unificada.
+       Espelha os breakpoints nativos do Tailwind (640 / 768 / 1024) para que as
+       seções escritas à mão e as seções com classes Tailwind (px-4 sm:px-6 lg:px-8)
+       compartilhem exatamente a mesma margem lateral em todas as larguras. */
+    --el-gutter: 16px;
+    --el-section-y: 82px;
+    /* Quanto a seção clara sobe por cima da escura, e o raio da curva. A faixa acima
+       precisa somar este valor ao padding inferior, senão a sobreposição come o texto. */
+    --el-boleado: 46px;
+}
+
+/* >= 640px (sm do Tailwind) */
+@media (min-width: 640px) {
+    :root {
+        --el-gutter: 24px;
+        --el-section-y: 92px;
+    }
+}
+
+/* Curva menor no celular, onde a tela é estreita e um raio grande come muito espaço. */
+@media (max-width: 767px) {
+    :root {
+        --el-boleado: 28px;
+        /* recuo do trilho das soluções: menor no celular, onde 56px de calha
+           comeriam largura demais do texto do cartão */
+        --el-trilha-recuo: 34px;
+    }
+}
+
+/* >= 768px (md do Tailwind) — faixa tablet, que antes saltava direto ao valor de desktop */
+@media (min-width: 768px) {
+    :root {
+        --el-section-y: 104px;
+    }
+}
+
+/* >= 1024px (lg do Tailwind) — notebook em diante */
+@media (min-width: 1024px) {
+    :root {
+        --el-gutter: 32px;
+        --el-section-y: 122px;
+    }
+}
+
+/* >= 1536px (2xl do Tailwind) — monitores grandes.
+   O container fixo de 1280px vira uma fita estreita em telas de 2560px+, então
+   ambos os sistemas (variável custom e utilitário Tailwind) sobem juntos. */
+@media (min-width: 1536px) {
+    :root {
+        --el-container: 1440px;
+    }
+
+    .site-home .max-w-7xl,
+    .site-blog .max-w-7xl,
+    .site-article .max-w-7xl {
+        max-width: 1440px;
+    }
+}
+
+html {
+    scroll-padding-top: 104px;
+}
+
+body.site-home,
+body.site-blog,
+body.site-article {
+    background: var(--el-paper) !important;
+    color: var(--el-ink) !important;
+    font-family: var(--el-font);
+}
+
+body.site-home::selection,
+body.site-blog::selection,
+body.site-article::selection {
+    background: var(--el-cobalt);
+    color: white;
+}
+
+.skip-link {
+    position: fixed;
+    z-index: 9999;
+    top: 10px;
+    left: 10px;
+    transform: translateY(-150%);
+    border-radius: 8px;
+    background: var(--el-white);
+    color: var(--el-ink);
+    padding: 12px 16px;
+    font-weight: 700;
+    transition: transform 180ms ease;
+}
+
+.skip-link:focus {
+    transform: translateY(0);
+}
+
+a,
+button {
+    touch-action: manipulation;
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid var(--el-accent) !important;
+    outline-offset: 4px;
+}
+
+.site-home h1,
+.site-home h2,
+.site-home h3,
+.site-blog h1,
+.site-blog h2,
+.site-blog h3,
+.site-article h1,
+.site-article h2,
+.site-article h3 {
+    font-family: var(--el-font);
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+}
+
+.site-home p,
+.site-blog p,
+.site-article p {
+    text-wrap: pretty;
+}
+
+/* Navigation */
+.site-home .glass-nav,
+.site-blog .glass-nav,
+.site-article .glass-nav {
+    background: rgba(7, 10, 18, 0.92) !important;
+    border-bottom: 1px solid var(--el-line-dark) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(125%) !important;
+    backdrop-filter: blur(18px) saturate(125%) !important;
+}
+
+.site-home .glass-nav > div:first-child > div,
+.site-blog .glass-nav > div:first-child > div,
+.site-article .glass-nav > div:first-child > div {
+    height: 76px !important;
+}
+
+.site-home .glass-nav img,
+.site-blog .glass-nav img,
+.site-article .glass-nav img {
+    max-width: 178px;
+    filter: none !important;
+}
+
+.site-home .glass-nav nav a,
+.site-blog .glass-nav nav a,
+.site-article .glass-nav nav a,
+.site-home .glass-nav button,
+.site-blog .glass-nav button,
+.site-article .glass-nav button {
+    color: var(--el-white-muted) !important;
+}
+
+.site-home .glass-nav nav a:hover,
+.site-blog .glass-nav nav a:hover,
+.site-article .glass-nav nav a:hover,
+.site-home .glass-nav button:hover,
+.site-blog .glass-nav button:hover,
+.site-article .glass-nav button:hover {
+    color: var(--el-white) !important;
+}
+
+.site-home .glass-nav nav a span,
+.site-blog .glass-nav nav a span,
+.site-article .glass-nav nav a span {
+    background: var(--el-accent) !important;
+}
+
+.site-home .glass-nav .nav-cta,
+.site-blog .glass-nav .nav-cta,
+.site-article .glass-nav .nav-cta {
+    min-height: 44px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 10px !important;
+    background: var(--el-white) !important;
+    color: var(--el-ink) !important;
+    box-shadow: none !important;
+}
+
+.site-home .glass-nav .nav-cta:hover,
+.site-blog .glass-nav .nav-cta:hover,
+.site-article .glass-nav .nav-cta:hover {
+    background: white !important;
+    color: var(--el-ink) !important;
+    transform: translateY(-1px);
+}
+
+/* Alvo de toque de 44px no botão do menu, sem anular o `md:hidden` do HTML:
+   estas regras têm especificidade maior que a do Tailwind, então precisam ficar
+   restritas ao mesmo intervalo (< 768px) em que o botão deve existir. */
+@media (max-width: 767px) {
+
+    .site-home .glass-nav #mobile-menu-btn,
+    .site-blog .glass-nav #mobile-menu-btn,
+    .site-article .glass-nav #mobile-menu-btn {
+        display: inline-flex;
+        min-width: 44px;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.site-home #mobile-menu,
+.site-blog #mobile-menu,
+.site-article #mobile-menu {
+    background: var(--el-night) !important;
+    border-bottom-color: var(--el-line-dark) !important;
+}
+
+/* Hero */
+.site-home main > section.hero-premium {
+    position: relative;
+    display: flex;
+    min-height: 100dvh;
+    align-items: stretch;
+    overflow: hidden;
+    border-bottom: 1px solid var(--el-line-light);
+    background:
+        radial-gradient(1100px 620px at 88% -14%, rgba(79, 112, 255, 0.16), transparent 62%),
+        radial-gradient(900px 540px at 4% 112%, rgba(0, 163, 255, 0.10), transparent 58%),
+        #ffffff !important;
+    color: var(--el-ink) !important;
+}
+
+/* O traço superior do hero foi removido: desenhado para a barra w-full de 76px,
+   virou linha órfã quando a navegação passou a ser a pílula flutuante. */
+
+/* ── Fundo do hero: shader "Silk" ────────────────────────────────────────
+   O desenho vem de hero-silk.js, numa <canvas> inserida como primeiro filho
+   do hero. O ::before é a RESERVA: sem WebGL o JS remove a canvas e este
+   degradê estático assume, em vez de o hero ficar branco.
+   As cores do shader são quase brancas, então a reserva acompanha. */
+.site-home .hero-premium::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(150deg, #eff1ff 0%, #e2e7ff 52%, #f0f2ff 100%);
+}
+
+.site-home .hero-premium > .hero-silk {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.site-home .hero-shell {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    width: min(100%, var(--el-container));
+    min-height: 100dvh;
+    justify-content: center;
+    flex-direction: column;
+    margin: 0 auto;
+    padding: 138px var(--el-gutter) calc(50px + var(--el-boleado));
+}
+
+.site-home .hero-copy {
+    display: block;
+    width: 100%;
+    max-width: 1050px;
+    /* Hero centrado: o bloco de texto fica no eixo da página e o conteúdo alinhado ao
+       centro, incluindo o parágrafo de apoio e a dupla de botões. */
+    margin-inline: auto;
+    text-align: center;
+}
+
+.site-home .hero-copy .hero-summary {
+    margin-inline: auto;
+}
+
+/* Sombra do texto sobre o gradiente ─────────────────────────────────────
+   O degradê passa de ciano claro a azul médio por baixo do título, e o grão
+   por cima tira a definição da borda das letras. Duas camadas: uma curta e
+   fechada, que redesenha o contorno, e uma larga e diluída, que descola o
+   texto do fundo. A cor é o Abyss da própria paleta, não preto puro — preto
+   sobre ciano puxa para o cinza sujo.
+   Vale dizer: sombra melhora a leitura percebida, não o contraste medido
+   (WCAG só olha cor do texto contra cor do fundo). O contraste foi resolvido
+   antes, na troca do destaque para o Lagoon. */
+.site-home .hero-copy h1 {
+    width: 100%;
+    max-width: 1040px;
+    margin: 0;
+    color: var(--el-ink);
+    font-size: clamp(3.4rem, 7vw, 6rem);
+    font-weight: 480;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    text-shadow:
+        0 1px 1px rgba(3, 28, 38, 0.16),
+        0 3px 18px rgba(3, 28, 38, 0.18);
+}
+
+.site-home .hero-copy h1 > span {
+    display: block;
+}
+
+.site-home .hero-line-muted {
+    color: #000000;
+}
+
+.site-home .hero-line-strong {
+    color: #000000;
+}
+
+.site-home .hero-accent {
+    color: var(--el-cobalt);
+}
+
+.site-home .hero-summary {
+    max-width: 660px;
+    margin: 32px 0 0;
+    color: var(--el-ink-soft);
+    font-size: clamp(1.02rem, 1.5vw, 1.2rem);
+    line-height: 1.65;
+    /* mais fechada que a do h1: texto pequeno com sombra larga vira borrão */
+    text-shadow: 0 1px 3px rgba(3, 28, 38, 0.20);
+}
+
+.site-home .hero-actions {
+    display: flex;
+    align-items: center;
+    /* hero centrado: a dupla de botões acompanha o eixo do texto */
+    justify-content: center;
+    gap: 24px;
+    margin-top: 30px;
+}
+
+.site-home .diagnostic-expectation {
+    max-width: 64ch;
+    margin: 16px auto 0;
+    color: var(--el-ink-soft);
+    font-size: 0.88rem;
+    line-height: 1.6;
+}
+
+.site-home .button-primary,
+.site-home .button-secondary,
+.site-home .button-tertiary,
+.site-blog .button-primary,
+.site-article .button-primary {
+    display: inline-flex;
+    min-height: 52px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-radius: 10px;
+    padding: 0 22px;
+    font-size: 0.94rem;
+    font-weight: 750;
+    text-decoration: none;
+    transition: transform 180ms var(--el-ease), background 180ms ease, border-color 180ms ease, box-shadow 220ms ease;
+}
+
+.site-home .button-primary,
+.site-blog .button-primary,
+.site-article .button-primary {
+    border: 1px solid var(--el-cobalt);
+    background: var(--el-cobalt);
+    color: white;
+}
+
+.site-home .button-primary:hover,
+.site-blog .button-primary:hover,
+.site-article .button-primary:hover {
+    border-color: #6c87ff;
+    background: #5d7bff;
+    transform: translateY(-2px);
+}
+
+/* Halo do CTA: só nas superfícies escuras, onde um botão sólido tende a parecer apagado.
+   Em fundo claro o mesmo brilho viraria uma mancha suja, por isso não é global.
+   O tom acompanha o contraste de cada seção — cobalto no hero (quase preto) e branco
+   no CTA final (que já é cobalto, onde um halo azul seria invisível). */
+.site-home .hero-premium .button-primary {
+    box-shadow:
+        0 0 0 1px rgba(79, 112, 255, 0.4),
+        0 10px 34px -8px rgba(79, 112, 255, 0.6);
+}
+
+.site-home .hero-premium .button-primary:hover {
+    box-shadow:
+        0 0 0 1px rgba(108, 135, 255, 0.55),
+        0 14px 44px -8px rgba(79, 112, 255, 0.85);
+}
+
+.site-home .final-cta .button-primary,
+.site-blog .final-cta .button-primary {
+    box-shadow: 0 10px 32px -10px rgba(255, 255, 255, 0.5);
+}
+
+.site-home .final-cta .button-primary:hover,
+.site-blog .final-cta .button-primary:hover {
+    box-shadow: 0 14px 40px -10px rgba(255, 255, 255, 0.75);
+}
+
+.site-home .button-tertiary {
+    min-height: 44px;
+    border: 0;
+    color: var(--el-white-muted);
+    padding: 0;
+}
+
+.site-home .button-tertiary:hover {
+    color: var(--el-white);
+}
+
+.site-home .hero-premium .button-tertiary {
+    color: var(--el-ink-soft);
+}
+
+.site-home .hero-premium .button-tertiary:hover {
+    color: var(--el-ink);
+}
+
+.hero-system {
+    position: relative;
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(4, 1fr);
+    /* Sem `margin-top: auto`: dentro do flex column do .hero-shell ele absorvia TODO
+       o espaço livre e pregava esta faixa no rodapé do hero (100dvh). Ficava certo
+       só por volta de 900px de altura — em 1300px abria 462px de vão e em 2000px,
+       1164px. O `justify-content: center` do shell agrupa o conteúdo corretamente. */
+    padding-top: 70px;
+}
+
+.hero-system .system-line {
+    position: absolute;
+    top: 78px;
+    right: 0;
+    left: 0;
+    height: 1px;
+    overflow: hidden;
+    background: rgba(20, 36, 62, 0.14);
+}
+
+.hero-system .system-line span {
+    position: absolute;
+    top: -1px;
+    width: 18%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--el-accent), var(--el-cobalt), transparent);
+    animation: signal-flow 5s linear infinite;
+}
+
+.system-node {
+    position: relative;
+    min-height: 128px;
+    border-right: 1px solid var(--el-line-light);
+    padding: 26px 22px 0;
+}
+
+.system-node:first-of-type {
+    border-left: 1px solid var(--el-line-light);
+}
+
+.system-node::before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    top: 4px;
+    left: 21px;
+    width: 9px;
+    height: 9px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    background: #6d7890;
+    box-shadow: 0 0 0 1px #6d7890;
+}
+
+.system-node.is-active::before {
+    background: var(--el-accent);
+    box-shadow: 0 0 0 1px var(--el-accent), 0 0 18px rgba(0, 163, 255, 0.48);
+}
+
+.system-node > span {
+    display: block;
+    /* #718099 dava 4.0:1 já sobre o branco anterior — abaixo dos 4.5 exigidos
+       para texto pequeno. O token da marca resolve e mantém a hierarquia. */
+    color: var(--el-ink-soft);
+    font-family: var(--el-data);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.system-node strong {
+    display: block;
+    margin-top: 8px;
+    color: var(--el-ink);
+    font-size: clamp(1.1rem, 1.7vw, 1.4rem);
+    font-weight: 560;
+}
+
+.system-node small {
+    display: block;
+    max-width: 210px;
+    margin-top: 7px;
+    /* #5f6c86 dava 3.92:1 sobre o ponto mais escuro do shader, abaixo dos 4.5
+       exigidos para texto pequeno. O token da marca resolve. */
+    color: var(--el-ink-soft);
+    font-size: 0.8rem;
+    line-height: 1.45;
+}
+
+@keyframes signal-flow {
+    from { transform: translateX(-110%); }
+    to { transform: translateX(670%); }
+}
+
+/* Capability rail */
+.site-home .capability-strip {
+    border-bottom: 1px solid var(--el-line-dark) !important;
+    background: var(--el-night-raised) !important;
+    color: var(--el-white) !important;
+}
+
+.site-home .capability-strip p {
+    color: #718099 !important;
+    font-family: var(--el-data);
+    letter-spacing: 0.1em;
+}
+
+.site-home .capability-strip span {
+    color: var(--el-white-muted) !important;
+}
+
+.site-home .capability-strip svg {
+    color: var(--el-accent);
+}
+
+/* Solutions */
+.site-home #solucoes {
+    background: var(--el-paper) !important;
+    color: var(--el-ink) !important;
+    padding-top: var(--el-section-y) !important;
+    padding-bottom: var(--el-section-y) !important;
+    /* Transição escuro→claro: esta seção sobe por cima da faixa escura acima com os
+       cantos superiores arredondados, como uma folha deslizando sobre a cena escura.
+       É aqui e não antes porque hero, scroll-story e capability-strip são todas
+       escuras — este é o primeiro limite onde existe contraste para o efeito. */
+    position: relative;
+    z-index: 1;
+    margin-top: calc(-1 * var(--el-boleado));
+    border-top-left-radius: var(--el-boleado);
+    border-top-right-radius: var(--el-boleado);
+}
+
+.site-home #solucoes > div {
+    max-width: var(--el-container);
+}
+
+/* Cabeçalho ancorado: fica parado enquanto as três frentes sobem por baixo —
+   o gesto do timeline do Aceternity em escala de seção, já que por linha não
+   há percurso (a linha tem 444px e a coluna que grudaria tem 360px).
+   O max-width sai daqui e vai para o h2: em coluna única o conteúdo passa POR
+   BAIXO do título, então o fundo precisa cobrir a largura inteira da pilha
+   (1376px). Com os 880px antigos, as linhas apareceriam à direita do texto.
+   O padding-bottom entra no lugar de parte da margem para o respiro visual
+   continuar sendo os mesmos 76px. */
+.site-home #solucoes > div > div:first-child {
+    position: sticky;
+    top: 28px;
+    z-index: 2;
+    max-width: none;
+    margin-right: auto;
+    margin-bottom: 46px;
+    margin-left: 0;
+    padding-bottom: 30px;
+    background: var(--el-paper);
+    text-align: left;
+}
+
+/* dissolve o que passa por baixo, em vez de cortar numa aresta dura */
+.site-home #solucoes > div > div:first-child::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    height: 46px;
+    background: linear-gradient(to bottom, var(--el-paper), transparent);
+    pointer-events: none;
+}
+
+/* No celular o título ocupa quase a tela inteira: parado ali ele esconderia o
+   conteúdo em vez de ancorá-lo. */
+@media (max-width: 767px) {
+    .site-home #solucoes > div > div:first-child {
+        position: static;
+        margin-bottom: 76px;
+        padding-bottom: 0;
+    }
+
+    .site-home #solucoes > div > div:first-child::after {
+        display: none;
+    }
+}
+
+.site-home #solucoes h2 {
+    /* a trava de leitura mudou de lugar: era do bloco, virou do texto */
+    max-width: 880px;
+    margin-bottom: 26px;
+    color: var(--el-ink) !important;
+    font-size: clamp(2.5rem, 5.2vw, 4.8rem) !important;
+    font-weight: 480;
+    line-height: 1.02;
+}
+
+.site-home #solucoes > div > div:first-child p {
+    max-width: 690px;
+    margin: 0;
+    color: var(--el-ink-soft) !important;
+    font-size: 1.08rem;
+    line-height: 1.65;
+}
+
+.solutions-stack {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Trilho de rolagem das soluções ──────────────────────────────────────
+   Adaptação do timeline do Aceternity: um trilho vertical que se preenche
+   conforme a seção passa pela tela, e um ponto por frente que acende quando
+   o preenchimento chega nele.
+   Feito com pseudo-elementos porque `.reveal-group` tem regras posicionais
+   (:nth-child(1..3)) herdadas do layout antigo — inserir um filho real
+   renumeraria as linhas e quebraria seletor sem dar erro nenhum.
+   O JS só escreve --trilha-altura e --trilha-opacidade. */
+.site-home .solutions-stack {
+    position: relative;
+    padding-left: var(--el-trilha-recuo, 56px);
+}
+
+/* trilho de base */
+.site-home .solutions-stack::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 9px;
+    width: 2px;
+    background: var(--el-line-light);
+    /* apaga nas pontas para o trilho não terminar num corte seco */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 7%, #000 93%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 7%, #000 93%, transparent 100%);
+}
+
+/* preenchimento: o degradê é ancorado na base — a ponta que cresce fica acesa
+   e o rastro se dissolve acima, como no original. */
+.site-home .solutions-stack::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 9px;
+    width: 2px;
+    height: var(--trilha-altura, 0px);
+    border-radius: 999px;
+    opacity: var(--trilha-opacidade, 0);
+    background: linear-gradient(to top, var(--el-cobalt) 0%, var(--el-accent) 12%, transparent 100%);
+}
+
+/* Ponto de cada frente. O `left` é o recuo negativo: puxa o ponto de volta à
+   borda do trilho. Amarrado à mesma variável do recuo de propósito — com valor
+   fixo, mudar o recuo no @media deixaria o ponto solto fora da linha. */
+.site-home .solution-row::before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    top: 44px;
+    left: calc(-1 * var(--el-trilha-recuo, 56px));
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--el-line-light);
+    border-radius: 50%;
+    background: var(--el-paper);
+    transition: border-color 260ms ease, background 260ms ease, box-shadow 260ms ease;
+}
+
+.site-home .solution-row.is-lit::before {
+    border-color: var(--el-accent);
+    background: var(--el-accent);
+    box-shadow: 0 0 0 5px rgba(0, 163, 255, 0.16);
+}
+
+.site-home .solution-row {
+    position: relative;
+}
+
+.site-home .solution-row.light-card {
+    display: grid;
+    min-height: 340px;
+    grid-template-columns: minmax(230px, 0.8fr) minmax(300px, 1.2fr) minmax(230px, 0.7fr);
+    align-items: start;
+    gap: 52px;
+    border: 0;
+    border-top: 1px solid var(--el-line-light);
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 48px 0 !important;
+}
+
+.site-home .solution-row:last-child {
+    border-bottom: 1px solid var(--el-line-light);
+}
+
+.site-home .solution-row:hover {
+    border-color: rgba(41, 72, 215, 0.38);
+    transform: none;
+}
+
+.site-home .solution-row > div {
+    margin: 0 !important;
+}
+
+.site-home .solution-row > div > div:first-child {
+    width: 44px !important;
+    height: 44px !important;
+    border: 1px solid rgba(79, 112, 255, 0.25);
+    border-radius: 50% !important;
+    background: transparent !important;
+}
+
+.site-home .solution-row h3 {
+    max-width: 250px;
+    margin-top: 28px;
+    color: var(--el-ink) !important;
+    font-size: clamp(1.65rem, 2.4vw, 2.35rem) !important;
+    line-height: 1.08;
+}
+
+.site-home .solution-row .service-label {
+    margin: 14px 0 0;
+    color: var(--el-cobalt-deep);
+    font-family: var(--el-data);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.site-home .solution-row > div > p:last-child {
+    margin-top: 30px;
+    color: var(--el-ink-soft) !important;
+    line-height: 1.7;
+}
+
+.site-home .solution-row ul {
+    display: grid;
+    gap: 16px !important;
+    margin: 2px 0 0 !important;
+}
+
+.site-home .solution-row li {
+    display: grid !important;
+    grid-template-columns: 20px 1fr;
+    align-items: start;
+    gap: 12px !important;
+}
+
+.site-home .solution-row li svg {
+    width: 17px !important;
+    height: 17px !important;
+    color: var(--el-cobalt-deep) !important;
+}
+
+.site-home .solution-row li span {
+    color: var(--el-ink-soft) !important;
+    font-size: 0.92rem !important;
+    line-height: 1.55;
+}
+
+.site-home .solution-row > a {
+    width: auto !important;
+    min-height: 48px;
+    justify-self: end;
+    border-color: rgba(10, 16, 32, 0.24) !important;
+    border-radius: 9px !important;
+    color: var(--el-ink) !important;
+    padding: 0 18px !important;
+}
+
+.site-home .solution-row > a:hover {
+    border-color: var(--el-ink) !important;
+    background: var(--el-ink) !important;
+    color: white !important;
+}
+
+.site-home .operating-band {
+    background: var(--el-cobalt-deep) !important;
+    color: white !important;
+    /* boleado da #aplicacoes: espaço para a curva pousar em área vazia */
+    padding-bottom: calc(40px + var(--el-boleado)) !important;
+}
+
+.site-home .operating-band > div {
+    max-width: var(--el-container);
+}
+
+.site-home .operating-band div div {
+    display: flex;
+    min-height: 56px;
+    align-items: center;
+    gap: 12px;
+    border-right: 1px solid rgba(255, 255, 255, 0.18);
+    color: white;
+}
+
+.site-home .operating-band div div:last-child {
+    border-right: 0;
+}
+
+.site-home .operating-band svg {
+    width: 21px;
+    color: var(--el-accent);
+}
+
+.site-home .operating-band span {
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+/* Applications */
+.site-home .verticals-section {
+    background: var(--el-paper-blue) !important;
+    color: var(--el-ink) !important;
+    /* boleado sobre a faixa cobalto acima: subir com cantos arredondados */
+    position: relative;
+    z-index: 1;
+    margin-top: calc(-1 * var(--el-boleado));
+    border-top-left-radius: var(--el-boleado);
+    border-top-right-radius: var(--el-boleado);
+}
+
+.site-home .verticals-section > div,
+.site-home .measurement-section > div,
+.site-home .about-section > div,
+.site-home .diagnostic-section > div {
+    max-width: var(--el-container);
+}
+
+.site-home .section-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+    align-items: end;
+    gap: 60px;
+    margin-bottom: 72px;
+}
+
+.site-home .section-heading h2 {
+    max-width: 790px;
+    color: var(--el-ink);
+    font-size: clamp(2.55rem, 5vw, 4.8rem);
+    font-weight: 480;
+    line-height: 1.01;
+}
+
+.site-home .section-heading p {
+    max-width: 530px;
+    color: var(--el-ink-soft);
+    font-size: 1.03rem;
+    line-height: 1.65;
+}
+
+.site-home .verticals-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1px;
+    border: 1px solid var(--el-line-light);
+    background: var(--el-line-light);
+}
+
+.site-home .verticals-grid article {
+    min-height: 300px;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: var(--el-paper) !important;
+    color: var(--el-ink) !important;
+    padding: 36px !important;
+}
+
+.site-home .verticals-grid article:nth-child(1),
+.site-home .verticals-grid article:nth-child(4) {
+    grid-column: span 7;
+}
+
+.site-home .verticals-grid article:nth-child(2),
+.site-home .verticals-grid article:nth-child(3) {
+    grid-column: span 5;
+}
+
+/* Faixa tablet (768–1023px): a assimetria 7/5 foi desenhada para telas largas e
+   aqui espremia dois cards a ~302px, forçando quebra extra de texto. Nesta faixa
+   o grid vira 6/6 — mesmos cards e mesmo conteúdo, largura equilibrada. */
+@media (min-width: 768px) and (max-width: 1023px) {
+
+    .site-home .verticals-grid article:nth-child(n) {
+        grid-column: span 6;
+    }
+
+    .site-home .verticals-grid article {
+        padding: 28px !important;
+    }
+}
+
+.site-home .verticals-grid article:nth-child(1) {
+    background: var(--el-cobalt-deep) !important;
+    color: white !important;
+}
+
+.site-home .verticals-grid article:nth-child(1) h3,
+.site-home .verticals-grid article:nth-child(1) p {
+    color: white !important;
+}
+
+.site-home .verticals-grid article:nth-child(1) p {
+    color: #cbd6ff !important;
+}
+
+.site-home .verticals-grid svg {
+    width: 32px;
+    height: 32px;
+    color: var(--el-accent) !important;
+}
+
+.site-home .verticals-grid h3 {
+    margin-top: 68px;
+    color: var(--el-ink) !important;
+    font-size: clamp(1.55rem, 2.2vw, 2.15rem);
+}
+
+.site-home .verticals-grid p {
+    max-width: 510px;
+    margin-top: 14px;
+    color: var(--el-ink-soft) !important;
+    line-height: 1.65;
+}
+
+/* Observability */
+.site-home .measurement-section {
+    background: var(--el-paper) !important;
+}
+
+.site-home .measurement-grid {
+    display: grid;
+    grid-template-columns: 1.25fr 0.85fr 0.85fr;
+    gap: 18px;
+}
+
+.site-home .measurement-grid article {
+    min-height: 330px;
+    border: 1px solid var(--el-line-light) !important;
+    border-radius: 14px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: var(--el-ink) !important;
+    padding: 34px !important;
+}
+
+.site-home .measurement-grid .measurement-feature {
+    background: var(--el-night-soft) !important;
+    color: white !important;
+}
+
+.site-home .measurement-grid svg {
+    color: var(--el-cobalt) !important;
+}
+
+.site-home .measurement-grid .measurement-feature svg {
+    color: var(--el-accent) !important;
+}
+
+.site-home .measurement-grid h3 {
+    margin-top: 18px;
+    color: var(--el-ink) !important;
+    font-size: 1.6rem;
+}
+
+.site-home .measurement-grid .measurement-feature h3 {
+    color: white !important;
+}
+
+.site-home .measurement-grid .sample-stage {
+    display: block;
+    margin-top: 54px;
+    color: var(--el-cobalt);
+    font-family: var(--el-data);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.site-home .measurement-grid .measurement-feature .sample-stage {
+    color: var(--el-accent);
+}
+
+.site-home .measurement-grid p {
+    margin-top: 14px;
+    color: var(--el-ink-soft) !important;
+    line-height: 1.65;
+}
+
+.site-home .measurement-grid .measurement-feature p {
+    color: var(--el-white-muted) !important;
+}
+
+/* Positioning / no raster imagery */
+.site-home .about-section {
+    background: var(--el-paper-blue) !important;
+}
+
+.about-system {
+    position: relative;
+    display: grid;
+    min-height: 520px;
+    align-content: center;
+    padding: 28px 0;
+}
+
+.about-system::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    bottom: 50%;
+    left: 26px;
+    width: 1px;
+    height: 78%;
+    transform: translateY(-50%);
+    background: var(--el-line-light);
+}
+
+.about-system > div {
+    position: relative;
+    display: grid;
+    grid-template-columns: 64px minmax(130px, 0.8fr) 1.2fr;
+    align-items: center;
+    border-top: 1px solid var(--el-line-light);
+    padding: 26px 22px 26px 0;
+}
+
+.about-system > div:last-child {
+    border-bottom: 1px solid var(--el-line-light);
+}
+
+.about-system span {
+    z-index: 1;
+    width: 52px;
+    color: var(--el-accent);
+    font-family: var(--el-data);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-align: center;
+}
+
+.about-system strong {
+    color: var(--el-ink);
+    font-size: 1.15rem;
+}
+
+.about-system small {
+    color: var(--el-ink-soft);
+    font-size: 0.85rem;
+}
+
+.site-home .about-copy h2 {
+    color: var(--el-ink);
+    font-size: clamp(2.5rem, 4.8vw, 4.55rem);
+    font-weight: 480;
+    line-height: 1.02;
+}
+
+.site-home .about-copy > p {
+    max-width: 580px;
+    margin-top: 26px;
+    color: var(--el-ink-soft);
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.site-home .about-copy ul {
+    display: grid;
+    gap: 0;
+    margin-top: 42px;
+}
+
+.site-home .about-copy li {
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    gap: 14px;
+    border-top: 1px solid var(--el-line-light);
+    padding: 18px 0;
+    color: var(--el-ink-soft);
+}
+
+.site-home .about-copy li:last-child {
+    border-bottom: 1px solid var(--el-line-light);
+}
+
+.site-home .about-copy svg {
+    width: 20px;
+    color: var(--el-cobalt-deep);
+}
+
+/* Method */
+.site-home .diagnostic-section {
+    background-color: var(--el-night) !important;
+    color: var(--el-white) !important;
+    /* boleado sobre a seção clara acima (#sobre): subir com cantos arredondados */
+    position: relative;
+    z-index: 1;
+    margin-top: calc(-1 * var(--el-boleado));
+    border-top-left-radius: var(--el-boleado);
+    border-top-right-radius: var(--el-boleado);
+}
+
+.site-home .diagnostic-section .section-heading h2 {
+    color: var(--el-white);
+}
+
+.site-home .diagnostic-section .section-heading p {
+    color: var(--el-white-muted);
+}
+
+.site-home .diagnostic-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    counter-reset: method;
+}
+
+.site-home .diagnostic-grid article {
+    position: relative;
+    min-height: 330px;
+    border: 0 !important;
+    border-top: 1px solid var(--el-line-dark) !important;
+    border-right: 1px solid var(--el-line-dark) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    counter-increment: method;
+    padding: 36px 28px !important;
+}
+
+.site-home .diagnostic-grid article:first-child {
+    border-left: 1px solid var(--el-line-dark) !important;
+}
+
+/* Método como seção presa: a partir do tablet ela segura a tela enquanto os quatro
+   passos se revelam em sequência, mesma mecânica da primeira seção do site. A altura
+   extra da <section> é o percurso de rolagem; o miolo fica sticky ocupando a tela.
+   No celular isso não cabe (os cards empilham e passam de 1000px), então lá a seção
+   volta ao fluxo normal e os passos aparecem conforme entram na tela. */
+@media (min-width: 768px) {
+    .site-home .diagnostic-section {
+        min-height: 300dvh;
+        padding-top: 0 !important;
+        padding-bottom: var(--el-boleado) !important;
+    }
+
+    .site-home .diagnostic-section > div {
+        position: sticky;
+        top: 0;
+        display: flex;
+        min-height: 100dvh;
+        flex-direction: column;
+        justify-content: center;
+        padding-top: clamp(72px, 9vh, 104px);
+        padding-bottom: clamp(40px, 6vh, 72px);
+    }
+
+    /* Tudo aqui precisa caber numa tela só, então as peças passam a escalar pela altura
+       disponível em vez de usar tamanhos fixos pensados para o fluxo normal. */
+    .site-home .diagnostic-section .section-heading {
+        margin-bottom: clamp(12px, 2vh, 28px) !important;
+    }
+
+    .site-home .diagnostic-section .section-heading h2 {
+        font-size: clamp(1.9rem, 4.4vh, 3.2rem) !important;
+    }
+
+    .site-home .method-circuit {
+        margin: clamp(4px, 1vh, 12px) 0;
+    }
+
+    .site-home .method-circuit svg {
+        max-height: clamp(84px, 14vh, 150px);
+    }
+
+    .site-home .diagnostic-grid article {
+        min-height: clamp(210px, 30vh, 330px) !important;
+        padding: clamp(20px, 3vh, 36px) 28px !important;
+    }
+
+    .site-home .diagnostic-grid h3 {
+        margin-top: clamp(28px, 6vh, 90px) !important;
+    }
+}
+
+/* Circuito do método: um traço visível que se desenha ao longo dos 4 passos conforme a
+   seção sobe. Ver initMethodTrace() no script.js. Sem JS ele aparece completo e estático,
+   funcionando como diagrama do processo. */
+.site-home .method-circuit {
+    margin: 8px 0 4px;
+}
+
+.site-home .method-circuit svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.site-home .method-trace {
+    fill: none;
+    stroke: url(#none);
+    stroke: var(--el-cobalt);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.site-home .method-node circle {
+    fill: var(--el-night);
+    stroke: var(--el-accent);
+    stroke-width: 2.5;
+    vector-effect: non-scaling-stroke;
+}
+
+.site-home .method-node text {
+    fill: var(--el-white-muted);
+    font-family: var(--el-data);
+    font-size: 17px;
+    letter-spacing: 0.08em;
+    text-anchor: middle;
+}
+
+/* O SVG tem 1200 unidades de largura, então num celular de 390px tudo encolhe para ~29%
+   e os nós virariam 2px. Aqui a geometria é ampliada em unidades do viewBox para chegar
+   ao mesmo tamanho aparente do desktop; os números saem de cena porque já estão nos
+   cards logo abaixo, e nesse tamanho ficariam ilegíveis. */
+@media (max-width: 767px) {
+    .site-home .method-circuit {
+        margin-bottom: 14px;
+    }
+
+    .site-home .method-node circle {
+        r: 17px;
+    }
+
+    .site-home .method-node text {
+        display: none;
+    }
+}
+
+/* `inherits: true` é essencial aqui: a variável é animada no <article>, mas quem a
+   consome é o <svg> filho. Com herança desligada ela não desceria. */
+@property --node {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 1;
+}
+
+/* O ícone é dirigido pela variável do card, nunca por referência direta ao <svg>:
+   o Lucide recria todos os ícones da página quando o blog injeta os posts, e qualquer
+   referência guardada antes disso viraria um elemento órfão animado à toa.
+   O valor inicial 1 garante que, sem JS, o ícone apareça normal. */
+.site-home .diagnostic-grid article svg[data-lucide] {
+    opacity: calc(0.4 + 0.6 * var(--node, 1));
+    transform: scale(calc(0.88 + 0.12 * var(--node, 1)));
+    transform-origin: left center;
+}
+
+.site-home .diagnostic-grid article::after {
+    content: "0" counter(method);
+    position: absolute;
+    right: 24px;
+    bottom: 22px;
+    color: #3d4a62;
+    font-family: var(--el-data);
+    font-size: 0.78rem;
+}
+
+.site-home .diagnostic-grid svg {
+    color: var(--el-accent) !important;
+}
+
+.site-home .diagnostic-grid h3 {
+    margin-top: 90px;
+    color: var(--el-white) !important;
+    font-size: 1.45rem;
+}
+
+.site-home .diagnostic-grid p {
+    margin-top: 14px;
+    color: var(--el-white-muted) !important;
+    font-size: 0.92rem;
+    line-height: 1.65;
+}
+
+/* Insights */
+.site-home #blog {
+    background: var(--el-paper) !important;
+    padding-top: 118px !important;
+    padding-bottom: 118px !important;
+    /* boleado sobre o método escuro acima: subir com cantos arredondados */
+    position: relative;
+    z-index: 1;
+    margin-top: calc(-1 * var(--el-boleado));
+    border-top-left-radius: var(--el-boleado);
+    border-top-right-radius: var(--el-boleado);
+}
+
+.site-home #blog > div {
+    max-width: var(--el-container);
+}
+
+.site-home #blog h2 {
+    max-width: 760px;
+    margin: 0 0 66px !important;
+    color: var(--el-ink) !important;
+    font-size: clamp(2.4rem, 4.6vw, 4.2rem) !important;
+    line-height: 1.04;
+    text-align: left !important;
+}
+
+#home-blog-grid,
+#all-blog-grid .grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.insight-card {
+    position: relative;
+    display: flex;
+    min-height: 360px;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--el-line-light);
+    border-radius: 14px;
+    background: var(--el-paper-blue);
+    padding: 28px;
+    transition: border-color 180ms ease, transform 180ms var(--el-ease);
+}
+
+.insight-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 3px;
+    transform: scaleX(0);
+    transform-origin: left;
+    background: var(--el-accent);
+    transition: transform 300ms var(--el-ease);
+}
+
+.insight-card:hover {
+    border-color: rgba(41, 72, 215, 0.34);
+    transform: translateY(-4px);
+}
+
+.insight-card:hover::before {
+    transform: scaleX(1);
+}
+
+.insight-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--el-ink-soft);
+    font-family: var(--el-data);
+    font-size: 0.69rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.insight-card h3 {
+    margin-top: 80px;
+    color: var(--el-ink);
+    font-size: clamp(1.4rem, 2vw, 1.8rem);
+    line-height: 1.15;
+}
+
+.insight-card p {
+    display: -webkit-box;
+    overflow: hidden;
+    margin-top: 16px;
+    color: var(--el-ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+.insight-card a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+    color: var(--el-cobalt-deep);
+    font-weight: 750;
+}
+
+.insight-card a:hover {
+    color: var(--el-ink);
+}
+
+.site-home #blog > div > div:last-child a {
+    min-height: 48px;
+    border-color: var(--el-line-light) !important;
+    border-radius: 9px !important;
+    color: var(--el-ink) !important;
+}
+
+/* FAQ */
+.site-home main > section:nth-last-of-type(2) {
+    background: var(--el-paper-blue) !important;
+}
+
+.site-home main > section:nth-last-of-type(2) > div {
+    max-width: 930px;
+}
+
+.site-home main > section:nth-last-of-type(2) h2 {
+    margin-bottom: 50px !important;
+    color: var(--el-ink) !important;
+    font-size: clamp(2.4rem, 4.5vw, 4rem) !important;
+}
+
+.site-home .faq-item {
+    border: 0 !important;
+    border-top: 1px solid var(--el-line-light) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+}
+
+.site-home .faq-item:last-child {
+    border-bottom: 1px solid var(--el-line-light) !important;
+}
+
+.site-home .faq-button {
+    min-height: 84px;
+    background: transparent !important;
+    padding: 24px 4px !important;
+}
+
+.site-home .faq-button span {
+    color: var(--el-ink) !important;
+    font-size: 1.05rem !important;
+}
+
+.site-home .faq-button svg {
+    color: var(--el-cobalt-deep) !important;
+}
+
+.site-home .faq-answer {
+    background: transparent !important;
+}
+
+.site-home .faq-answer > div {
+    max-width: 760px;
+    border: 0 !important;
+    color: var(--el-ink-soft) !important;
+    padding: 0 48px 28px 4px !important;
+    line-height: 1.7;
+}
+
+/* Final CTA */
+.site-home .final-cta,
+.site-blog .final-cta {
+    position: relative;
+    overflow: hidden;
+    /* sem topo de borda: com o boleado a aresta superior é a própria curva */
+    border-top: 0 !important;
+    background: var(--el-cobalt-deep) !important;
+    color: white !important;
+}
+
+.site-home .final-cta::before,
+.site-blog .final-cta::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+}
+
+.site-home .final-cta > div,
+.site-blog .final-cta > div {
+    position: relative;
+}
+
+.site-home .final-cta h2,
+.site-blog .final-cta h2 {
+    color: white !important;
+    font-size: clamp(2.5rem, 5vw, 4.8rem);
+    font-weight: 480;
+    line-height: 1.02;
+}
+
+.site-home .final-cta p,
+.site-blog .final-cta p {
+    max-width: 680px;
+    margin: 24px auto 32px;
+    color: #d2dcff !important;
+    font-size: 1.05rem;
+    line-height: 1.65;
+}
+
+.site-home .final-cta .button-primary,
+.site-blog .final-cta .button-primary {
+    border-color: white;
+    background: white;
+    color: var(--el-ink);
+}
+
+/* Footer and legal surfaces */
+.site-home footer,
+.site-blog footer,
+.site-article footer {
+    background: var(--el-night) !important;
+    color: var(--el-white-muted);
+}
+
+.site-home footer img,
+.site-blog footer img,
+.site-article footer img {
+    filter: none !important;
+}
+
+.site-home footer a,
+.site-home footer button,
+.site-blog footer a,
+.site-blog footer button,
+.site-article footer a,
+.site-article footer button {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+}
+
+.site-home [id^="modal-"] > div,
+.site-blog [id^="modal-"] > div,
+.site-article [id^="modal-"] > div {
+    border-color: rgba(79, 112, 255, 0.5) !important;
+    background: var(--el-night-raised) !important;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5) !important;
+}
+
+.cookie-banner {
+    border-top: 1px solid rgba(79, 112, 255, 0.26) !important;
+    background: rgba(9, 13, 23, 0.97) !important;
+    color: var(--el-white-muted) !important;
+}
+
+.cookie-accept {
+    min-width: 108px;
+    min-height: 44px;
+    border-radius: 9px !important;
+    background: var(--el-white) !important;
+    color: var(--el-ink) !important;
+}
+
+/* Motion */
+.reveal {
+    opacity: 1;
+    transform: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .reveal {
+        opacity: 0;
+        transform: translateY(18px);
+        transition: opacity 650ms var(--el-ease), transform 650ms var(--el-ease);
+    }
+
+    .reveal.is-visible {
+        opacity: 1;
         transform: translateY(0);
     }
+}
 
-    20% {
-        transform: translateY(-10px);
+/* Responsive */
+@media (max-width: 1023px) {
+    .site-home .solution-row.light-card {
+        grid-template-columns: 0.75fr 1.25fr;
+        gap: 36px;
     }
 
-    40% {
-        transform: translateY(-5px);
+    .site-home .solution-row > a {
+        grid-column: 2;
+        justify-self: start;
+    }
+
+    .site-home .section-heading {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .site-home .diagnostic-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .site-home .diagnostic-grid article:nth-child(3) {
+        border-left: 1px solid var(--el-line-dark) !important;
+    }
+
+    #home-blog-grid,
+    #all-blog-grid .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
-.animate-pulse-interval {
-    animation: bounce-interval 5s infinite;
+@media (max-width: 767px) {
+    .site-home .glass-nav > div:first-child > div,
+    .site-blog .glass-nav > div:first-child > div,
+    .site-article .glass-nav > div:first-child > div {
+        height: 68px !important;
+    }
 
+    .site-home .glass-nav img,
+    .site-blog .glass-nav img,
+    .site-article .glass-nav img {
+        max-width: 150px;
+    }
+
+    .site-home main > section.hero-premium {
+        min-height: 100svh;
+        padding: 0 !important;
+    }
+
+    .site-home .hero-shell {
+        min-height: 100svh;
+        padding: 114px var(--el-gutter) calc(32px + var(--el-boleado));
+    }
+
+    .site-home .hero-copy h1 {
+        font-size: clamp(2.65rem, 12.5vw, 4rem);
+        line-height: 0.98;
+    }
+
+    .site-home .hero-summary {
+        margin-top: 25px;
+        font-size: 1rem;
+    }
+
+    .site-home .hero-actions {
+        align-items: center;
+        flex-direction: column;
+        gap: 14px;
+        margin-top: 27px;
+    }
+
+    .site-home .hero-actions .button-primary {
+        width: 100%;
+        max-width: 320px;
+    }
+
+    .site-home .hero-actions .button-tertiary {
+        align-self: center;
+    }
+
+    .hero-system {
+        grid-template-columns: 1fr 1fr;
+        margin-top: 32px;
+        padding-top: 0;
+    }
+
+    .hero-system .system-line {
+        display: none;
+    }
+
+    .system-node {
+        min-height: 82px;
+        border-top: 1px solid var(--el-line-light);
+        padding: 16px 12px 14px;
+    }
+
+    .system-node small {
+        display: none;
+    }
+
+    .system-node:nth-child(4) {
+        border-left: 1px solid var(--el-line-light);
+    }
+
+    .system-node::before {
+        top: -5px;
+        left: 14px;
+    }
+
+    .system-node small {
+        font-size: 0.72rem;
+    }
+
+    .site-home .capability-strip {
+        padding-top: 32px !important;
+        /* soma a sobreposição do #solucoes, senão a curva cobre a linha de ícones */
+        padding-bottom: calc(32px + var(--el-boleado)) !important;
+    }
+
+    .site-home .capability-strip > div > div {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    /* padding vertical do #solucoes agora vem de --el-section-y (escala 82/92/104/122) */
+
+    .site-home #solucoes > div > div:first-child {
+        margin-bottom: 48px;
+    }
+
+    .site-home #solucoes h2,
+    .site-home .section-heading h2,
+    .site-home .about-copy h2 {
+        font-size: clamp(2.35rem, 11vw, 3.25rem) !important;
+    }
+
+    .site-home .solution-row.light-card {
+        min-height: 0;
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 36px 0 !important;
+    }
+
+    .site-home .solution-row h3 {
+        max-width: none;
+        margin-top: 20px;
+    }
+
+    .site-home .solution-row > a {
+        grid-column: auto;
+        justify-self: stretch;
+    }
+
+
+
+    .site-home .operating-band > div {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .site-home .operating-band div div {
+        min-height: 54px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .site-home .verticals-grid,
+    .site-home .measurement-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .site-home .verticals-grid article:nth-child(n) {
+        min-height: 260px;
+        grid-column: auto;
+    }
+
+    .site-home .verticals-grid h3 {
+        margin-top: 52px;
+    }
+
+    .site-home .measurement-grid article {
+        min-height: 270px;
+    }
+
+    .site-home .measurement-grid h3 {
+        margin-top: 68px;
+    }
+
+    .site-home .about-section > div {
+        grid-template-columns: 1fr;
+    }
+
+    .about-system {
+        min-height: 0;
+    }
+
+    .about-system > div {
+        grid-template-columns: 56px 1fr;
+    }
+
+    .about-system small {
+        grid-column: 2;
+        margin-top: 6px;
+    }
+
+    .site-home .diagnostic-section {
+        /* soma o boleado do #blog, senão a curva cobre os cards do grid */
+        padding-bottom: calc(96px + var(--el-boleado)) !important;
+    }
+
+    .site-home .diagnostic-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .site-home .diagnostic-grid article {
+        min-height: 260px;
+        border-left: 1px solid var(--el-line-dark) !important;
+    }
+
+    .site-home .diagnostic-grid h3 {
+        margin-top: 58px;
+    }
+
+    #home-blog-grid,
+    #all-blog-grid .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .insight-card {
+        min-height: 320px;
+    }
+
+    .site-home main > section:nth-last-of-type(2) {
+        padding-top: 82px !important;
+        padding-bottom: 82px !important;
+    }
+
+    .site-home .final-cta {
+        padding-top: 86px !important;
+        padding-bottom: 86px !important;
+    }
 }
 
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+.gradient-text {
+    background: none !important;
+    color: var(--accent) !important;
+    -webkit-text-fill-color: currentColor !important;
+}
+
+.site-blog main,
+.site-article main {
+    background: var(--page) !important;
+    color: var(--ink) !important;
+}
+
+.site-blog main h1,
+.site-blog main h2,
+.site-blog main h3,
+.site-article main h1,
+.site-article main h2,
+.site-article main h3,
+.site-article main h4,
+.site-article main strong {
+    color: var(--ink) !important;
+}
+
+.site-blog main p,
+.site-blog main time,
+.site-blog main [class*="text-muted"],
+.site-blog main [class*="text-gray"],
+.site-article main p,
+.site-article main li,
+.site-article main [class*="text-muted"],
+.site-article main [class*="text-gray"] {
+    color: var(--muted) !important;
+}
+
+.blog-hero {
+    margin-bottom: 64px;
+    text-align: left;
+}
+
+.blog-hero h1 {
+    max-width: 12ch;
+    margin: 0;
+    color: var(--ink);
+    font-size: clamp(3rem, 5.5vw, 5.25rem);
+    font-weight: 480;
+    letter-spacing: -0.055em;
+    line-height: 0.96;
+}
+
+.blog-hero p {
+    max-width: 56ch;
+    margin: 26px 0 0;
+    color: var(--muted);
+    font-size: 1.1rem;
+    line-height: 1.7;
+}
+
+.site-blog #all-blog-grid > .grid {
+    gap: 18px !important;
+}
+
+.site-blog #all-blog-grid article:first-child {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+}
+
+.site-blog #all-blog-grid article:first-child > div:first-child {
+    height: 100% !important;
+    min-height: 320px;
+}
+
+.site-blog .final-cta h2 {
+    color: var(--ink) !important;
+}
+
+.site-article article {
+    color: var(--ink);
+}
+
+.site-article #post-content {
+    color: var(--muted) !important;
+}
+
+.site-article #post-content h3,
+.site-article #post-content h4,
+.site-article #post-content strong {
+    color: var(--ink) !important;
+}
+
+.site-article #post-content blockquote {
+    border-color: var(--accent) !important;
+    background: var(--surface-soft) !important;
+    color: var(--ink) !important;
+}
+
+@media (max-width: 767px) {
+    .blog-hero h1 {
+        max-width: none;
+        font-size: clamp(2.5rem, 12vw, 3.3rem);
+    }
+
+    .site-blog #all-blog-grid article:first-child {
+        grid-column: auto;
+        display: flex;
+    }
+}
+
+
+.article-heading {
+    text-align: left;
+}
+
+.article-heading h1 {
+    max-width: 18ch;
+    margin: 0;
+    font-size: clamp(2.8rem, 5vw, 4.4rem) !important;
+    letter-spacing: -0.045em;
+    line-height: 1.02 !important;
+}
+
+.article-date {
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+}
+
+.article-media {
+    border-radius: var(--radius) !important;
+    background: var(--surface-soft) !important;
+}
+
+.article-media img {
+    filter: saturate(0.68) contrast(1.04);
+}
+
+.site-blog #all-blog-grid article img,
+.site-home #home-blog-grid article img {
+    filter: saturate(0.6) contrast(1.04);
+}
+
+
+.cookie-banner {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 18px 24px;
+    border-top: 1px solid #2b3745;
+    background: #0d1219;
+    color: #edf2f7;
+    box-shadow: 0 -20px 50px -38px rgba(0, 0, 0, 0.8);
+    transform: translateY(0);
+    transition: transform 360ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cookie-banner-hidden {
+    transform: translateY(100%);
+}
+
+.cookie-copy {
+    max-width: 70rem;
+    margin: 0;
+    color: #c2ccd8;
+    font-size: 0.9rem;
+    line-height: 1.55;
+}
+
+.cookie-actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 10px;
+}
+
+.cookie-accept,
+.cookie-reject {
+    flex: 0 0 auto;
+    min-height: 44px;
+    padding: 0 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.cookie-accept {
+    border: 1px solid #6f9fff;
+    background: #6f9fff;
+    color: #0d1219;
+}
+
+.cookie-reject {
+    border: 1px solid #526176;
+    background: transparent;
+    color: #edf2f7;
+}
+
+.cookie-accept:hover,
+.cookie-accept:focus-visible {
+    background: #8bb2ff;
+}
+
+.cookie-reject:hover,
+.cookie-reject:focus-visible {
+    border-color: #a5b2c6;
+    background: #171f2a;
+}
+
+@media (max-width: 767px) {
+    .cookie-banner {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 14px;
+        padding: 16px;
+    }
+
+    .cookie-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .cookie-accept,
+    .cookie-reject {
+        width: 100%;
+    }
+}
+
+@media (max-width: 420px) {
+    .cookie-actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Final cross-page overrides — kept last to outrank the legacy utility layer. */
+.site-blog main,
+.site-article main {
+    background: var(--el-paper) !important;
+    color: var(--el-ink) !important;
+}
+
+.site-blog main {
+    padding-top: 150px !important;
+}
+
+.site-blog .blog-hero {
+    max-width: var(--el-container);
+    padding-bottom: 86px;
+}
+
+.site-blog .blog-hero::before {
+    content: "ELUMINA / INSIGHTS";
+    display: block;
+    margin-bottom: 30px;
+    color: var(--el-cobalt-deep);
+    font-family: var(--el-data);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.11em;
+}
+
+.site-blog .blog-hero h1 {
+    max-width: 900px;
+    color: var(--el-ink) !important;
+    font-size: clamp(3.2rem, 7vw, 6rem);
+    font-weight: 480;
+    letter-spacing: -0.04em;
+    line-height: 0.98;
+}
+
+.site-blog .blog-hero p {
+    max-width: 680px;
+    color: var(--el-ink-soft);
+}
+
+.site-blog #all-blog-grid {
+    max-width: var(--el-container);
+}
+
+.site-blog #all-blog-grid > .grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 18px !important;
+}
+
+.site-blog #all-blog-grid .insight-card:first-child {
+    display: flex !important;
+    grid-column: span 2;
+    background: var(--el-night-soft);
+}
+
+.site-blog #all-blog-grid .insight-card:first-child h3,
+.site-blog #all-blog-grid .insight-card:first-child a {
+    color: var(--el-white);
+}
+
+.site-blog #all-blog-grid .insight-card:first-child p,
+.site-blog #all-blog-grid .insight-card:first-child .insight-meta {
+    color: var(--el-white-muted);
+}
+
+.site-blog .final-cta h2 {
+    color: white !important;
+}
+.site-home .diagnostic-section .section-heading h2 {
+    color: var(--el-white) !important;
+}
+.site-home .diagnostic-section .section-heading p {
+    color: var(--el-white-muted) !important;
+}
+
+.site-article main > div {
+    max-width: 900px;
+}
+
+.site-article main > div > a {
+    color: var(--el-cobalt-deep) !important;
+}
+
+.site-article .article-heading h1 {
+    max-width: 17ch;
+    color: var(--el-ink) !important;
+    font-size: clamp(2.8rem, 5.5vw, 5rem) !important;
+    font-weight: 480;
+    letter-spacing: -0.04em;
+    line-height: 1.01 !important;
+}
+
+.site-article .article-date {
+    color: var(--el-cobalt-deep) !important;
+    font-family: var(--el-data);
+    font-size: 0.72rem !important;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.site-article .article-media {
+    border: 1px solid var(--el-line-light) !important;
+    border-radius: 14px !important;
+    background: var(--el-paper-blue) !important;
+}
+
+.site-article .article-media img {
+    filter: saturate(0.72) contrast(1.04);
+}
+
+.site-article #post-content {
+    color: var(--el-ink-soft) !important;
+    font-size: 1.05rem;
+    line-height: 1.78;
+}
+
+.site-article #post-content h2,
+.site-article #post-content h3,
+.site-article #post-content h4,
+.site-article #post-content strong {
+    color: var(--el-ink) !important;
+}
+
+.site-article #post-content h2,
+.site-article #post-content h3 {
+    margin-top: 2.8em;
+    font-size: clamp(1.65rem, 3vw, 2.35rem);
+    line-height: 1.18;
+}
+
+.site-article #post-content blockquote {
+    border: 0 !important;
+    border-top: 1px solid var(--el-cobalt) !important;
+    border-bottom: 1px solid var(--el-cobalt) !important;
+    background: transparent !important;
+    color: var(--el-ink) !important;
+    padding: 28px 0 !important;
+}
+
+.site-article #article-container > div:last-child {
+    border: 1px solid var(--el-line-light) !important;
+    border-radius: 14px !important;
+    background: var(--el-paper-blue) !important;
+    box-shadow: none !important;
+}
+
+.site-article #article-container > div:last-child h3 {
+    color: var(--el-ink) !important;
+}
+
+.site-article #article-container > div:last-child p {
+    color: var(--el-ink-soft) !important;
+}
+
+.site-article #article-container > div:last-child a {
+    border-radius: 10px !important;
+    background: var(--el-cobalt) !important;
+    box-shadow: none !important;
+}
+
+.cookie-banner {
+    border-top-color: rgba(79, 112, 255, 0.26) !important;
+    background: rgba(9, 13, 23, 0.97) !important;
+    color: var(--el-white-muted) !important;
+}
+
+.cookie-copy {
+    color: var(--el-white-muted) !important;
+}
+
+.cookie-accept {
+    border-color: var(--el-white) !important;
+    border-radius: 9px !important;
+    background: var(--el-white) !important;
+    color: var(--el-ink) !important;
+}
+
+.blog-empty {
+    grid-column: 1 / -1;
+    padding: 70px 20px;
+    color: var(--el-ink-soft);
+    text-align: center;
+}
+
+.blog-empty svg {
+    width: 32px;
+    height: 32px;
+    margin: 0 auto 14px;
+}
+
+.site-home #solucoes > div > .solutions-stack {
+    display: flex !important;
+    grid-template-columns: none !important;
+    gap: 0 !important;
+}
+
+.site-home #solucoes > div > .solutions-stack > :nth-child(n) {
+    width: 100%;
+    grid-column: auto !important;
+    background: transparent;
+}
+
+/* Sticky story: pinned scroll section inspired by editorial product reveals. */
+.site-home .scroll-story {
+    position: relative;
+    z-index: 1;
+    /* O percurso útil é esta altura menos a tela presa (100dvh). Com 280dvh sobram
+       180dvh para 4 painéis, ~45dvh cada — o mesmo ritmo da seção Método. Em 420dvh
+       era o dobro disso e exigia quase uma tela inteira de rolagem por painel. */
+    min-height: 280dvh;
+    /* Primeira superfície escura do site: a curva arredondada cobre o rodapé do hero
+       claro (que ganha padding extra no .hero-shell para abrigar a sobreposição). */
+    margin-top: calc(-1 * var(--el-boleado));
+    border-top-left-radius: var(--el-boleado);
+    border-top-right-radius: var(--el-boleado);
+    background: var(--el-night) !important;
+    color: var(--el-white) !important;
+}
+
+.site-home .scroll-story-pin {
+    position: sticky;
+    top: 0;
+    display: grid;
+    min-height: 100dvh;
+    align-items: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--el-line-dark);
+    /* Transparente: o fundo escuro vem do .scroll-story, senão o pin (rectangular)
+       cobriria os cantos arredondados da primeira curva. */
+}
+
+.site-home .scroll-story-pin::before {
+    position: absolute;
+    inset: 76px 0 auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--el-accent), var(--el-cobalt), transparent);
+    opacity: 0.48;
+    content: "";
+}
+
+.site-home .scroll-story-inner {
+    display: flex;
+    flex-direction: column;
+    width: min(100%, var(--el-container));
+    min-height: 100dvh;
+    margin: 0 auto;
+    padding: 132px var(--el-gutter) 88px;
+}
+
+.site-home .scroll-story-kicker {
+    display: flex;
+    flex: none;
+    justify-content: space-between;
+    gap: 24px;
+    color: var(--el-white-muted);
+    font-family: var(--el-data);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.site-home .scroll-story-panels {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.site-home .scroll-story-panel {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: minmax(120px, 0.32fr) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    column-gap: 56px;
+    align-content: center;
+    /* `safe` evita que conteúdo mais alto que a caixa transborde para CIMA ao ser
+       centralizado — sem isso, em telas curtas o rótulo do painel subia por cima do
+       cabeçalho e a última linha do parágrafo era cortada pelo overflow: hidden. */
+    align-content: safe center;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(34px) scale(0.98);
+    transition: opacity 220ms var(--el-ease), transform 220ms var(--el-ease), visibility 0s 220ms;
+    pointer-events: none;
+}
+
+.site-home .scroll-story-panel.is-active {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition-delay: 0s;
+    pointer-events: auto;
+}
+
+.site-home .scroll-story-panel > span {
+    grid-row: 1 / span 2;
+    color: var(--el-accent);
+    font-family: var(--el-data);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.site-home .scroll-story-panel h2 {
+    max-width: 960px;
+    margin: 0;
+    color: var(--el-white) !important;
+    font-size: 6.2rem;
+    font-weight: 480;
+    letter-spacing: 0;
+    line-height: 0.98;
+}
+
+.site-home .scroll-story-panel p {
+    max-width: 660px;
+    margin: 30px 0 0;
+    color: var(--el-white-muted) !important;
+    font-size: 1.08rem;
+    line-height: 1.72;
+}
+
+.site-home .scroll-story-rail {
+    flex: none;
+    height: 1px;
+    margin-top: 32px;
+    overflow: hidden;
+    background: rgba(165, 178, 198, 0.22);
+}
+
+.site-home .scroll-story-rail span {
+    display: block;
+    width: calc(var(--story-progress, 0) * 100%);
+    height: 100%;
+    background: linear-gradient(90deg, var(--el-accent), var(--el-cobalt));
+    box-shadow: 0 0 18px rgba(79, 112, 255, 0.45);
+}
+
+@media (min-width: 768px) and (max-height: 900px) {
+    .site-home .scroll-story-inner {
+        padding: 104px var(--el-gutter) 56px;
+    }
+
+    .site-home .scroll-story-panel h2 {
+        font-size: 4.2rem;
+        line-height: 1.04;
+    }
+
+    .site-home .scroll-story-panel p {
+        margin-top: 22px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 767px) {
+    .site-home .scroll-story {
+        min-height: 0;
+    }
+
+    .site-home .scroll-story-pin {
+        position: relative;
+        min-height: 0;
+        overflow: visible;
+    }
+
+    .site-home .scroll-story-inner {
+        min-height: 0;
+        padding: 88px var(--el-gutter) 64px;
+    }
+
+    .site-home .scroll-story-kicker {
+        margin-bottom: 36px;
+    }
+
+    .site-home .scroll-story-count {
+        display: none;
+    }
+
+    .site-home .scroll-story-panels {
+        display: grid;
+        gap: 0;
+        overflow: visible;
+    }
+
+    .site-home .scroll-story-panel {
+        position: relative;
+        inset: auto;
+        grid-template-columns: 1fr;
+        row-gap: 18px;
+        padding: 34px 0;
+        border-top: 1px solid var(--el-line-dark);
+        visibility: visible;
+        opacity: 1;
+        transform: none;
+        transition: none;
+        pointer-events: auto;
+    }
+
+    .site-home .scroll-story-panel:first-child {
+        padding-top: 0;
+        border-top: 0;
+    }
+
+    .site-home .scroll-story-panel > span {
+        grid-row: auto;
+    }
+
+    /* A seção é presa em 100dvh, então o limite real aqui é a ALTURA disponível, não a
+       largura. Com a barra do navegador visível um celular de 844px cai para ~670px e o
+       título de 3.05rem passava a não caber, cortando o parágrafo. O vh mantém o tamanho
+       original em telas altas e reduz só o necessário nas curtas. */
+    .site-home .scroll-story-panel h2 {
+        font-size: clamp(1.9rem, 6.2vh, 3.05rem);
+        line-height: 1.04;
+    }
+
+    .site-home .scroll-story-panel p {
+        margin-top: 18px;
+        font-size: 1rem;
+    }
+
+    .site-home .scroll-story-rail {
+        display: none;
+    }
+
+    .site-blog main {
+        padding-top: 116px !important;
+    }
+
+    .site-blog .blog-hero {
+        padding-bottom: 58px;
+    }
+
+    .site-blog .blog-hero h1 {
+        font-size: clamp(2.7rem, 13vw, 4rem);
+    }
+
+    .site-blog #all-blog-grid > .grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .site-blog #all-blog-grid .insight-card:first-child {
+        grid-column: auto;
+    }
+
+    .site-article main {
+        padding-top: 112px !important;
+    }
+
+    .site-article .article-heading h1 {
+        font-size: clamp(2.45rem, 11vw, 3.4rem) !important;
+    }
+
+    .site-article #post-content {
+        font-size: 1rem;
+    }
+}
+
+[id^="modal-"] .overflow-y-auto {
+    overscroll-behavior: contain;
+}
+
+/* Editorial circuit: the blog and article use the same operational grammar as the home. */
+.site-blog .blog-hero::before {
+    content: none !important;
+}
+
+.site-blog #all-blog-grid > .grid {
+    display: flex !important;
+    flex-direction: column;
+    gap: 0 !important;
+    border-top: 1px solid var(--el-line-light);
+}
+
+.site-blog #all-blog-grid .insight-card,
+.site-blog #all-blog-grid .insight-card:first-child {
+    position: relative;
+    display: grid !important;
+    grid-template-columns: minmax(150px, 0.55fr) minmax(260px, 1.35fr) minmax(220px, 1fr);
+    min-height: 230px;
+    padding: 36px 24px 36px 46px;
+    border: 0;
+    border-bottom: 1px solid var(--el-line-light);
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    color: var(--el-ink);
+}
+
+.site-blog #all-blog-grid .insight-card::before {
+    top: 40px;
+    right: auto;
+    bottom: auto;
+    left: 14px;
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--el-accent);
+    border-radius: 50%;
+    background: var(--el-paper);
+    opacity: 1;
+    /* Aqui o pseudo-elemento deixa de ser a listra de hover da home e vira o nó do
+       circuito, que deve ficar sempre visível. Sem este reset ele herda o scaleX(0)
+       da regra base e some — aparecia só no hover, e nunca em telas de toque. */
+    transform: none;
+}
+
+.site-blog #all-blog-grid .insight-card::after {
+    position: absolute;
+    top: 48px;
+    bottom: -1px;
+    left: 18px;
+    width: 1px;
+    background: var(--el-line-light);
+    content: "";
+}
+
+.site-blog #all-blog-grid .insight-card:hover {
+    transform: none;
+    background: var(--el-paper-blue);
+}
+
+.site-blog #all-blog-grid .insight-card .insight-meta {
+    grid-column: 1;
+    color: var(--el-ink-soft) !important;
+}
+
+.site-blog #all-blog-grid .insight-card h3 {
+    grid-column: 2;
+    align-self: start;
+    max-width: 24ch;
+    color: var(--el-ink) !important;
+    font-size: clamp(1.5rem, 2.7vw, 2.5rem);
+    line-height: 1.08;
+}
+
+.site-blog #all-blog-grid .insight-card p {
+    grid-column: 3;
+    align-self: start;
+    color: var(--el-ink-soft) !important;
+}
+
+.site-blog #all-blog-grid .insight-card a {
+    grid-column: 3;
+    align-self: end;
+    color: var(--el-cobalt-deep) !important;
+}
+
+.site-blog #all-blog-grid .insight-card:nth-child(4n + 1)::before {
+    background: var(--el-cobalt);
+    border-color: var(--el-cobalt);
+}
+
+.site-article .article-circuit {
+    display: block;
+    min-height: 330px;
+    padding: 26px;
+    border: 1px solid rgba(121, 143, 201, 0.2) !important;
+    border-radius: 0 !important;
+    background-color: var(--el-night-soft) !important;
+    color: var(--el-white);
+}
+
+.article-circuit-head {
+    display: flex;
+    justify-content: space-between;
+    color: var(--el-white-muted);
+    font-family: var(--el-data);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.article-circuit-flow {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin-top: 110px;
+    border-top: 1px solid rgba(121, 143, 201, 0.35);
+}
+
+.article-circuit-flow::before {
+    position: absolute;
+    top: -2px;
+    left: 0;
+    width: 25%;
+    height: 3px;
+    background: var(--el-cobalt);
+    box-shadow: 0 0 18px rgba(79, 112, 255, 0.7);
+    content: "";
+}
+
+.article-circuit-flow > div {
+    position: relative;
+    display: grid;
+    gap: 8px;
+    min-height: 110px;
+    padding: 22px 18px 0 0;
+    border-right: 1px solid rgba(121, 143, 201, 0.18);
+}
+
+.article-circuit-flow > div::before {
+    position: absolute;
+    top: -5px;
+    left: 0;
+    width: 9px;
+    height: 9px;
+    border: 2px solid var(--el-accent);
+    border-radius: 50%;
+    background: var(--el-night-soft);
+    content: "";
+}
+
+.article-circuit-flow span,
+.article-circuit-flow small {
+    color: var(--el-white-muted);
+    font-family: var(--el-data);
+    font-size: 0.64rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.article-circuit-flow strong {
+    align-self: end;
+    color: var(--el-white) !important;
+    font-size: 1.05rem;
+}
+
+@media (max-width: 767px) {
+    .site-blog #all-blog-grid .insight-card,
+    .site-blog #all-blog-grid .insight-card:first-child {
+        display: grid !important;
+        grid-template-columns: 1fr;
+        min-height: 0;
+        padding: 30px 14px 34px 34px;
+    }
+
+    .site-blog #all-blog-grid .insight-card .insight-meta,
+    .site-blog #all-blog-grid .insight-card h3,
+    .site-blog #all-blog-grid .insight-card p,
+    .site-blog #all-blog-grid .insight-card a {
+        grid-column: 1;
+    }
+
+    .article-circuit-flow {
+        grid-template-columns: repeat(2, 1fr);
+        margin-top: 72px;
+    }
+
+    .article-circuit-flow > div {
+        border-bottom: 1px solid rgba(121, 143, 201, 0.18);
+    }
+}
+/* Boleado nas demais seções de página inteira: cada seção sobe com os cantos
+   superiores arredondados sobre a seção anterior. As faixas estreitas
+   ficam de fora porque funcionam como passagens entre os blocos. */
+.site-home .measurement-section,
+.site-home .about-section,
+.site-home .faq-section,
+.site-home .final-cta {
+    position: relative;
+    z-index: 1;
+    margin-top: calc(-1 * var(--el-boleado));
+    border-top-left-radius: var(--el-boleado);
+    border-top-right-radius: var(--el-boleado);
+}
+
+/* Continuity pass: the operational map now crosses the light surfaces as one system. */
+.site-home #solucoes,
+.site-home #aplicacoes,
+.site-home .observability-section,
+.site-home .about-section {
+    position: relative;
+}
+
+.site-home #solucoes::before,
+.site-home #aplicacoes::before,
+.site-home .observability-section::before,
+.site-home .about-section::before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: max(24px, calc((100vw - var(--el-container)) / 2));
+    width: 1px;
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        var(--el-line-light) 10%,
+        var(--el-line-light) 90%,
+        transparent
+    );
+    content: "";
+    pointer-events: none;
+}
+
+.site-home #solucoes::after,
+.site-home #aplicacoes::after,
+.site-home .observability-section::after,
+.site-home .about-section::after {
+    position: absolute;
+    top: 84px;
+    left: max(20px, calc((100vw - var(--el-container)) / 2 - 4px));
+    width: 9px;
+    height: 9px;
+    border: 2px solid var(--el-accent);
+    border-radius: 50%;
+    background: var(--el-paper);
+    content: "";
+    pointer-events: none;
+}
+
+/* A linha vertical e o nó de circuito acima moram na margem esquerda (left: 24px / 20px).
+   Eles só ficam livres do texto a partir de 1024px, onde o recuo do container sobe para
+   32px. Abaixo disso o recuo é 16px (celular) ou 24px (tablet) e a decoração caía POR
+   CIMA da primeira letra dos títulos. Sem margem para ocupar, ela sai de cena. */
+@media (max-width: 1023px) {
+
+    .site-home #solucoes::before,
+    .site-home #aplicacoes::before,
+    .site-home .observability-section::before,
+    .site-home .about-section::before,
+    .site-home #solucoes::after,
+    .site-home #aplicacoes::after,
+    .site-home .observability-section::after,
+    .site-home .about-section::after {
+        display: none;
+    }
+}
+
+.site-home .solution-row.light-card {
+    border-width: 1px 0 0 !important;
+    border-radius: 0 !important;
+    background: rgba(243, 246, 251, 0.68) !important;
+}
+
+.site-home .solution-row.light-card:last-child {
+    border-bottom-width: 1px !important;
+}
+
+.site-home .applications-grid {
+    border: 1px solid var(--el-line-light);
+    background: rgba(243, 246, 251, 0.72);
+}
+
+.site-home .application-card {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.site-home .observability-card {
+    border-radius: 0 !important;
+}
+
+/* Transição entre seções: o conteúdo "carrega" ao entrar na tela.
+   Blur→nítido + fade + leve subida, como uma informação sendo processada.
+   A cascata dos grupos (delay por índice) é aplicada pelo JS via transition-delay. */
+@media (prefers-reduced-motion: no-preference) {
+    .reveal {
+        opacity: 0;
+        transform: translateY(26px);
+        filter: blur(8px);
+        transition-property: opacity, transform, filter;
+        transition-duration: 650ms;
+        transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+
+    /* Cards que definem a própria transição (hover de borda/elevação) usam a
+       mesma linguagem de "carregar", mantendo a borda animável no hover. */
+    .reveal.light-card,
+    .reveal.insight-card {
+        transition-property: opacity, transform, filter, border-color !important;
+        transition-duration: 650ms !important;
+        transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+}
+
+/* Contrast repair: keep every text role legible on its actual surface. */
+.site-article main .article-circuit-flow strong {
+    color: var(--el-white) !important;
+}
+
+.site-home .capability-strip .reveal-group span,
+.site-home .capability-strip .reveal-group span.reveal,
+.site-home .capability-strip > div > p {
+    color: var(--el-white-muted) !important;
+}
+
+.site-home .about-system span {
+    color: #b33d2c !important;
+}
+
+.site-home .hero-line-muted,
+.site-home .hero-line-strong {
+    color: #000000 !important;
+}
+
+/* Volta ao cobalto da marca: o fundo do hero deixou de ser o degradê ciano e
+   virou o shader claro, então o cobalto passou a caber. Medido no pior
+   instante do shader dá 3.13:1 — acima do mínimo de 3:1 para texto grande,
+   mas com folga curta; não clarear mais que isto.
+   O #00a3ff, que aparece em outros textos, dá 2.08 aqui: ele funciona lá
+   porque aquelas seções são escuras. */
+.site-home .hero-accent {
+    color: var(--el-cobalt) !important;
+}
+
+.button-primary,
+.site-article #article-container > div:last-child a {
+    background: #3655dc !important;
+    color: #ffffff !important;
+}
+
+.final-cta .button-primary {
+    background: var(--el-white) !important;
+    color: var(--el-ink) !important;
+}
+
+.site-home footer,
+.site-home footer a,
+.site-home footer button,
+.site-home footer p,
+.site-home footer span,
+.site-blog footer,
+.site-blog footer a,
+.site-blog footer button,
+.site-blog footer p,
+.site-blog footer span,
+.site-article footer,
+.site-article footer a,
+.site-article footer button,
+.site-article footer p,
+.site-article footer span {
+    color: var(--el-white-muted) !important;
+}
+
+.site-home [id^="modal-"] .text-gray-500 {
+    color: var(--el-white-muted) !important;
+}
+
+.site-home .glass-nav #mobile-menu a:not(.gradient-bg),
+.site-blog .glass-nav #mobile-menu a:not(.gradient-bg),
+.site-article .glass-nav #mobile-menu a:not(.gradient-bg) {
+    color: var(--el-white-muted) !important;
+}
+
+.site-home .glass-nav #mobile-menu a.gradient-bg,
+.site-blog .glass-nav #mobile-menu a.gradient-bg {
+    background: #3655dc !important;
+    color: #ffffff !important;
+}
+
+.site-blog .glass-nav #mobile-menu a[href="blog.html"],
+.site-article .glass-nav #mobile-menu a[href="blog.html"] {
+    background: var(--el-night-soft) !important;
+    color: var(--el-white) !important;
+}
+
+.site-home main .section-ink-title {
+    background: none !important;
+    color: #0a1020 !important;
+    -webkit-text-fill-color: #0a1020 !important;
+    text-shadow: none !important;
+}
+
+.site-home main .section-copy-dark {
+    color: #526176 !important;
+    -webkit-text-fill-color: #526176 !important;
+}
+
+/* Featured insight alignment: shared top and bottom axes, without legacy stretching. */
+.site-home #home-blog-grid .insight-card:first-child {
+    display: grid !important;
+    min-height: 360px;
+    grid-template-columns: minmax(220px, 0.78fr) minmax(0, 1.22fr) !important;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 48px;
+    row-gap: 24px;
+    padding: 40px;
+}
+
+.site-home #home-blog-grid .insight-card:first-child > .insight-meta {
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    height: auto !important;
+    min-height: 0 !important;
+    align-self: start;
+}
+
+.site-home #home-blog-grid .insight-card:first-child > h3 {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+    margin: 0;
+}
+
+.site-home #home-blog-grid .insight-card:first-child > p {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: end;
+    margin: 0;
+}
+
+.site-home #home-blog-grid .insight-card:first-child > a {
+    grid-column: 2;
+    grid-row: 3;
+    width: max-content;
+    align-self: end;
+    justify-self: start;
+    margin: 0;
+}
+
+@media (max-width: 767px) {
+    .site-home #home-blog-grid .insight-card:first-child {
+        display: flex !important;
+        min-height: 0;
+        gap: 0;
+        padding: 28px;
+    }
+
+    .site-home #home-blog-grid .insight-card:first-child > h3 {
+        margin-top: 58px;
+    }
+
+    .site-home #home-blog-grid .insight-card:first-child > p {
+        margin-top: 16px;
+    }
+
+    .site-home #home-blog-grid .insight-card:first-child > a {
+        margin-top: 24px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    /* Sem animação o traço não some: aparece inteiro e estático, preservando a leitura
+       de sequência entre os quatro passos. */
+    .site-home .diagnostic-grid article {
+        --node: 1;
+    }
+
+    .site-home .scroll-story {
+        min-height: 0;
+    }
+
+    .site-home .scroll-story-pin {
+        position: relative;
+        min-height: 0;
+    }
+
+    .site-home .scroll-story-inner {
+        min-height: 0;
+    }
+
+    .site-home .scroll-story-panels {
+        display: grid;
+        gap: 44px;
+        min-height: 0;
+        padding-top: 72px;
+    }
+
+    .site-home .scroll-story-panel {
+        position: relative;
+        opacity: 1;
+        transform: none;
+    }
+
+    .site-home .scroll-story-rail {
+        display: none;
+    }
+}
+
+/* ==========================================================================
+   PILL NAVBAR — a barra w-full vira uma pílula flutuante centralizada no topo:
+   fundo #0A0A0A, borda branca 8%, raio 24px, altura 72px e sombra suave.
+   Vence os blocos .glass-nav / Navigation acima por vir depois no arquivo,
+   com especificidade igual ou maior nos mesmos seletores. As classes
+   utilitárias arbitrárias (rounded-[24px], bg-[#0A0A0A], shadow-[...],
+   h-[72px]) não existem no tailwind-build.css, então o desenho fica aqui.
+   ========================================================================== */
+.nav-pill-wrap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    padding: 12px 16px 0;
+    transition: padding-top 0.25s ease, transform 0.35s ease, opacity 0.35s ease;
+}
+
+/* Hero rotate: as palavras de destaque ("avançar." / "evoluir." / "decolar.") ficam
+   empilhadas na mesma célula de grid; a caixa assume a largura da maior palavra e
+   a troca é um crossfade com leve subida — sem reflow do headline. */
+.hero-rotate {
+    display: inline-grid;
+    vertical-align: baseline;
+    text-align: left;
+}
+
+.hero-rotate-word {
+    grid-area: 1 / 1;
+    opacity: 0;
+    transform: translateY(0.35em);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.hero-rotate-word.is-active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.nav-pill {
+    display: flex;
+    width: 100%;
+    height: 72px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    padding: 0 20px;
+    border: 1px solid rgba(79, 112, 255, 0.3);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    backdrop-filter: blur(18px) saturate(160%);
+    box-shadow: 0 0 20px rgba(15, 31, 54, 0.12);
+    transition: height 0.25s ease, gap 0.25s ease, padding 0.25s ease, border-radius 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+@media (min-width: 640px) {
+    .nav-pill {
+        width: max-content;
+        max-width: calc(100vw - 32px);
+    }
+}
+
+/* Logo da pílula: spec pede 40px de altura (h-10 não existe no build). */
+.nav-pill img {
+    height: 40px;
+    width: auto;
+    transition: height 0.25s ease;
+}
+
+/* Neutraliza o bloco Navigation para a pílula (mesma especificidade, mais tarde). */
+.site-home .glass-nav.nav-pill,
+.site-blog .glass-nav.nav-pill,
+.site-article .glass-nav.nav-pill {
+    background: rgba(255, 255, 255, 0.72) !important;
+    border: 1px solid rgba(79, 112, 255, 0.3) !important;
+    border-bottom: 1px solid rgba(79, 112, 255, 0.3) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 0 20px rgba(15, 31, 54, 0.12) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
+    backdrop-filter: blur(18px) saturate(160%) !important;
+    height: 72px !important;
+}
+
+/* Logo da pílula clara: exibe a logo em cores originais. */
+.site-home .glass-nav.nav-pill img,
+.site-blog .glass-nav.nav-pill img,
+.site-article .glass-nav.nav-pill img {
+    filter: none !important;
+}
+
+/* Links da pílula clara: cinza mais escuro, hover quase preto. */
+.site-home .glass-nav.nav-pill nav a,
+.site-blog .glass-nav.nav-pill nav a,
+.site-article .glass-nav.nav-pill nav a,
+.site-home .glass-nav.nav-pill button,
+.site-blog .glass-nav.nav-pill button,
+.site-article .glass-nav.nav-pill button {
+    color: #4a5568 !important;
+}
+
+.site-home .glass-nav.nav-pill nav a:hover,
+.site-blog .glass-nav.nav-pill nav a:hover,
+.site-article .glass-nav.nav-pill nav a:hover,
+.site-home .glass-nav.nav-pill button:hover,
+.site-blog .glass-nav.nav-pill button:hover,
+.site-article .glass-nav.nav-pill button:hover {
+    color: #0a1020 !important;
+}
+
+/* CTA da pílula clara: tinta escura com texto branco para continuar destacado. */
+/* CTA da navbar: mesma cor e mesmo halo do botão principal do hero — é a mesma
+   ação, não faz sentido ter dois pesos visuais. Cor, borda, halo e hover são os
+   valores de .site-home .hero-premium .button-primary.
+   A geometria continua a da pílula (48px de altura, raio 14): os 52px do hero
+   estouram a barra. O `transition` é preciso porque o HTML só traz o
+   `transition-colors` do Tailwind, que não anima box-shadow nem transform. */
+.site-home .glass-nav.nav-pill .nav-pill-cta,
+.site-blog .glass-nav.nav-pill .nav-pill-cta,
+.site-article .glass-nav.nav-pill .nav-pill-cta {
+    min-width: 120px;
+    height: 48px;
+    padding: 0 20px;
+    border: 1px solid var(--el-cobalt) !important;
+    border-radius: 14px !important;
+    background: #3655dc !important;
+    color: #ffffff !important;
+    box-shadow:
+        0 0 0 1px rgba(79, 112, 255, 0.4),
+        0 10px 34px -8px rgba(79, 112, 255, 0.6) !important;
+    transition: transform 180ms var(--el-ease), background 180ms ease, border-color 180ms ease, box-shadow 220ms ease;
+}
+
+.site-home .glass-nav.nav-pill .nav-pill-cta:hover,
+.site-blog .glass-nav.nav-pill .nav-pill-cta:hover,
+.site-article .glass-nav.nav-pill .nav-pill-cta:hover {
+    border-color: #6c87ff !important;
+    background: #5d7bff !important;
+    color: #ffffff !important;
+    box-shadow:
+        0 0 0 1px rgba(108, 135, 255, 0.55),
+        0 14px 44px -8px rgba(79, 112, 255, 0.85) !important;
+    transform: translateY(-2px);
+}
+
+/* Link ativo (Blog) nas páginas do blog/artigo. */
+.site-blog .glass-nav.nav-pill nav a[href="blog.html"],
+.site-article .glass-nav.nav-pill nav a[href="blog.html"] {
+    color: #0a1020 !important;
+}
+
+/* Menu mobile em pílula, alinhado à pílula (abaixo dela, com a mesma linguagem). */
+.nav-pill-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 16px;
+    right: 16px;
+    padding: 8px;
+    border: 1px solid rgba(79, 112, 255, 0.3);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 20px 40px rgba(15, 31, 54, 0.14);
+}
+
+.site-home .nav-pill-wrap #mobile-menu,
+.site-blog .nav-pill-wrap #mobile-menu,
+.site-article .nav-pill-wrap #mobile-menu {
+    background: rgba(255, 255, 255, 0.92) !important;
+    border-color: rgba(79, 112, 255, 0.3) !important;
+}
+
+/* Links do menu mobile claro. */
+.site-home .nav-pill-wrap #mobile-menu a:not(.gradient-bg),
+.site-blog .nav-pill-wrap #mobile-menu a:not(.gradient-bg),
+.site-article .nav-pill-wrap #mobile-menu a:not(.gradient-bg) {
+    color: #4a5568 !important;
+}
+
+.site-home .nav-pill-wrap #mobile-menu a:not(.gradient-bg):hover,
+.site-blog .nav-pill-wrap #mobile-menu a:not(.gradient-bg):hover,
+.site-article .nav-pill-wrap #mobile-menu a:not(.gradient-bg):hover {
+    color: #0a1020 !important;
+    background: rgba(79, 112, 255, 0.08) !important;
+}
+
+.site-blog .nav-pill-wrap #mobile-menu a[href="blog.html"],
+.site-article .nav-pill-wrap #mobile-menu a[href="blog.html"] {
+    color: #0a1020 !important;
+    background: rgba(79, 112, 255, 0.1) !important;
+}
+
+.site-home .nav-pill-wrap #mobile-menu div.border-t,
+.site-blog .nav-pill-wrap #mobile-menu div.border-t,
+.site-article .nav-pill-wrap #mobile-menu div.border-t {
+    border-top-color: rgba(79, 112, 255, 0.18) !important;
+}
+
+/* Estado persistente depois da hero: reduz a presença da navegação sem retirar
+   orientação, atalhos de seção ou o caminho de contato. */
+.site-home .nav-pill-wrap.nav-pill-compact {
+    padding-top: 8px;
+}
+
+.site-home .nav-pill-wrap.nav-pill-compact .glass-nav.nav-pill {
+    height: 60px !important;
+    gap: 28px;
+    padding-inline: 14px;
+    border-radius: 18px !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    box-shadow: 0 10px 30px rgba(15, 31, 54, 0.12) !important;
+}
+
+.site-home .nav-pill-wrap.nav-pill-compact .nav-pill img {
+    height: 32px;
+}
+
+.site-home .nav-pill-wrap.nav-pill-compact .nav-pill-cta {
+    height: 42px;
+    padding-inline: 16px;
+}
+
+@media (max-width: 767px) {
+    .site-home .nav-pill-wrap.nav-pill-compact {
+        padding-top: 6px;
+    }
+
+    .site-home .nav-pill-wrap.nav-pill-compact .glass-nav.nav-pill {
+        height: 60px !important;
+        width: 100%;
+    }
+}

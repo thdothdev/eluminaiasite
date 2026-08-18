@@ -1,122 +1,57 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">  <url>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
     <loc>https://eluminaia.com/</loc>
-    <lastmod>2026-01-08</lastmod>
+    <lastmod>2026-07-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://eluminaia.com/index.html</loc>
-    <lastmod>2026-01-08</lastmod>
+    <lastmod>2026-07-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://eluminaia.com/blog.html</loc>
-    <lastmod>2026-01-08</lastmod>
+    <lastmod>2026-07-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=ia-generativa-empresas-roi-real</loc>
-    <lastmod>2026-01-07</lastmod>
+  </url>
+  <url>
+    <loc>https://eluminaia.com/blog-post.html?slug=mapear-processo-antes-da-ia</loc>
+    <lastmod>2026-07-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=melhor-ia-whatsapp-empresas-comparativo</loc>
-    <lastmod>2026-01-07</lastmod>
+  </url>
+  <url>
+    <loc>https://eluminaia.com/blog-post.html?slug=agente-automacao-ou-sistema</loc>
+    <lastmod>2026-07-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=como-implementar-ia-empresa-passo-a-passo</loc>
-    <lastmod>2026-01-07</lastmod>
+  </url>
+  <url>
+    <loc>https://eluminaia.com/blog-post.html?slug=automacao-observavel</loc>
+    <lastmod>2026-07-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=futuro-automacao-ia-proativa-negocios</loc>
-    <lastmod>2026-01-06</lastmod>
+  </url>
+  <url>
+    <loc>https://eluminaia.com/blog-post.html?slug=conectar-sistemas-sem-ilhas</loc>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=ia-psicologia-gestao-consultorio-empatia</loc>
-    <lastmod>2026-01-06</lastmod>
+  </url>
+  <url>
+    <loc>https://eluminaia.com/blog-post.html?slug=ia-com-contexto</loc>
+    <lastmod>2026-07-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=elumina-clinicas-ia-adesao-tratamento</loc>
-    <lastmod>2026-01-05</lastmod>
+  </url>
+  <url>
+    <loc>https://eluminaia.com/blog-post.html?slug=automacao-para-qualquer-setor</loc>
+    <lastmod>2026-06-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=ia-geriatria-cuidado-idoso-humanizacao</loc>
-    <lastmod>2026-01-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=roi-90-dias-lucro-automacao-ia</loc>
-    <lastmod>2026-01-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=automacao-rs-referencia-tecnologica-sul</loc>
-    <lastmod>2026-01-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=checklist-elumina-escala-ia-diagnostico</loc>
-    <lastmod>2026-01-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=erros-comuns-automacao-whatsapp-agentes</loc>
-    <lastmod>2026-01-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=quanto-custa-automacao-ia-2026</loc>
-    <lastmod>2026-01-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=estudo-caso-clinica-poa-ia-lucro</loc>
-    <lastmod>2026-01-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=lgpd-ia-seguranca-dados-whatsapp</loc>
-    <lastmod>2025-12-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=sinais-vermelhos-perda-dinheiro-empresa</loc>
-    <lastmod>2026-01-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=engenharia-automacao-vs-ferramentas-prontas</loc>
-    <lastmod>2025-12-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=recorrencia-automatica-agenda-lotada</loc>
-    <lastmod>2025-12-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=imobiliaria-24h-leads-madrugada</loc>
-    <lastmod>2025-12-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=reduzir-no-show-clinicas-ia</loc>
-    <lastmod>2025-12-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=whatsapp-ia-atendimento-24h</loc>
-    <lastmod>2025-12-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>  <url>
-    <loc>https://eluminaia.com/blog-post.html?slug=trabalho-invisivel-prejuizo-silencioso</loc>
-    <lastmod>2025-11-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url></urlset>
+  </url>
+</urlset>

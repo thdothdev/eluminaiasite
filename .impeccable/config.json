@@ -1,0 +1,26 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "codex-grid-background",
+        "value": "*",
+        "files": [
+          "style.css"
+        ],
+        "createdAt": "2026-07-31T11:17:04.574Z",
+        "reason": "Grid hairline estilo blueprint e linguagem visual intencional da marca (hero + scroll-story), confirmado pelo usuario em 2026-07-30"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "style.css"
+        ],
+        "createdAt": "2026-07-31T15:57:25.501Z",
+        "reason": "Falso positivo: a listra de 3px fica em scaleX(0) (invisivel em repouso) e so entra varrendo no hover - e micro-interacao, nao a barra estatica que a regra combate. Confirmado pelo usuario em 2026-07-31"
+      }
+    ]
+  }
+}

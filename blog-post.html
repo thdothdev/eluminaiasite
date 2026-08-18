@@ -4,41 +4,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- SEO Meta Tags will be injected here by script.js -->
-    <link rel='icon' type='image/png' href='assets/favicon.png'>
-    <title>Blog - Elumina IA</title>
-    <meta name="description" content="Artigos e insights sobre Inteligência Artificial aplicada a negócios.">
+    <meta name="theme-color" content="#070a12">
+    <!-- SEO Meta Tags: default fallback below, overwritten per-article by initBlogPost() in script.js -->
+    <link rel='icon' type='image/png' href='assets/favicon.png?v=2'>
+    <title id="meta-title">Blog - Elumina IA</title>
+    <meta id="meta-description" name="description" content="Artigos e insights sobre Inteligência Artificial aplicada a negócios.">
+    <link id="meta-canonical" rel="canonical" href="https://eluminaia.com/blog-post.html">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://eluminaia.com/blog-post.html">
-    <meta property="og:title" content="Elumina IA | Arquiteto de Automação e Processos">
-    <meta property="og:description"
-        content="Recuperamos o faturamento perdido da sua clínica ou empresa com IA Proativa e automação de elite.">
-    <meta property="og:image" content="https://eluminaia.com/assets/logo.png">
+    <meta id="meta-og-url" property="og:url" content="https://eluminaia.com/blog-post.html">
+    <meta id="meta-og-title" property="og:title" content="Elumina IA | Inteligência aplicada">
+    <meta id="meta-og-description" property="og:description"
+        content="Análises sobre agentes de IA, automação, integração e desenho de processos.">
+    <meta property="og:image" content="https://eluminaia.com/assets/og-image.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://eluminaia.com/blog-post.html">
-    <meta property="twitter:title" content="Elumina IA | Arquiteto de Automação e Processos">
-    <meta property="twitter:description"
-        content="Recuperamos o faturamento perdido da sua clínica ou empresa com IA Proativa e automação de elite.">
-    <meta property="twitter:image" content="https://eluminaia.com/assets/logo.png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="tailwind-config.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <meta id="meta-twitter-url" property="twitter:url" content="https://eluminaia.com/blog-post.html">
+    <meta id="meta-twitter-title" property="twitter:title" content="Elumina IA | Inteligência aplicada">
+    <meta id="meta-twitter-description" property="twitter:description"
+        content="Análises sobre agentes de IA, automação, integração e desenho de processos.">
+    <meta property="twitter:image" content="https://eluminaia.com/assets/og-image.png">
+    <script id="meta-jsonld" type="application/ld+json"></script>
+    <link rel="stylesheet" href="tailwind-build.css">
+    <!-- Lucide: `defer` tira do caminho da primeira renderização (eram ~97KB bloqueando o
+         <head>); versão fixada elimina o redirect do @latest e evita quebra surpresa.
+         Seguro porque script.js só chama lucide.createIcons() dentro do DOMContentLoaded,
+         que dispara depois dos scripts deferidos. -->
+    <script defer src="https://unpkg.com/lucide@1.28.0/dist/umd/lucide.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Spline+Sans+Mono:wght@400;500;600&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
     <style>
+        .light-card {
+            background: #FFFFFF;
+            border: 1px solid #ECEDF2;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .light-card:hover {
+            border-color: #C7D2FE;
+            box-shadow: 0 8px 24px -8px rgba(11, 11, 18, 0.12);
+            transform: translateY(-4px);
+        }
+
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal {
+                opacity: 1;
+                transform: none;
+                transition: none;
+            }
+        }
+
         /* Typography overrides for blog content */
         .prose h2,
         .prose h3 {
-            color: white;
-            font-family: 'Outfit', sans-serif;
+            color: #0B0B12;
+            font-family: 'Manrope', sans-serif;
             font-weight: 700;
             margin-top: 2rem;
             margin-bottom: 1rem;
@@ -55,15 +92,14 @@
         }
 
         .prose p {
-            color: #d1d5db;
-            /* gray-300 */
+            color: #4B5563;
             margin-bottom: 1.5rem;
             line-height: 1.75;
             font-size: 1.125rem;
         }
 
         .prose strong {
-            color: white;
+            color: #0B0B12;
             font-weight: 600;
         }
 
@@ -71,77 +107,80 @@
             list-style-type: disc;
             padding-left: 1.5rem;
             margin-bottom: 1.5rem;
-            color: #d1d5db;
+            color: #4B5563;
         }
 
         .prose li {
             margin-bottom: 0.5rem;
         }
     </style>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8MKC9WE26W"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-
-        gtag('config', 'G-8MKC9WE26W');
-    </script>
+    <link rel="stylesheet" href="style.css?v=20260818-ajustes10">
     <meta name="google-site-verification" content="SeOyNOEPhskC3ZgAjyBDaT74avCYw5ZLLjl1-FtR0ks" />
 </head>
 
-<body class="bg-[#000000] text-gray-100 font-sans selection:bg-primary/30 selection:text-white overflow-x-hidden">
+<body class="site-article bg-white text-[#0B0B12] font-sans selection:bg-primary/30 selection:text-white overflow-x-hidden">
+    <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
 
     <!-- Header (Same as index.html) -->
-    <header
-        class="fixed w-full top-0 z-50 bg-[#000000]/80 backdrop-blur-lg border-b border-white/5 transition-all duration-300"
-        id="header">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <!-- Logo -->
-                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer"
-                    onclick="window.location.href='index.html'">
-                    <img src="assets/logo.png" alt="Elumina IA Logo" class="h-12 w-auto object-contain">
-                </div>
+    <header class="nav-pill-wrap" id="header">
+        <div class="glass-nav nav-pill flex">
+            <!-- Logo -->
+            <a href="index.html" class="flex items-center cursor-pointer group shrink-0" aria-label="Elumina IA — início">
+                <img src="assets/logo2.png?v=2" alt="Elumina IA Logo" width="900" height="266" class="h-12 w-auto object-contain">
+            </a>
 
-                <!-- Desktop Navigation -->
-                <nav class="hidden md:flex items-center gap-8">
-                    <a href="index.html#solucoes"
-                        class="text-sm font-medium text-gray-300 hover:text-white hover:tracking-wide transition-all duration-300">Soluções</a>
-                    <a href="index.html#verticais"
-                        class="text-sm font-medium text-gray-300 hover:text-white hover:tracking-wide transition-all duration-300">Verticais</a>
-                    <a href="blog.html" class="text-sm font-medium text-white tracking-wide">Blog</a>
+            <!-- Desktop Menu -->
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="index.html#solucoes" class="text-sm font-medium transition-colors">Soluções</a>
+                <a href="index.html#aplicacoes" class="text-sm font-medium transition-colors">Aplicações</a>
+                <a href="index.html#metodo" class="text-sm font-medium transition-colors">Método</a>
+                <a href="blog.html" class="text-sm font-medium text-white transition-colors">Blog</a>
+            </nav>
+
+            <!-- CTA -->
+            <div class="flex items-center gap-4">
+                <a href="https://wa.me/558181587312?text=Ol%C3%A1%20Matheus!%20Vi%20o%20site%20da%20Elumina%20e%20gostaria%20de%20falar%20com%20um%20especialista%20em%20automa%C3%A7%C3%A3o."
+                    target="_blank"
+                    class="nav-cta nav-pill-cta hidden md:inline-flex items-center justify-center gap-2 font-semibold text-sm hover:bg-gray-200 transition-colors">
+                    <span>Conversar pelo WhatsApp</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+                <!-- Mobile Toggle -->
+                <button id="mobile-menu-btn" class="md:hidden text-gray-300 hover:text-white" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu">
+                    <i data-lucide="menu" class="w-7 h-7"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="nav-pill-menu md:hidden transition-all duration-300 ease-in-out opacity-0 -translate-y-4 pointer-events-none">
+            <div class="space-y-2">
+                <a href="index.html#solucoes"
+                    class="block px-3 py-3 rounded-lg text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Soluções</a>
+                <a href="index.html#aplicacoes"
+                    class="block px-3 py-3 rounded-lg text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Aplicações</a>
+                <a href="index.html#metodo"
+                    class="block px-3 py-3 rounded-lg text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Método</a>
+                <a href="blog.html"
+                    class="block px-3 py-3 rounded-lg text-base font-medium text-white bg-white/5">Blog</a>
+                <div class="pt-4 mt-4 border-t border-white/5">
                     <a href="https://wa.me/558181587312?text=Ol%C3%A1%20Matheus!%20Vi%20o%20site%20da%20Elumina%20e%20gostaria%20de%20falar%20com%20um%20especialista%20em%20automa%C3%A7%C3%A3o."
-                        target="_blank"
-                        class="px-6 py-2.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-primary/50 transition-all duration-300 text-sm font-bold text-white flex items-center gap-2 group">
-                        Falar com Especialista
-                        <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        class="gradient-bg block w-full text-center px-6 py-3 rounded-lg text-white font-bold hover:brightness-110">
+                        Conversar pelo WhatsApp
                     </a>
-                </nav>
-
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden">
-                    <button id="mobile-menu-btn" class="text-gray-300 hover:text-white p-2">
-                        <i data-lucide="menu" class="w-6 h-6"></i>
-                    </button>
                 </div>
             </div>
         </div>
     </header>
 
     <!-- Post Content -->
-    <main class="pt-32 pb-24 relative">
-        <!-- Background Decorator -->
-        <div
-            class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none -z-10">
-        </div>
-
+    <main id="conteudo" class="pt-32 pb-24 relative">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Back Button -->
-            <a href="index.html#blog"
+            <a href="blog.html"
                 class="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors mb-12 font-medium">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                Voltar para a Home
+                Voltar ao blog
             </a>
 
             <!-- Loading State -->
@@ -149,45 +188,44 @@
                 <div
                     class="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4">
                 </div>
-                <p class="text-gray-400">Carregando artigo...</p>
+                <p class="text-muted">Carregando artigo…</p>
             </div>
 
             <!-- Error State -->
             <div id="error-message" class="hidden text-center py-20">
                 <i data-lucide="alert-circle" class="w-16 h-16 text-red-500 mx-auto mb-4"></i>
-                <h1 class="text-3xl font-bold text-white mb-4">Artigo não encontrado</h1>
-                <p class="text-gray-400 mb-8">O artigo que você está procurando não existe ou foi removido.</p>
+                <h1 class="text-3xl font-bold text-text-ink mb-4">Artigo não encontrado</h1>
+                <p class="text-muted mb-8">O artigo que você está procurando não existe ou foi removido.</p>
                 <a href="index.html"
-                    class="px-8 py-3 bg-primary text-white rounded-full font-bold hover:brightness-110 transition-all">Ir
+                    class="px-8 py-3 bg-primary text-white rounded-full font-bold hover:brightness-110 transition-[filter]">Ir
                     para a Home</a>
             </div>
 
             <!-- Article Content -->
             <article id="article-container" class="hidden animate-slide-up">
                 <!-- Header -->
-                <header class="mb-12 text-center">
+                <header class="article-heading mb-12">
                     <div
-                        class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-primary text-sm font-medium mb-6">
+                        class="article-date inline-flex items-center gap-2 text-primary text-sm font-medium mb-6">
                         <i data-lucide="calendar" class="w-4 h-4"></i>
                         <span id="post-date">...</span>
                     </div>
                     <h1 id="post-title"
-                        class="text-4xl md:text-5xl lg:text-6xl font-bold font-heading text-white leading-tight mb-8">
+                        class="text-4xl md:text-5xl lg:text-6xl font-bold font-heading text-text-ink leading-tight mb-8">
                         ...</h1>
                 </header>
 
-                <!-- Featured Image Placeholder (Optional - using icon style for consistency with home or proper img if user had them) 
-                     For now, using a styled div similar to home cards but larger
-                -->
-                <div
-                    class="w-full aspect-video rounded-3xl bg-surface border border-white/5 flex items-center justify-center mb-16 relative overflow-hidden group">
-                    <div class="absolute inset-0 bg-gradient-to-br from-gray-800 to-black"></div>
-                    <!-- Image Element -->
-                    <img id="post-image" src="" alt=""
-                        class="absolute inset-0 w-full h-full object-cover hidden opacity-80 z-0">
-
-                    <!-- Icon Overlay (Optional, can be kept) -->
-                    <i id="post-icon" data-lucide="file-text" class="w-32 h-32 text-white/20 relative z-10"></i>
+                <div class="article-media article-circuit w-full mb-16" aria-label="Fluxo operacional: sinal, contexto, decisão e ação">
+                    <div class="article-circuit-head">
+                        <span>Mapa operacional</span>
+                        <span>Leitura 01</span>
+                    </div>
+                    <div class="article-circuit-flow">
+                        <div><span>01</span><strong>Sinal</strong><small>evento</small></div>
+                        <div><span>02</span><strong>Contexto</strong><small>leitura</small></div>
+                        <div><span>03</span><strong>Decisão</strong><small>regra</small></div>
+                        <div><span>04</span><strong>Ação</strong><small>execução</small></div>
+                    </div>
                 </div>
 
                 <!-- Body -->
@@ -197,14 +235,13 @@
 
                 <!-- Footer CTA -->
                 <div
-                    class="mt-20 p-8 md:p-12 rounded-3xl glass-card border border-primary/20 bg-gradient-to-br from-primary/5 to-transparent text-center">
-                    <h3 class="text-2xl md:text-3xl font-bold text-white mb-4">Gostou deste conteúdo?</h3>
-                    <p class="text-gray-400 mb-8 max-w-xl mx-auto">A Elumina IA pode implementar soluções como esta na
-                        sua empresa. Agende um diagnóstico gratuito e descubra como.</p>
-                    <a href="https://tally.so/r/3XA9xg" target="_blank"
-                        class="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-primary text-white font-bold text-lg hover:brightness-110 transition-all shadow-lg hover:-translate-y-1">
+                    class="reveal mt-20 p-8 md:p-12 rounded-3xl light-card bg-gradient-to-br from-primary/5 to-transparent text-center">
+                    <h3 class="text-2xl md:text-3xl font-bold text-text-ink mb-4">Existe um processo parecido na sua empresa?</h3>
+                    <p class="text-muted mb-8 max-w-xl mx-auto">Conte como ele funciona hoje. A Elumina ajuda a organizar as possibilidades antes de definir a tecnologia.</p>
+                    <a href="https://tally.so/r/3XA9xg" target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-primary text-white font-bold text-lg hover:brightness-110 transition-[filter,transform] shadow-lg hover:-translate-y-1">
                         <i data-lucide="message-circle" class="w-5 h-5"></i>
-                        Agendar Diagnóstico de IA
+                        Fazer diagnóstico inicial
                     </a>
                 </div>
             </article>
@@ -212,24 +249,24 @@
     </main>
 
     <!-- Footer (Simplified) -->
-    <footer class="bg-[#000000] border-t border-white/5 pt-16 pb-8">
+    <footer class="bg-[#0B0B12] border-t border-white/5 pt-16 pb-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
                 <div class="flex items-center gap-2">
-                    <img src="assets/logo.png" alt="Elumina IA" class="h-12 w-auto object-contain">
+                    <img src="assets/logo.png?v=2" alt="Elumina IA" width="900" height="266" class="h-12 w-auto object-contain">
                 </div>
 
                 <div class="flex gap-6 items-center">
                     <a href="https://www.instagram.com/eluminaia/" target="_blank"
-                        class="text-gray-500 hover:text-white transition-colors" title="Instagram">
-                        <i data-lucide="instagram" class="w-6 h-6"></i>
+                        class="text-gray-500 hover:text-white transition-colors" title="Instagram" aria-label="Instagram da Elumina IA">
+                        <i data-lucide="camera" class="w-6 h-6"></i>
                     </a>
                     <a href="https://www.linkedin.com/company/elumina-ia/" target="_blank"
-                        class="text-gray-500 hover:text-white transition-colors" title="LinkedIn">
-                        <i data-lucide="linkedin" class="w-6 h-6"></i>
+                        class="text-gray-500 hover:text-white transition-colors" title="LinkedIn" aria-label="LinkedIn da Elumina IA">
+                        <i data-lucide="briefcase-business" class="w-6 h-6"></i>
                     </a>
-                    <a href="https://wa.me/555391597287" target="_blank"
-                        class="text-gray-500 hover:text-white transition-colors" title="WhatsApp">
+                    <a href="https://wa.me/558181587312" target="_blank"
+                        class="text-gray-500 hover:text-white transition-colors" title="WhatsApp" aria-label="WhatsApp da Elumina IA">
                         <i data-lucide="phone" class="w-6 h-6"></i>
                     </a>
                     <a href="mailto:contato@eluminaia.com"
@@ -244,14 +281,15 @@
                 class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
                 <p>&copy; 2026 Elumina IA. Todos os direitos reservados.</p>
                 <div class="flex gap-6">
-                    <a href="#" class="hover:text-white transition-colors">Privacidade</a>
-                    <a href="#" class="hover:text-white transition-colors">Termos</a>
+                    <a href="index.html?modal=privacy" class="hover:text-white transition-colors">Privacidade</a>
+                    <a href="index.html?modal=terms" class="hover:text-white transition-colors">Termos</a>
+                    <button onclick="openCookiePreferences()" class="hover:text-white transition-colors">Cookies</button>
                 </div>
             </div>
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=20260818-ajustes10"></script>
 </body>
 
 </html>

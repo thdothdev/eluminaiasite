@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#070a12">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Protótipo GSAP | Elumina IA</title>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Spline+Sans+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Versões fixadas: o mesmo cuidado aplicado ao Lucide. `defer` mantém o
+         download fora do caminho da primeira renderização. -->
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+
+    <style>
+        :root {
+            --night: #070a12;
+            --night-raised: #0c1220;
+            --paper: #f3f6fb;
+            --ink: #0a1020;
+            --white: #eef4ff;
+            --white-muted: #a5b2c6;
+            --ink-soft: #526176;
+            --cobalt: #4f70ff;
+            --coral: #ff8068;
+            --line-dark: rgba(184, 199, 224, 0.14);
+            --line-light: rgba(20, 36, 62, 0.14);
+            --font: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+            --data: "Spline Sans Mono", "SFMono-Regular", Consolas, monospace;
+            --container: 1280px;
+            --gutter: 16px;
+        }
+
+        @media (min-width: 640px) {
+            :root {
+                --gutter: 24px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            :root {
+                --gutter: 32px;
+            }
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--night);
+            color: var(--white);
+            font-family: var(--font);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .wrap {
+            width: min(100%, var(--container));
+            margin: 0 auto;
+            padding-inline: var(--gutter);
+        }
+
+        .tag {
+            color: var(--coral);
+            font-family: var(--data);
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        /* ---------- aviso de protótipo ---------- */
+        .banner {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 14px;
+            align-items: baseline;
+            padding: 10px var(--gutter);
+            border-bottom: 1px solid var(--line-dark);
+            background: rgba(7, 10, 18, 0.92);
+            backdrop-filter: blur(10px);
+            font-family: var(--data);
+            font-size: 0.68rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .banner b {
+            color: var(--coral);
+        }
+
+        .banner span {
+            color: var(--white-muted);
+        }
+
+        /* ---------- abertura ---------- */
+        .intro {
+            padding: 120px 0 100px;
+        }
+
+        .intro h1 {
+            max-width: 16ch;
+            margin: 18px 0 0;
+            font-size: clamp(2.4rem, 7vw, 4.6rem);
+            font-weight: 660;
+            line-height: 1.02;
+            letter-spacing: -0.01em;
+        }
+
+        .intro p {
+            max-width: 58ch;
+            margin: 26px 0 0;
+            color: var(--white-muted);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .hint {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 40px;
+            color: var(--white-muted);
+            font-family: var(--data);
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .hint::after {
+            width: 46px;
+            height: 1px;
+            background: linear-gradient(90deg, var(--coral), transparent);
+            content: "";
+        }
+
+        /* ---------- A: painéis com scrub ---------- */
+        .story {
+            position: relative;
+            min-height: 420dvh;
+        }
+
+        .story-pin {
+            position: sticky;
+            top: 0;
+            display: flex;
+            min-height: 100dvh;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+            border-block: 1px solid var(--line-dark);
+        }
+
+        .story-inner {
+            width: min(100%, var(--container));
+            margin: 0 auto;
+            padding-inline: var(--gutter);
+        }
+
+        .story-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 40px;
+            color: var(--white-muted);
+            font-family: var(--data);
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .story-stack {
+            position: relative;
+            min-height: 46vh;
+        }
+
+        .panel {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .panel h2 {
+            max-width: 18ch;
+            margin: 14px 0 0;
+            font-size: clamp(1.9rem, 5.6vh, 4.4rem);
+            font-weight: 660;
+            line-height: 1.04;
+        }
+
+        .panel p {
+            max-width: 54ch;
+            margin: 20px 0 0;
+            color: var(--white-muted);
+            font-size: clamp(0.95rem, 1.6vh, 1.1rem);
+            line-height: 1.65;
+        }
+
+        .story-rail {
+            position: relative;
+            height: 1px;
+            margin-top: 44px;
+            background: rgba(165, 178, 198, 0.2);
+        }
+
+        .story-rail i {
+            position: absolute;
+            inset: 0 auto 0 0;
+            display: block;
+            width: 0%;
+            background: linear-gradient(90deg, var(--coral), var(--cobalt));
+        }
+
+        /* ---------- B: circuito que se desenha ---------- */
+        .circuit {
+            position: relative;
+            min-height: 300dvh;
+        }
+
+        .circuit-pin {
+            position: sticky;
+            top: 0;
+            display: flex;
+            min-height: 100dvh;
+            flex-direction: column;
+            justify-content: center;
+            border-bottom: 1px solid var(--line-dark);
+            background: var(--night-raised);
+        }
+
+        .circuit h2 {
+            max-width: 20ch;
+            margin: 16px 0 34px;
+            font-size: clamp(1.7rem, 4.2vw, 3rem);
+            font-weight: 660;
+            line-height: 1.06;
+        }
+
+        .circuit svg {
+            display: block;
+            width: 100%;
+            height: auto;
+            overflow: visible;
+        }
+
+        .trace {
+            fill: none;
+            stroke: var(--cobalt);
+            stroke-width: 2;
+            stroke-linecap: round;
+        }
+
+        .node circle {
+            fill: var(--night-raised);
+            stroke: var(--coral);
+            stroke-width: 2;
+        }
+
+        .node text {
+            fill: var(--white-muted);
+            font-family: var(--data);
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        /* ---------- custo ---------- */
+        .cost {
+            padding: 110px 0 130px;
+            background: var(--paper);
+            color: var(--ink);
+        }
+
+        .cost h2 {
+            max-width: 20ch;
+            margin: 16px 0 40px;
+            font-size: clamp(1.7rem, 4vw, 2.8rem);
+            font-weight: 660;
+            line-height: 1.08;
+        }
+
+        .cost-grid {
+            display: grid;
+            gap: 1px;
+            border: 1px solid var(--line-light);
+            background: var(--line-light);
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+
+        .cost-grid div {
+            padding: 26px 24px;
+            background: var(--paper);
+        }
+
+        .cost-grid strong {
+            display: block;
+            margin-bottom: 8px;
+            font-family: var(--data);
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .cost-grid span {
+            color: var(--ink-soft);
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
+        .cost-note {
+            max-width: 62ch;
+            margin: 34px 0 0;
+            color: var(--ink-soft);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        /* Sem animação: tudo fica legível e estático. */
+        @media (prefers-reduced-motion: reduce) {
+
+            .story,
+            .circuit {
+                min-height: 0;
+            }
+
+            .story-pin,
+            .circuit-pin {
+                position: static;
+                min-height: 0;
+                padding-block: 80px;
+            }
+
+            .story-stack {
+                display: grid;
+                gap: 44px;
+                min-height: 0;
+            }
+
+            .panel {
+                position: static;
+                opacity: 1 !important;
+                transform: none !important;
+            }
+
+            .trace {
+                stroke-dasharray: none !important;
+                stroke-dashoffset: 0 !important;
+            }
+
+            .node {
+                opacity: 1 !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="banner">
+        <b>Protótipo</b>
+        <span>GSAP + ScrollTrigger &nbsp;·&nbsp; 47,6 KB &nbsp;·&nbsp; não faz parte do site</span>
+    </div>
+
+    <section class="intro wrap">
+        <p class="tag">Avaliação técnica</p>
+        <h1>O que muda quando a rolagem vira a linha do tempo.</h1>
+        <p>
+            O site hoje já prende a seção e troca os painéis — isso é <em>pin</em>, e funciona sem
+            biblioteca nenhuma. O que ele não faz é <em>scrub</em>: amarrar a animação de forma
+            contínua à posição da barra de rolagem. Abaixo, os dois efeitos com o conteúdo real
+            da Elumina, para você julgar se o ganho justifica a dependência.
+        </p>
+        <p class="hint">Role devagar e pare no meio</p>
+    </section>
+
+    <!-- A ---------------------------------------------------------------- -->
+    <section class="story" id="story">
+        <div class="story-pin">
+            <div class="story-inner">
+                <div class="story-head">
+                    <span>Efeito A · scrub contínuo</span>
+                    <span id="story-count">01 / 04</span>
+                </div>
+
+                <div class="story-stack" id="stack">
+                    <article class="panel">
+                        <p class="tag">Sinal</p>
+                        <h2>Todo sistema começa quando a operação mostra onde perde ritmo.</h2>
+                        <p>Mensagens paradas, tarefas repetidas e decisões sem contexto deixam rastros.</p>
+                    </article>
+                    <article class="panel">
+                        <p class="tag">Contexto</p>
+                        <h2>Antes da IA agir, ela precisa entender regras, pessoas e exceções.</h2>
+                        <p>Mapeamos critérios, canais e os pontos onde uma pessoa deve seguir no controle.</p>
+                    </article>
+                    <article class="panel">
+                        <p class="tag">Decisão</p>
+                        <h2>A arquitetura combina agente, automação e software na medida certa.</h2>
+                        <p>Não existe pacote único: cada projeto recebe o desenho que o problema pede.</p>
+                    </article>
+                    <article class="panel">
+                        <p class="tag">Ação</p>
+                        <h2>O resultado é um sistema que trabalha enquanto a equipe avança.</h2>
+                        <p>Atendimento, CRM, agenda e operação passam a conversar entre si.</p>
+                    </article>
+                </div>
+
+                <div class="story-rail"><i id="rail"></i></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- B ---------------------------------------------------------------- -->
+    <section class="circuit" id="circuit">
+        <div class="circuit-pin">
+            <div class="wrap">
+                <p class="tag">Efeito B · traço desenhado pela rolagem</p>
+                <h2>O circuito se constrói conforme você avança.</h2>
+
+                <svg viewBox="0 0 1000 240" role="img"
+                    aria-label="Traçado ligando sinal, contexto, decisão e ação">
+                    <path class="trace" id="trace"
+                        d="M 40 190 L 190 190 L 240 90 L 430 90 L 480 190 L 670 190 L 720 90 L 960 90" />
+                    <g class="node" data-node>
+                        <circle cx="40" cy="190" r="7" />
+                        <text x="26" y="222">Sinal</text>
+                    </g>
+                    <g class="node" data-node>
+                        <circle cx="335" cy="90" r="7" />
+                        <text x="300" y="66">Contexto</text>
+                    </g>
+                    <g class="node" data-node>
+                        <circle cx="575" cy="190" r="7" />
+                        <text x="545" y="222">Decisão</text>
+                    </g>
+                    <g class="node" data-node>
+                        <circle cx="960" cy="90" r="7" />
+                        <text x="935" y="66">Ação</text>
+                    </g>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- custo ------------------------------------------------------------- -->
+    <section class="cost">
+        <div class="wrap">
+            <p class="tag">O outro lado</p>
+            <h2>O que isso custa, medido e não estimado.</h2>
+
+            <div class="cost-grid">
+                <div>
+                    <strong>47,6 KB</strong>
+                    <span>gsap 29,3 + ScrollTrigger 18,3, já comprimidos. Para comparar: o style.css
+                        inteiro do site chega em 16,5 KB.</span>
+                </div>
+                <div>
+                    <strong>2 requisições</strong>
+                    <span>De um CDN externo. Com <code>defer</code> ficam fora da primeira
+                        renderização, como fizemos com o Lucide.</span>
+                </div>
+                <div>
+                    <strong>R$ 0</strong>
+                    <span>O ScrollTrigger era plugin pago até 2024. Hoje é gratuito, inclusive para
+                        uso comercial.</span>
+                </div>
+                <div>
+                    <strong>Manual</strong>
+                    <span>Acessibilidade não vem de graça: o respeito a
+                        <code>prefers-reduced-motion</code> precisa ser escrito à mão, como está
+                        nesta página.</span>
+                </div>
+            </div>
+
+            <p class="cost-note">
+                O efeito A é o teste honesto: compare com o scroll atual do site. Se a diferença
+                não for evidente para você, ela também não será para quem visita — e aí não vale a
+                dependência. O efeito B é o caso onde o GSAP ganha claro, porque desenhar um traço
+                proporcional à rolagem é trabalhoso de fazer à mão e combina com a identidade de
+                circuito da marca.
+            </p>
+        </div>
+    </section>
+
+    <script>
+        window.addEventListener('load', () => {
+            const semAnimacao = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (semAnimacao || typeof gsap === 'undefined') return;
+
+            gsap.registerPlugin(ScrollTrigger);
+
+            /* A — painéis amarrados continuamente à barra de rolagem.
+               `scrub: 0.6` dá uma leve inércia; 0 grudaria 1:1 no dedo. */
+            const paineis = gsap.utils.toArray('#stack .panel');
+            const contador = document.getElementById('story-count');
+            const total = paineis.length;
+
+            gsap.set(paineis, { opacity: 0, y: 40 });
+            gsap.set(paineis[0], { opacity: 1, y: 0 });
+
+            const linha = gsap.timeline({
+                scrollTrigger: {
+                    trigger: '#story',
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    scrub: 0.6,
+                    onUpdate: (self) => {
+                        const i = Math.min(total - 1, Math.floor(self.progress * total));
+                        contador.textContent =
+                            String(i + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+                        gsap.set('#rail', { width: (self.progress * 100).toFixed(2) + '%' });
+                    }
+                }
+            });
+
+            paineis.forEach((painel, i) => {
+                if (i === 0) return;
+                linha
+                    .to(paineis[i - 1], { opacity: 0, y: -40, duration: 1 }, i - 1)
+                    .to(painel, { opacity: 1, y: 0, duration: 1 }, i - 1);
+            });
+
+            /* B — o traço se desenha porque o stroke-dashoffset acompanha a rolagem. */
+            const traco = document.getElementById('trace');
+            const comprimento = traco.getTotalLength();
+            gsap.set(traco, { strokeDasharray: comprimento, strokeDashoffset: comprimento });
+
+            gsap.to(traco, {
+                strokeDashoffset: 0,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '#circuit',
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    scrub: 0.4
+                }
+            });
+
+            gsap.from('[data-node]', {
+                opacity: 0,
+                scale: 0.4,
+                transformOrigin: 'center',
+                stagger: 0.6,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '#circuit',
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    scrub: 0.4
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

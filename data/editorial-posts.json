@@ -1,0 +1,56 @@
+[
+  {
+    "id": 206,
+    "title": "Antes da IA: como mapear um processo que realmente merece automação",
+    "slug": "mapear-processo-antes-da-ia",
+    "date": "2026-07-30",
+    "icon": "scan-line",
+    "summary": "Um roteiro prático para separar gargalo, exceção e regra de negócio antes de escolher qualquer tecnologia.",
+    "content": "<p>Automação começa com observação. Antes de escolher uma ferramenta, é preciso entender o que dispara o processo, quem decide, quais informações circulam e onde surgem as exceções.</p><h2>Comece pelo evento</h2><p>Todo fluxo tem um ponto de partida: uma mensagem, uma solicitação, uma mudança de status ou uma tarefa recorrente. Registrar esse evento ajuda a evitar automações desconectadas da rotina real.</p><h2>Desenhe decisões e exceções</h2><p>O caminho principal quase nunca conta a história inteira. Liste o que acontece quando faltam dados, quando uma regra não é atendida ou quando a decisão precisa continuar com uma pessoa.</p><h2>Defina o que precisa permanecer humano</h2><p>Nem toda etapa deve ser automatizada. Decisões críticas, situações sensíveis e cenários ambíguos podem exigir revisão humana. Uma boa arquitetura deixa essa fronteira visível.</p><p>Com o mapa em mãos, a tecnologia deixa de ser uma aposta e passa a responder a um problema bem definido.</p>"
+  },
+  {
+    "id": 205,
+    "title": "Agente, automação ou sistema sob medida: o que cada problema pede",
+    "slug": "agente-automacao-ou-sistema",
+    "date": "2026-07-24",
+    "icon": "git-branch",
+    "summary": "Três caminhos diferentes — e os sinais que ajudam a escolher a arquitetura adequada para cada operação.",
+    "content": "<p>Agentes de IA, automações e software sob medida resolvem tipos diferentes de problema. A escolha depende do grau de interpretação, da previsibilidade das regras e da interface necessária para a equipe.</p><h2>Quando um agente faz sentido</h2><p>Agentes ajudam quando o fluxo exige interpretar linguagem, consultar contexto e conduzir uma interação. Eles precisam de limites claros, fontes confiáveis e rotas de escalonamento.</p><h2>Quando automatizar</h2><p>Automações funcionam bem em tarefas recorrentes com eventos, regras e destinos definidos: sincronizar informações, atualizar estados, emitir alertas ou encaminhar demandas.</p><h2>Quando construir software</h2><p>Um sistema sob medida é indicado quando a operação precisa de uma interface própria, permissões específicas, visão consolidada ou regras que ferramentas prontas não representam bem.</p><p>Em muitos projetos, a solução combina os três caminhos em uma arquitetura única.</p>"
+  },
+  {
+    "id": 204,
+    "title": "O que torna uma automação observável",
+    "slug": "automacao-observavel",
+    "date": "2026-07-17",
+    "icon": "radar",
+    "summary": "Fluxo, exceções e evolução: os elementos que permitem acompanhar um sistema depois que ele entra em operação.",
+    "content": "<p>Colocar um fluxo em produção não encerra o trabalho. Uma automação precisa mostrar o que aconteceu, onde parou e quando uma pessoa deve assumir.</p><h2>Visibilidade do fluxo</h2><p>Estados claros ajudam a acompanhar cada execução desde o evento inicial até a conclusão. Isso facilita suporte, auditoria e aprendizado operacional.</p><h2>Tratamento de exceções</h2><p>Erros não devem desaparecer em silêncio. O sistema pode registrar contexto, classificar a ocorrência e encaminhar a situação para a pessoa responsável.</p><h2>Evolução orientada pelo uso</h2><p>Logs, feedback da equipe e mudanças nas regras do negócio indicam onde o fluxo precisa ser refinado. Observabilidade transforma manutenção em parte planejada da solução.</p>"
+  },
+  {
+    "id": 203,
+    "title": "Como conectar sistemas sem criar uma nova ilha",
+    "slug": "conectar-sistemas-sem-ilhas",
+    "date": "2026-07-10",
+    "icon": "network",
+    "summary": "Integração não é apenas mover dados: é preservar contexto, responsabilidade e continuidade entre ferramentas.",
+    "content": "<p>Uma integração útil não termina quando um dado chega ao destino. Ela precisa manter o contexto necessário para que a próxima etapa aconteça sem retrabalho.</p><h2>Defina uma fonte de verdade</h2><p>Quando várias ferramentas guardam a mesma informação, é importante estabelecer qual delas é responsável por cada estado e como os conflitos serão tratados.</p><h2>Modele os handoffs</h2><p>Cada passagem entre sistemas precisa declarar o que foi concluído, o que ainda falta e quem assume a sequência. Essa clareza reduz tarefas órfãs.</p><h2>Projete para falhas</h2><p>Conexões podem ficar indisponíveis. Filas, tentativas controladas, registros e rotas manuais ajudam a manter a operação previsível nesses momentos.</p>"
+  },
+  {
+    "id": 202,
+    "title": "IA com contexto: por que uma boa resposta depende da arquitetura",
+    "slug": "ia-com-contexto",
+    "date": "2026-07-03",
+    "icon": "braces",
+    "summary": "Fontes, memória, permissões e critérios de decisão formam a base de um agente realmente útil.",
+    "content": "<p>Um agente não se torna útil apenas porque conversa bem. Ele precisa encontrar as informações certas, respeitar permissões e reconhecer quando não tem contexto suficiente.</p><h2>Fontes confiáveis</h2><p>Documentos, sistemas internos e regras operacionais precisam ser organizados para consulta. A resposta deve nascer de fontes conhecidas, não de suposições.</p><h2>Memória com propósito</h2><p>Guardar tudo não é o objetivo. A arquitetura deve definir quais informações ajudam a continuidade do processo e por quanto tempo elas são necessárias.</p><h2>Limites e escalonamento</h2><p>Quando a situação foge das regras, o agente precisa sinalizar incerteza e encaminhar a decisão. Utilidade e controle devem caminhar juntos.</p>"
+  },
+  {
+    "id": 201,
+    "title": "Automação para qualquer setor começa pelas regras da operação",
+    "slug": "automacao-para-qualquer-setor",
+    "date": "2026-06-26",
+    "icon": "workflow",
+    "summary": "Setores mudam, mas a arquitetura continua partindo de sinais, contexto, decisões e ações.",
+    "content": "<p>Atendimento, comercial, operações e conhecimento aparecem de formas diferentes em cada empresa. Por isso, uma solução ampla não deve significar uma solução genérica.</p><h2>O processo vem antes do setor</h2><p>Uma solicitação precisa ser recebida, interpretada, direcionada e concluída. O vocabulário muda entre empresas; a necessidade de conectar essas etapas permanece.</p><h2>Regras pertencem à operação</h2><p>Critérios de prioridade, permissões, exceções e responsabilidades precisam refletir a realidade de cada equipe. É isso que impede a tecnologia de impor um modelo pronto.</p><h2>Arquitetura adaptável</h2><p>Agentes, integrações e interfaces podem ser combinados conforme o desafio. A solução certa é a que acompanha o processo sem apagar suas particularidades.</p>"
+  }
+]
