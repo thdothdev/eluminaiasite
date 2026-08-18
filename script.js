@@ -647,11 +647,7 @@ function initMethodTrace() {
     }
 }
 
-// Trilho das soluções — versão em JS puro do timeline do Aceternity.
-// O original usa framer-motion (useScroll + useTransform); aqui o percurso é o
-// ScrollTrigger que a home já carrega, e o desenho sai de duas variáveis CSS.
-// Os offsets do original traduzem direto: ["start 10%", "end 50%"] vira
-// start 'top 10%' / end 'bottom 50%'.
+// Trilho estático das soluções: linha completa e pontos acesos desde a abertura.
 function initTrilhaSolucoes() {
     const pilha = document.querySelector('.solutions-stack');
     if (!pilha) return;
@@ -659,50 +655,9 @@ function initTrilhaSolucoes() {
     const linhas = [...pilha.querySelectorAll('.solution-row')];
     if (!linhas.length) return;
 
-    // Sem movimento: trilho cheio e pontos acesos. Some o efeito, fica o desenho —
-    // esconder o trilho deixaria os pontos órfãos, soltos ao lado dos cartões.
-    const acenderTudo = () => {
-        pilha.style.setProperty('--trilha-altura', '100%');
-        pilha.style.setProperty('--trilha-opacidade', '1');
-        linhas.forEach(l => l.classList.add('is-lit'));
-    };
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
-        acenderTudo();
-        return;
-    }
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Distância de cada ponto até o topo da pilha, medida uma vez por refresh em
-    // vez de a cada quadro — getBoundingClientRect dentro do onUpdate força
-    // recálculo de layout na rolagem.
-    let marcos = [];
-    let alturaPilha = 0;
-    const medir = () => {
-        alturaPilha = pilha.offsetHeight;
-        const topo = pilha.getBoundingClientRect().top;
-        marcos = linhas.map(l => l.getBoundingClientRect().top - topo + 54);
-    };
-
-    ScrollTrigger.create({
-        trigger: pilha,
-        start: 'top 10%',
-        end: 'bottom 50%',
-        scrub: true,
-        onRefresh: medir,
-        onUpdate: self => {
-            const avanco = self.progress;
-            const altura = avanco * alturaPilha;
-            pilha.style.setProperty('--trilha-altura', altura + 'px');
-            // no original a opacidade sobe de 0 a 1 no primeiro décimo do percurso
-            pilha.style.setProperty('--trilha-opacidade', Math.min(1, avanco / 0.1));
-            linhas.forEach((l, i) => l.classList.toggle('is-lit', altura >= marcos[i]));
-        }
-    });
-
-    medir();
+    pilha.style.setProperty('--trilha-altura', '100%');
+    pilha.style.setProperty('--trilha-opacidade', '1');
+    linhas.forEach(linha => linha.classList.add('is-lit'));
 }
 
 // Initialize everything

@@ -1544,41 +1544,24 @@ button:focus-visible {
     max-width: var(--el-container);
 }
 
-/* Cabeçalho ancorado: fica parado enquanto as três frentes sobem por baixo —
-   o gesto do timeline do Aceternity em escala de seção, já que por linha não
-   há percurso (a linha tem 444px e a coluna que grudaria tem 360px).
-   O max-width sai daqui e vai para o h2: em coluna única o conteúdo passa POR
-   BAIXO do título, então o fundo precisa cobrir a largura inteira da pilha
-   (1376px). Com os 880px antigos, as linhas apareceriam à direita do texto.
-   O padding-bottom entra no lugar de parte da margem para o respiro visual
-   continuar sendo os mesmos 76px. */
+/* Cabeçalho e soluções seguem juntos no fluxo normal da página. */
 .site-home #solucoes > div > div:first-child {
-    position: sticky;
-    top: 28px;
-    z-index: 2;
+    position: static;
     max-width: none;
     margin-right: auto;
-    margin-bottom: 46px;
+    margin-bottom: 76px;
     margin-left: 0;
-    padding-bottom: 30px;
-    background: var(--el-paper);
+    padding-bottom: 0;
+    background: transparent;
     text-align: left;
 }
 
-/* dissolve o que passa por baixo, em vez de cortar numa aresta dura */
+/* O antigo degradê do cabeçalho ancorado permanece desativado. */
 .site-home #solucoes > div > div:first-child::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    right: 0;
-    left: 0;
-    height: 46px;
-    background: linear-gradient(to bottom, var(--el-paper), transparent);
-    pointer-events: none;
+    display: none;
 }
 
-/* No celular o título ocupa quase a tela inteira: parado ali ele esconderia o
-   conteúdo em vez de ancorá-lo. */
+/* Mantém explicitamente o mesmo fluxo estático no celular. */
 @media (max-width: 767px) {
     .site-home #solucoes > div > div:first-child {
         position: static;
