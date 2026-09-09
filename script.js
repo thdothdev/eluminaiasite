@@ -16,14 +16,37 @@ if (mobileMenuBtn && mobileMenu) {
     });
 }
 
-// Close mobile menu when clicking a link
+function closeMobileMenu() {
+    if (!mobileMenuBtn || !mobileMenu) return;
+    mobileMenu.classList.add('opacity-0', '-translate-y-4', 'pointer-events-none');
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    mobileMenuBtn.setAttribute('aria-label', 'Abrir menu');
+    mobileMenuBtn.innerHTML = '<i data-lucide="menu" class="w-7 h-7"></i>';
+    lucide.createIcons();
+}
+
+// Fecha o menu e conduz âncoras internas de forma explícita. Assim a rolagem não se
+// perde entre a transição do painel mobile e o hash nativo do navegador.
 document.querySelectorAll('#mobile-menu a').forEach(link => {
-    link.addEventListener('click', () => {
-        mobileMenu.classList.add('opacity-0', '-translate-y-4', 'pointer-events-none');
-        mobileMenuBtn.setAttribute('aria-expanded', 'false');
-        mobileMenuBtn.setAttribute('aria-label', 'Abrir menu');
-        mobileMenuBtn.innerHTML = '<i data-lucide="menu" class="w-7 h-7"></i>';
-        lucide.createIcons();
+    link.addEventListener('click', event => {
+        const href = link.getAttribute('href');
+        closeMobileMenu();
+
+        if (!href || !href.startsWith('#')) return;
+
+        const target = document.querySelector(href);
+        if (!target) return;
+
+        event.preventDefault();
+        requestAnimationFrame(() => {
+            const navHeight = document.querySelector('.nav-pill-wrap')?.getBoundingClientRect().height || 0;
+            const targetTop = window.scrollY + target.getBoundingClientRect().top - navHeight - 20;
+            window.scrollTo({
+                top: Math.max(0, targetTop),
+                behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+            });
+            history.pushState(null, '', href);
+        });
     });
 });
 
@@ -519,49 +542,6 @@ function observeReveals(root = document) {
     });
 }
 
-function initScrollStory() {
-    const story = document.querySelector('[data-scroll-story]');
-    if (!story) return;
-
-    const panels = [...story.querySelectorAll('[data-scroll-story-panel]')];
-    const counter = story.querySelector('[data-scroll-story-count]');
-    if (!panels.length) return;
-
-    if (reduceMotion) {
-        panels.forEach(panel => panel.classList.add('is-active'));
-        return;
-    }
-
-    let ticking = false;
-
-    const setActivePanel = () => {
-        const maxScroll = Math.max(1, story.offsetHeight - window.innerHeight);
-        const progress = Math.min(1, Math.max(0, -story.getBoundingClientRect().top / maxScroll));
-        const index = Math.min(panels.length - 1, Math.floor(progress * panels.length));
-
-        story.style.setProperty('--story-progress', progress.toFixed(4));
-        panels.forEach((panel, panelIndex) => {
-            panel.classList.toggle('is-active', panelIndex === index);
-        });
-
-        if (counter) {
-            counter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(panels.length).padStart(2, '0')}`;
-        }
-
-        ticking = false;
-    };
-
-    const requestUpdate = () => {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(setActivePanel);
-    };
-
-    window.addEventListener('scroll', requestUpdate, { passive: true });
-    window.addEventListener('resize', requestUpdate);
-    setActivePanel();
-}
-
 // Traço do método: desenha o circuito entre os 4 passos conforme a seção sobe na tela.
 // Sem pin — o efeito acontece na passagem normal, sem segurar o visitante.
 // Silencioso por natureza: se o GSAP não carregar, a seção fica como sempre foi.
@@ -663,9 +643,7 @@ function initTrilhaSolucoes() {
 // Initialize everything
 document.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();
-    initMethodTrace();
     initTrilhaSolucoes();
-    initScrollStory();
     initBlogSystem();
     initBlogPost();
     initCookieConsent();

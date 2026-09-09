@@ -4267,3 +4267,230 @@ button:focus-visible {
         width: 100%;
     }
 }
+
+/* Refinamento de conversão e prova: o menu precisa interromper a leitura do hero
+   quando aberto, e o exemplo de arquitetura vira o artefato central da página. */
+.site-home .nav-pill-wrap #mobile-menu {
+    background: rgba(248, 251, 255, 0.985) !important;
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    box-shadow: 0 24px 54px rgba(9, 18, 38, 0.2) !important;
+}
+
+.site-home .project-map-eyebrow {
+    display: inline-block;
+    margin-bottom: 18px;
+    color: var(--el-cobalt-deep);
+    font-family: var(--el-data);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+}
+
+.site-home .project-map {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) 44px minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: 0;
+    overflow: hidden;
+    border: 1px solid rgba(165, 178, 198, 0.24);
+    border-radius: 18px;
+    background: var(--el-night);
+    color: var(--el-white);
+}
+
+.site-home .project-map-input,
+.site-home .project-map-core,
+.site-home .project-map-outputs {
+    min-height: 340px;
+    padding: 34px;
+}
+
+.site-home .project-map-input,
+.site-home .project-map-core {
+    border-right: 1px solid rgba(165, 178, 198, 0.18);
+}
+
+.site-home .project-map-input {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: linear-gradient(150deg, #111a2b, #0a1020);
+}
+
+.site-home .project-map-label {
+    display: block;
+    margin-bottom: 28px;
+    color: var(--el-accent);
+    font-family: var(--el-data);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.site-home .project-map h3 {
+    max-width: 19ch;
+    margin: 0;
+    color: var(--el-white);
+    font-size: clamp(1.55rem, 2.25vw, 2.1rem);
+    font-weight: 560;
+    letter-spacing: -0.04em;
+    line-height: 1.08;
+}
+
+.site-home .project-map p {
+    margin: 18px 0 0;
+    color: var(--el-white-muted);
+    font-size: 0.94rem;
+    line-height: 1.7;
+}
+
+.site-home .project-map-bridge {
+    display: grid;
+    place-items: center;
+    background: var(--el-night);
+}
+
+.site-home .project-map-bridge span {
+    width: 1px;
+    height: 74%;
+    background: linear-gradient(var(--el-accent), var(--el-cobalt), transparent);
+}
+
+.site-home .project-map-core {
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.site-home .project-map-signals {
+    display: grid;
+    gap: 12px;
+}
+
+.site-home .project-map-signals span,
+.site-home .project-map-outputs article {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid rgba(165, 178, 198, 0.2);
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.site-home .project-map-signals span {
+    min-height: 44px;
+    padding: 0 14px;
+    color: var(--el-white);
+    font-size: 0.88rem;
+}
+
+.site-home .project-map-signals svg,
+.site-home .project-map-outputs svg {
+    width: 18px;
+    height: 18px;
+    color: var(--el-accent);
+    stroke-width: 1.7;
+}
+
+.site-home .project-map-outputs {
+    display: flex;
+    flex-direction: column;
+}
+
+.site-home .project-map-outputs article {
+    flex: 1;
+    padding: 16px;
+    color: var(--el-white-muted);
+    font-size: 0.9rem;
+    line-height: 1.45;
+}
+
+.site-home .project-map-outputs article + article {
+    margin-top: 10px;
+}
+
+/* O método continua visível como diagrama, mas não controla a rolagem do visitante. */
+@media (min-width: 768px) {
+    .site-home .diagnostic-section {
+        min-height: 0;
+        padding-top: 112px !important;
+        padding-bottom: calc(112px + var(--el-boleado)) !important;
+    }
+
+    .site-home .diagnostic-section > div {
+        position: static;
+        display: block;
+        min-height: 0;
+        padding-top: 0;
+    }
+
+    .site-home .diagnostic-section .section-heading {
+        margin-bottom: 30px !important;
+    }
+
+    .site-home .method-circuit {
+        margin: 28px 0 18px;
+    }
+
+    .site-home .method-circuit svg {
+        max-height: 150px;
+    }
+
+    .site-home .diagnostic-grid article {
+        min-height: 300px !important;
+        padding: 34px 28px !important;
+        opacity: 1 !important;
+        transform: none !important;
+        --node: 1;
+    }
+
+    .site-home .diagnostic-grid h3 {
+        margin-top: 52px !important;
+    }
+}
+
+.site-home .final-cta-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 22px;
+    color: #d2dcff;
+    font-size: 0.94rem;
+    text-decoration: none;
+}
+
+.site-home .final-cta-secondary:hover {
+    color: #ffffff;
+}
+
+.site-home .final-cta-secondary svg {
+    width: 16px;
+    height: 16px;
+}
+
+@media (max-width: 767px) {
+    .site-home .project-map {
+        grid-template-columns: 1fr;
+    }
+
+    .site-home .project-map-input,
+    .site-home .project-map-core,
+    .site-home .project-map-outputs {
+        min-height: 0;
+        padding: 28px 24px;
+        border-right: 0;
+        border-bottom: 1px solid rgba(165, 178, 198, 0.18);
+    }
+
+    .site-home .project-map-bridge {
+        display: none;
+    }
+
+    .site-home .project-map-input {
+        min-height: 270px;
+    }
+
+    .site-home .project-map-outputs {
+        border-bottom: 0;
+    }
+}
