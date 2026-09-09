@@ -4288,6 +4288,27 @@ button:focus-visible {
     text-transform: uppercase;
 }
 
+/* Esta abertura é editorial: rótulo, headline e explicação pertencem à mesma
+   coluna de leitura. O grid genérico dos outros cabeçalhos deslocava o h2 para
+   a segunda coluna e quebrava o ritmo da seção anterior. */
+.site-home .measurement-section .section-heading {
+    display: block;
+    max-width: 920px;
+    margin-bottom: 52px;
+}
+
+.site-home .measurement-section .section-heading h2 {
+    max-width: 880px;
+    margin: 0;
+    text-align: left;
+}
+
+.site-home .measurement-section .section-heading p {
+    max-width: 62ch;
+    margin: 22px 0 0 !important;
+    text-align: left;
+}
+
 .site-home .project-map {
     display: grid;
     grid-template-columns: minmax(0, 0.9fr) 44px minmax(0, 1.05fr) minmax(0, 0.95fr);
