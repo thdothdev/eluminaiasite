@@ -284,12 +284,11 @@ function renderBlogGrid(containerIdOrElement, posts) {
     container.classList.add('reveal-group');
     const phases = ['sinal', 'contexto', 'decisão', 'ação'];
     container.innerHTML = posts.map((post, index) => `
-        <article class="insight-card insight-${phases[index % phases.length].normalize('NFD').replace(/[\u0300-\u036f]/g, '')}${post.image ? ' has-cover' : ''} reveal">
+        <article class="insight-card insight-${phases[index % phases.length].normalize('NFD').replace(/[\u0300-\u036f]/g, '')} reveal">
             <div class="insight-meta">
                 <span>${String(index + 1).padStart(2, '0')} / ${phases[index % phases.length]} · ${formatDate(post.date)}</span>
                 <i data-lucide="${post.icon || 'binary'}"></i>
             </div>
-            ${post.image ? `<div class="insight-cover"><img src="${post.image}" alt="" loading="${index === 0 ? 'eager' : 'lazy'}" decoding="async"></div>` : ''}
             <h3>${post.title}</h3>
             <p>${post.summary}</p>
             <a href="blog-post.html?id=${post.id}">

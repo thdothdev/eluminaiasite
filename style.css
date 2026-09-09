@@ -3964,53 +3964,12 @@ button:focus-visible {
     margin: 0;
 }
 
-/* Editorial artwork: one original visual per article, with the copy remaining primary. */
-.insight-card.has-cover .insight-cover {
-    order: -1;
-    overflow: hidden;
-    aspect-ratio: 16 / 9;
-    margin: -28px -28px 0;
-    border-bottom: 1px solid var(--el-line-light);
-    background: var(--el-night-soft);
-}
-
-.insight-cover img,
+/* Editorial artwork: each image lives inside its respective article. */
 .article-cover img {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-.insight-card.has-cover h3 {
-    margin-top: 28px;
-}
-
-.insight-card.has-cover:hover .insight-cover img {
-    transform: scale(1.025);
-}
-
-.insight-cover img {
-    transition: transform 360ms var(--el-ease);
-}
-
-.site-home #home-blog-grid .insight-card:first-child.has-cover > .insight-cover {
-    order: initial;
-    grid-column: 1;
-    grid-row: 2;
-    min-height: 142px;
-    margin: 0;
-    border: 1px solid var(--el-line-light);
-}
-
-.site-blog #all-blog-grid .insight-card.has-cover > .insight-cover {
-    order: initial;
-    grid-column: 1;
-    grid-row: 2;
-    width: 100%;
-    max-width: 170px;
-    margin: 14px 0 0;
-    border: 1px solid var(--el-line-light);
 }
 
 .site-article .article-cover {
@@ -4020,45 +3979,6 @@ button:focus-visible {
     border: 1px solid var(--el-line-light) !important;
     border-radius: 14px !important;
     background: var(--el-night-soft) !important;
-}
-
-@media (max-width: 767px) {
-    .site-home #home-blog-grid .insight-card:first-child.has-cover > .insight-cover {
-        order: -1;
-        min-height: 0;
-        margin: -28px -28px 0;
-        border-width: 0 0 1px;
-    }
-
-    .site-home #home-blog-grid .insight-card:first-child.has-cover > h3 {
-        margin-top: 28px;
-    }
-
-    .site-blog #all-blog-grid .insight-card.has-cover > .insight-cover {
-        grid-column: 1;
-        grid-row: 2 !important;
-        max-width: none;
-        margin: 18px 0 0;
-    }
-
-    .site-blog #all-blog-grid .insight-card.has-cover > .insight-meta {
-        grid-row: 1 !important;
-        align-self: start;
-    }
-
-    .site-blog #all-blog-grid .insight-card.has-cover > h3 {
-        grid-row: 3 !important;
-        margin-top: 28px;
-    }
-
-    .site-blog #all-blog-grid .insight-card.has-cover > p {
-        grid-row: 4 !important;
-    }
-
-    .site-blog #all-blog-grid .insight-card.has-cover > a {
-        grid-row: 5 !important;
-        margin-top: 24px;
-    }
 }
 
 @media (max-width: 767px) {
