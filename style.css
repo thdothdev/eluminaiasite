@@ -3974,6 +3974,84 @@ button:focus-visible {
     margin: 0;
 }
 
+/* Editorial artwork: one original visual per article, with the copy remaining primary. */
+.insight-card.has-cover .insight-cover {
+    order: -1;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    margin: -28px -28px 0;
+    border-bottom: 1px solid var(--el-line-light);
+    background: var(--el-night-soft);
+}
+
+.insight-cover img,
+.article-cover img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.insight-card.has-cover h3 {
+    margin-top: 28px;
+}
+
+.insight-card.has-cover:hover .insight-cover img {
+    transform: scale(1.025);
+}
+
+.insight-cover img {
+    transition: transform 360ms var(--el-ease);
+}
+
+.site-home #home-blog-grid .insight-card:first-child.has-cover > .insight-cover {
+    order: initial;
+    grid-column: 1;
+    grid-row: 2;
+    min-height: 142px;
+    margin: 0;
+    border: 1px solid var(--el-line-light);
+}
+
+.site-blog #all-blog-grid .insight-card.has-cover > .insight-cover {
+    order: initial;
+    grid-column: 1;
+    grid-row: 2;
+    width: 100%;
+    max-width: 170px;
+    margin: 14px 0 0;
+    border: 1px solid var(--el-line-light);
+}
+
+.site-article .article-cover {
+    overflow: hidden;
+    aspect-ratio: 3 / 2;
+    margin: 0;
+    border: 1px solid var(--el-line-light) !important;
+    border-radius: 14px !important;
+    background: var(--el-night-soft) !important;
+}
+
+@media (max-width: 767px) {
+    .site-home #home-blog-grid .insight-card:first-child.has-cover > .insight-cover {
+        order: -1;
+        min-height: 0;
+        margin: -28px -28px 0;
+        border-width: 0 0 1px;
+    }
+
+    .site-home #home-blog-grid .insight-card:first-child.has-cover > h3 {
+        margin-top: 28px;
+    }
+
+    .site-blog #all-blog-grid .insight-card.has-cover > .insight-cover {
+        grid-column: 1;
+        grid-row: auto;
+        max-width: none;
+        margin: 18px 0 0;
+    }
+}
+
 @media (max-width: 767px) {
     .site-home #home-blog-grid .insight-card:first-child {
         display: flex !important;

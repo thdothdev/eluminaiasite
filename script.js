@@ -217,6 +217,7 @@ const FALLBACK_POSTS = [
         slug: "mapear-processo-antes-da-ia",
         date: "2026-07-30",
         icon: "scan-line",
+        image: "assets/blog/mapear-processo.png",
         summary: "Um roteiro prático para separar gargalo, exceção e regra de negócio antes de escolher qualquer tecnologia.",
         content: "<p>Automação começa com observação. Antes de escolher uma ferramenta, é preciso entender o que dispara o processo, quem decide, quais informações circulam e onde surgem as exceções.</p><h2>Comece pelo evento</h2><p>Todo fluxo tem um ponto de partida: uma mensagem, uma solicitação, uma mudança de status ou uma tarefa recorrente.</p><h2>Desenhe decisões e exceções</h2><p>Liste o que acontece quando faltam dados, quando uma regra não é atendida ou quando a decisão precisa continuar com uma pessoa.</p>"
     },
@@ -226,6 +227,7 @@ const FALLBACK_POSTS = [
         slug: "agente-automacao-ou-sistema",
         date: "2026-07-24",
         icon: "git-branch",
+        image: "assets/blog/agente-automacao-sistema.png",
         summary: "Três caminhos diferentes — e os sinais que ajudam a escolher a arquitetura adequada para cada operação.",
         content: "<p>Agentes de IA, automações e software sob medida resolvem tipos diferentes de problema. A escolha depende do grau de interpretação, da previsibilidade das regras e da interface necessária para a equipe.</p>"
     },
@@ -235,6 +237,7 @@ const FALLBACK_POSTS = [
         slug: "automacao-observavel",
         date: "2026-07-17",
         icon: "radar",
+        image: "assets/blog/automacao-observavel.png",
         summary: "Fluxo, exceções e evolução: os elementos que permitem acompanhar um sistema depois que ele entra em operação.",
         content: "<p>Colocar um fluxo em produção não encerra o trabalho. Uma automação precisa mostrar o que aconteceu, onde parou e quando uma pessoa deve assumir.</p>"
     }
@@ -281,11 +284,12 @@ function renderBlogGrid(containerIdOrElement, posts) {
     container.classList.add('reveal-group');
     const phases = ['sinal', 'contexto', 'decisão', 'ação'];
     container.innerHTML = posts.map((post, index) => `
-        <article class="insight-card insight-${phases[index % phases.length].normalize('NFD').replace(/[\u0300-\u036f]/g, '')} reveal">
+        <article class="insight-card insight-${phases[index % phases.length].normalize('NFD').replace(/[\u0300-\u036f]/g, '')}${post.image ? ' has-cover' : ''} reveal">
             <div class="insight-meta">
                 <span>${String(index + 1).padStart(2, '0')} / ${phases[index % phases.length]} · ${formatDate(post.date)}</span>
                 <i data-lucide="${post.icon || 'binary'}"></i>
             </div>
+            ${post.image ? `<div class="insight-cover"><img src="${post.image}" alt="" loading="${index === 0 ? 'eager' : 'lazy'}" decoding="async"></div>` : ''}
             <h3>${post.title}</h3>
             <p>${post.summary}</p>
             <a href="blog-post.html?id=${post.id}">
@@ -389,6 +393,11 @@ async function initBlogPost() {
         document.getElementById('post-title').innerText = post.title;
         document.getElementById('post-date').innerText = formatDate(post.date);
         document.getElementById('post-content').innerHTML = post.content;
+        const postImage = document.getElementById('post-image');
+        if (postImage && post.image) {
+            postImage.src = post.image;
+            postImage.alt = `Ilustração editorial: ${post.title}`;
+        }
 
         // Show Content
         loadingSpinner.classList.add('hidden');
