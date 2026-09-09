@@ -648,10 +648,47 @@ function initTrilhaSolucoes() {
     linhas.forEach(linha => linha.classList.add('is-lit'));
 }
 
-// Initialize everything
-document.addEventListener('DOMContentLoaded', () => {
+// Movimento de conversão: a seta confirma que o CTA leva a uma próxima ação.
+// O botão continua com o hover visual definido no CSS; o GSAP anima somente o
+// ícone para não disputar o transform de cada variante de botão.
+function initCtaMotion() {
+    if (typeof gsap === 'undefined') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const ctas = document.querySelectorAll('.hero-actions .button-primary, .nav-pill-cta, .final-cta .button-primary');
+
+    ctas.forEach(cta => {
+        const animateIcon = (x, duration) => {
+            const icon = cta.querySelector('svg');
+            if (!icon) return;
+            gsap.to(icon, { x, duration, ease: 'power2.out', overwrite: 'auto' });
+        };
+
+        cta.addEventListener('pointerenter', event => {
+            if (event.pointerType === 'touch') return;
+            animateIcon(3, 0.18);
+        });
+
+        cta.addEventListener('pointerleave', () => {
+            animateIcon(0, 0.26);
+        });
+
+        cta.addEventListener('focus', () => {
+            animateIcon(3, 0.18);
+        });
+
+        cta.addEventListener('blur', () => {
+            animateIcon(0, 0.2);
+        });
+    });
+}
+
+// Inicializa tanto durante o carregamento normal quanto quando o script vem de
+// cache e a página já terminou de montar.
+function initializeSite() {
     lucide.createIcons();
     initTrilhaSolucoes();
+    initCtaMotion();
     initBlogSystem();
     initBlogPost();
     initCookieConsent();
@@ -661,4 +698,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (requestedModal === 'privacy' || requestedModal === 'terms') {
         openModal(`modal-${requestedModal}`);
     }
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeSite, { once: true });
+} else {
+    initializeSite();
+}
