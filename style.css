@@ -4469,26 +4469,6 @@ button:focus-visible {
     }
 }
 
-.site-home .final-cta-secondary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 22px;
-    color: #d2dcff;
-    font-size: 0.94rem;
-    text-decoration: none;
-}
-
-.site-home .final-cta-secondary:hover {
-    color: #ffffff;
-}
-
-.site-home .final-cta-secondary svg {
-    width: 16px;
-    height: 16px;
-}
-
 @media (max-width: 767px) {
     .site-home .project-map {
         grid-template-columns: 1fr;
